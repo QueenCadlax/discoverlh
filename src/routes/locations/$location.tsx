@@ -96,9 +96,16 @@ function LocationBySlug() {
           <a href="/" className="text-sm font-semibold" aria-label="Discover by Lowveld Hub home">
             Discover <span className="font-normal text-[#68767a]">by Lowveld Hub</span>
           </a>
-          <nav aria-label="Main navigation" className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-medium text-[#536267]">
-            <a href="/#categories" className="hover:text-[#172a31]">Browse categories</a>
-            <a href="/business-network" className="hover:text-[#172a31]">Business Network</a>
+          <nav
+            aria-label="Main navigation"
+            className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-medium text-[#536267]"
+          >
+            <a href="/#categories" className="hover:text-[#172a31]">
+              Browse categories
+            </a>
+            <a href="/business-network" className="hover:text-[#172a31]">
+              Business Network
+            </a>
           </nav>
         </div>
       </header>

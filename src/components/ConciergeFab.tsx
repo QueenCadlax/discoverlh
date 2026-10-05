@@ -3,8 +3,21 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import {
-  Sparkles, X, Send, Loader2, Clock, RotateCcw, ArrowRight,
-  MapPin, Bed, UtensilsCrossed, Compass, Car, Mountain, ExternalLink, Bookmark,
+  Sparkles,
+  X,
+  Send,
+  Loader2,
+  Clock,
+  RotateCcw,
+  ArrowRight,
+  MapPin,
+  Bed,
+  UtensilsCrossed,
+  Compass,
+  Car,
+  Mountain,
+  ExternalLink,
+  Bookmark,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { generateItinerary, type Itinerary } from "@/lib/concierge.functions";
@@ -43,14 +56,16 @@ export function ConciergeFab() {
     return () => window.removeEventListener("discover:open-concierge", handler);
   }, [mutation]);
 
-
   const submit = (p: string) => {
     const q = p.trim();
     if (!q) return;
     setInput(q);
     mutation.mutate(q);
   };
-  const reset = () => { mutation.reset(); setInput(""); };
+  const reset = () => {
+    mutation.reset();
+    setInput("");
+  };
 
   return (
     <>
@@ -64,7 +79,10 @@ export function ConciergeFab() {
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-stretch justify-end animate-fade-in" onClick={() => setOpen(false)}>
+        <div
+          className="fixed inset-0 z-50 flex items-stretch justify-end animate-fade-in"
+          onClick={() => setOpen(false)}
+        >
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
           <div
             onClick={(e) => e.stopPropagation()}
@@ -78,7 +96,9 @@ export function ConciergeFab() {
                 <div>
                   <div className="text-sm font-semibold">Discover Concierge</div>
                   <div className="text-xs text-muted-foreground">
-                    {mutation.isPending ? "Crafting your itinerary…" : "Your personal travel planner"}
+                    {mutation.isPending
+                      ? "Crafting your itinerary…"
+                      : "Your personal travel planner"}
                   </div>
                 </div>
               </div>
@@ -91,7 +111,10 @@ export function ConciergeFab() {
                     <RotateCcw className="h-3.5 w-3.5" /> New request
                   </button>
                 )}
-                <button onClick={() => setOpen(false)} className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary">
+                <button
+                  onClick={() => setOpen(false)}
+                  className="grid h-8 w-8 place-items-center rounded-full hover:bg-secondary"
+                >
                   <X className="h-4 w-4" />
                 </button>
               </div>
@@ -107,7 +130,9 @@ export function ConciergeFab() {
                   <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-destructive/10 text-destructive">
                     <X className="h-5 w-5" />
                   </div>
-                  <p className="mt-4 text-sm text-foreground">The concierge couldn't complete that request.</p>
+                  <p className="mt-4 text-sm text-foreground">
+                    The concierge couldn't complete that request.
+                  </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {mutation.error instanceof Error ? mutation.error.message : "Please try again."}
                   </p>
@@ -124,7 +149,10 @@ export function ConciergeFab() {
 
             <div className="border-t border-border bg-card px-4 py-3">
               <form
-                onSubmit={(e) => { e.preventDefault(); submit(input); }}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submit(input);
+                }}
                 className="flex items-center gap-2 rounded-full border border-border px-4 py-2 focus-within:ring-focus"
               >
                 <Sparkles className="h-4 w-4 text-muted-foreground" />
@@ -140,7 +168,11 @@ export function ConciergeFab() {
                   disabled={mutation.isPending || input.trim().length < 2}
                   className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background disabled:opacity-50"
                 >
-                  {mutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
+                  {mutation.isPending ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Send className="h-3.5 w-3.5" />
+                  )}
                   {mutation.isPending ? "Planning" : "Plan"}
                 </button>
               </form>
@@ -160,7 +192,11 @@ function Intro({ prompts, onPick }: { prompts: string[]; onPick: (p: string) => 
     <div className="space-y-6 px-6 py-8">
       <div className="rounded-2xl bg-section px-5 py-4 text-sm leading-relaxed">
         <span className="font-medium text-foreground">Hi — where would you like to go?</span>
-        <span className="text-muted-foreground"> Describe your dream trip and I'll craft a full itinerary with stays, dining and experiences — including estimated pricing and one-tap booking.</span>
+        <span className="text-muted-foreground">
+          {" "}
+          Describe your dream trip and I'll craft a full itinerary with stays, dining and
+          experiences — including estimated pricing and one-tap booking.
+        </span>
       </div>
       <div>
         <p className="text-eyebrow">Try one of these</p>
@@ -185,7 +221,8 @@ function LoadingState({ query }: { query: string }) {
   return (
     <div className="space-y-4 px-6 py-8">
       <div className="rounded-2xl bg-section px-5 py-4 text-sm">
-        <span className="font-medium">You:</span> <span className="text-muted-foreground">{query}</span>
+        <span className="font-medium">You:</span>{" "}
+        <span className="text-muted-foreground">{query}</span>
       </div>
       <div className="flex items-center gap-3 text-sm text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -193,15 +230,22 @@ function LoadingState({ query }: { query: string }) {
       </div>
       <div className="space-y-3">
         {[0, 1, 2].map((i) => (
-          <div key={i} className="h-24 animate-pulse rounded-2xl bg-section" style={{ animationDelay: `${i * 120}ms` }} />
+          <div
+            key={i}
+            className="h-24 animate-pulse rounded-2xl bg-section"
+            style={{ animationDelay: `${i * 120}ms` }}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-const typeMeta: Record<Itinerary["days"][number]["items"][number]["type"], { label: string; Icon: typeof Bed }> = {
-  stay: { label: "Stay", Icon: Bed },
+const typeMeta: Record<
+  Itinerary["days"][number]["items"][number]["type"],
+  { label: string; Icon: typeof Bed }
+> = {
+  stay: { label: "Accommodation", Icon: Bed },
   dining: { label: "Dining", Icon: UtensilsCrossed },
   experience: { label: "Experience", Icon: Compass },
   transfer: { label: "Transfer", Icon: Car },
@@ -218,7 +262,9 @@ function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
         {itinerary.totalEstimateZAR != null && (
           <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-section px-4 py-2 text-sm">
             <span className="text-muted-foreground">Estimated total</span>
-            <span className="font-semibold">R {itinerary.totalEstimateZAR.toLocaleString("en-ZA")}</span>
+            <span className="font-semibold">
+              R {itinerary.totalEstimateZAR.toLocaleString("en-ZA")}
+            </span>
           </div>
         )}
       </div>
@@ -230,7 +276,9 @@ function ItineraryView({ itinerary }: { itinerary: Itinerary }) {
               {day.day}
             </span>
             <div>
-              <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Day {day.day}</div>
+              <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Day {day.day}
+              </div>
               <div className="text-base font-semibold tracking-tight">{day.heading}</div>
             </div>
           </div>
@@ -262,11 +310,18 @@ function ItemCard({ item }: { item: Itinerary["days"][number]["items"][number] }
             <span>{item.time}</span>
           </div>
           <div className="mt-2 text-base font-semibold tracking-tight">{item.name}</div>
-          <a href={mapUrl} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+          <a
+            href={mapUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          >
             <MapPin className="h-3 w-3" /> {item.location}
             <ExternalLink className="h-3 w-3" />
           </a>
-          {item.description && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.description}</p>}
+          {item.description && (
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+          )}
         </div>
         {item.priceZAR != null && (
           <div className="shrink-0 text-right">
@@ -284,11 +339,21 @@ function ItemCard({ item }: { item: Itinerary["days"][number]["items"][number] }
             location: item.location,
             price: item.priceZAR,
             priceUnit: bookType === "stay" ? "per night" : "per person",
-            hint: item.bookingHint ?? (bookType === "dining" ? "Reserve table" : bookType === "stay" ? "Reserve stay" : "Book experience"),
+            hint:
+              item.bookingHint ??
+              (bookType === "dining"
+                ? "Reserve table"
+                : bookType === "stay"
+                  ? "Reserve stay"
+                  : "Book experience"),
           }}
           className="inline-flex items-center gap-1.5 rounded-full bg-foreground px-4 py-1.5 text-xs font-medium text-background hover:-translate-y-0.5 transition-transform"
         >
-          {bookType === "dining" ? "Reserve table" : bookType === "stay" ? "Book now" : "Book experience"}
+          {bookType === "dining"
+            ? "Reserve table"
+            : bookType === "stay"
+              ? "Book now"
+              : "Book experience"}
           <ArrowRight className="h-3 w-3" />
         </Link>
         <button className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-xs font-medium hover:bg-secondary">

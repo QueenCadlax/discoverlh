@@ -88,5 +88,8 @@ export const locationDiscovery = [
 export const mpumalangaLocations = locationDiscovery.map(({ name }) => name);
 
 export function locationSlug(name: string) {
-  return name.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  return name
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }

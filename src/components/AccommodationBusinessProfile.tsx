@@ -63,7 +63,11 @@ export function AccommodationBusinessProfile({
     if (propertyType) {
       highlights.push(`${propertyType} accommodation with a practical, easy-to-navigate layout`);
     }
-    if (propertyFeatures.some((feature) => /wi-fi|conference|breakfast|restaurant|workspace/i.test(feature))) {
+    if (
+      propertyFeatures.some((feature) =>
+        /wi-fi|conference|breakfast|restaurant|workspace/i.test(feature),
+      )
+    ) {
       highlights.push("Well suited to short stays, work trips and relaxed weekends.");
     }
     if (propertyFeatures.some((feature) => /pool|garden|terrace|spa/i.test(feature))) {
@@ -79,7 +83,9 @@ export function AccommodationBusinessProfile({
     if (propertyFeatures.some((feature) => /pool|garden|spa|terrace/i.test(feature))) {
       tags.push("Slow mornings");
     }
-    if (propertyFeatures.some((feature) => /wi-fi|conference|breakfast|restaurant/i.test(feature))) {
+    if (
+      propertyFeatures.some((feature) => /wi-fi|conference|breakfast|restaurant/i.test(feature))
+    ) {
       tags.push("Business trips");
     }
     if (listing.roomTypes?.some((type) => /family|suite|apartment|studio/i.test(type))) {
@@ -110,7 +116,8 @@ export function AccommodationBusinessProfile({
     if (listing.location) {
       ideas.push({
         title: `Explore ${listing.location}`,
-        description: "Use this as your base for local experiences, food stops and low-key discovery.",
+        description:
+          "Use this as your base for local experiences, food stops and low-key discovery.",
       });
     }
     if (propertyFeatures.some((feature) => /parking|reception|conference/i.test(feature))) {

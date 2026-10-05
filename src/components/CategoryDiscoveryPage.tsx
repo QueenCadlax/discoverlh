@@ -413,9 +413,9 @@ export function CategoryDiscoveryPage({
   }
   const categoryTypeFilter = config.filters.find((filter) => filter.id === "category-type");
   if (initialCategoryType && categoryTypeFilter?.options) {
-    const selectedTypes = initialCategoryType.split(",").filter((type) =>
-      categoryTypeFilter.options?.includes(type),
-    );
+    const selectedTypes = initialCategoryType
+      .split(",")
+      .filter((type) => categoryTypeFilter.options?.includes(type));
     if (selectedTypes.length) {
       initialFilters[categoryTypeFilter.id] =
         categoryTypeFilter.kind === "multi" ? selectedTypes : selectedTypes[0];
@@ -543,7 +543,9 @@ export function CategoryDiscoveryPage({
   );
   const isAccommodation = config.slug === "accommodation";
   const hasDesktopFilterSidebar =
-    primaryDiscoveryCategorySlugs.includes(config.slug as (typeof primaryDiscoveryCategorySlugs)[number]) &&
+    primaryDiscoveryCategorySlugs.includes(
+      config.slug as (typeof primaryDiscoveryCategorySlugs)[number],
+    ) &&
     config.slug !== "stay" &&
     config.slug !== "eat";
   const directoryMapPlaces = useMemo<MpumalangaMapPlace[]>(
@@ -776,10 +778,7 @@ export function CategoryDiscoveryPage({
     });
   }
 
-  function updateDiscoverySearch(
-    nextFilters: Record<string, FilterValue>,
-    nextQuery = query,
-  ) {
+  function updateDiscoverySearch(nextFilters: Record<string, FilterValue>, nextQuery = query) {
     if (config.slug === "accommodation" || config.slug === "food-dining") return;
     const valueFor = (id: string) => {
       const value = nextFilters[id];
@@ -1087,25 +1086,21 @@ export function CategoryDiscoveryPage({
                 {config.icon && (
                   <span
                     aria-hidden="true"
-                      className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white/10 text-white"
-                    >
-                      <CategoryIcon
-                        src={config.icon}
-                        alt=""
-                        className="h-5 w-5"
-                      />
+                    className="mt-1 grid h-10 w-10 shrink-0 place-items-center rounded-md bg-white/10 text-white"
+                  >
+                    <CategoryIcon src={config.icon} alt="" className="h-5 w-5" />
                   </span>
                 )}
                 <div className="min-w-0">
                   <p className="accommodation-hero-enter flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/85">
                     <span className="h-px w-8 bg-current" />{" "}
-                    {isAccommodation ? "Stay" : config.eyebrow}
+                    {isAccommodation ? "Accommodation" : config.eyebrow}
                   </p>
                   <h1
                     className="accommodation-hero-enter mt-2 max-w-2xl text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl"
                     style={{ animationDelay: "90ms" }}
                   >
-                    {isAccommodation ? "Stay in Mpumalanga" : config.headline}
+                    {isAccommodation ? "Accommodation in Mpumalanga" : config.headline}
                   </h1>
                   <p
                     className="accommodation-hero-enter mt-2 max-w-2xl text-sm leading-5 text-white/85 sm:text-base sm:leading-6"
@@ -1155,7 +1150,7 @@ export function CategoryDiscoveryPage({
                         className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-[#7d898d]"
                       >
                         {isAccommodation
-                          ? "Where do you want to stay?"
+                          ? "Find accommodation"
                           : config.slug === "automotive"
                             ? initialAutomotiveMode === "vehicles"
                               ? "vehicles"
@@ -1250,7 +1245,9 @@ export function CategoryDiscoveryPage({
           id="category-results"
           className={`container-x scroll-mt-20 py-6 md:py-8 ${isAccommodation || hasDesktopFilterSidebar ? "lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:items-start lg:gap-8" : ""}`}
         >
-          <div className={`min-w-0 ${isAccommodation || hasDesktopFilterSidebar ? "lg:contents" : ""}`}>
+          <div
+            className={`min-w-0 ${isAccommodation || hasDesktopFilterSidebar ? "lg:contents" : ""}`}
+          >
             <div
               className={`mb-4 hidden flex-wrap items-center gap-2 lg:flex ${isAccommodation || hasDesktopFilterSidebar ? "lg:col-start-1 lg:row-start-1 lg:row-span-2 lg:mb-0 lg:flex-col lg:items-stretch lg:rounded-sm lg:border lg:border-[#e0e6e7] lg:bg-white lg:p-3" : ""}`}
               aria-label="Filter options"
@@ -1349,7 +1346,7 @@ export function CategoryDiscoveryPage({
                 <div>
                   <h2 className="text-2xl font-semibold leading-tight text-[#172a31] sm:text-3xl">
                     {isAccommodation
-                      ? "Stays in Mpumalanga"
+                      ? "Accommodation in Mpumalanga"
                       : config.slug === "automotive"
                         ? initialAutomotiveMode === "vehicles"
                           ? "Vehicles for sale"
@@ -1737,9 +1734,7 @@ function CategoryFilterControl({
           <span className="sr-only">{filter.label}</span>
           <select
             value={
-              filter.datePreset &&
-              typeof value === "string" &&
-              /^\d{4}-\d{2}-\d{2}$/.test(value)
+              filter.datePreset && typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)
                 ? "Custom Date"
                 : typeof value === "string"
                   ? value
@@ -1913,7 +1908,8 @@ function PremiumListingCard({
     .filter((value, index, values) => Boolean(value) && values.indexOf(value) === index)
     .slice(0, 2)
     .join(" · ");
-  const location = listing.location ?? listing.area;
+  const location =
+    listing.location ?? (typeof listing.area === "string" ? listing.area : undefined);
 
   return (
     <article className="group relative h-full min-w-0 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none">
@@ -1923,10 +1919,7 @@ function PremiumListingCard({
       >
         <DiscoveryCardImage
           image={listing.image}
-          alt={
-            listing.imageAlt ??
-            `${listing.name}${location ? ` in ${location}` : ""}`
-          }
+          alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
           name={listing.name}
         />
         <div className="pt-3">
@@ -2019,10 +2012,7 @@ export function DiscoveryCardImage({
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
         />
       ) : (
-        <div
-          aria-hidden="true"
-          className="grid h-full place-items-center bg-[#eef2f1]"
-        >
+        <div aria-hidden="true" className="grid h-full place-items-center bg-[#eef2f1]">
           <span className="font-display text-3xl font-medium tracking-wide text-[#8a7655]">
             {initials || "LH"}
           </span>
@@ -2060,13 +2050,7 @@ function isEventListing(listing: CategoryListing): listing is EventListing {
   );
 }
 
-function EventListingCard({
-  listing,
-  config,
-}: {
-  listing: EventListing;
-  config: CategoryConfig;
-}) {
+function EventListingCard({ listing, config }: { listing: EventListing; config: CategoryConfig }) {
   return <PremiumListingCard listing={listing} config={config} />;
 }
 

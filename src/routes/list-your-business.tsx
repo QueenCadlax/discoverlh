@@ -37,8 +37,10 @@ function ListingRequestPage() {
   const search = Route.useSearch();
   const categoryOptions = primaryDiscoveryCategorySlugs.map((slug) => categoryConfigs[slug]);
   const legacyCategoryLabels: Record<string, string> = {
-    Accommodation: "Stay",
-    "Food & Dining": "Eat",
+    Accommodation: "Accommodation",
+    "Food & Dining": "Restaurants",
+    Eat: "Restaurants",
+    Stay: "Accommodation",
     "Events & Entertainment": "Events",
     "Professional Services": "Professional",
     "Home & Construction": "Home & Property",

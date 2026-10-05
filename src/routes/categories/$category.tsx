@@ -114,9 +114,9 @@ export const Route = createFileRoute("/categories/$category")({
     const isProperty = config.slug === "property";
     const isAccommodation = config.slug === "accommodation";
     const title = isFoodDining
-      ? "Food & Dining in Mpumalanga | Discover"
+      ? "Restaurants in Mpumalanga | Discover"
       : isAccommodation
-        ? "Stay in Mpumalanga | Discover by Lowveld Hub"
+        ? "Accommodation in Mpumalanga | Discover by Lowveld Hub"
         : isProperty
           ? propertyMode === "businesses"
             ? "Property Businesses in Mpumalanga | Discover by Lowveld Hub"
@@ -308,10 +308,7 @@ function CategoryBySlug() {
         });
       }}
       onDiscoverySearchChange={(state) => {
-        if (
-          config.slug === "accommodation" ||
-          config.slug === "food-dining"
-        ) {
+        if (config.slug === "accommodation" || config.slug === "food-dining") {
           return;
         }
         void navigate({

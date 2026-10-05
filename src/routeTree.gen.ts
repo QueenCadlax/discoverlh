@@ -9,57 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
-import { Route as ReserveRouteImport } from './routes/reserve'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as ListYourBusinessRouteImport } from './routes/list-your-business'
-import { Route as BusinessNetworkRouteImport } from './routes/business-network'
-import { Route as BusinessListingTermsRouteImport } from './routes/business-listing-terms'
-import { Route as BookRouteImport } from './routes/book'
-import { Route as CategoryRouteImport } from './routes/$category'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
-import { Route as PropertiesSlugRouteImport } from './routes/properties.$slug'
-import { Route as LocationsLocationRouteImport } from './routes/locations/$location'
-import { Route as FoodDiningPappasKitchenRouteImport } from './routes/food-dining.pappas-kitchen'
-import { Route as EventsSlugRouteImport } from './routes/events.$slug'
-import { Route as CategoriesCategoryRouteImport } from './routes/categories/$category'
-import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
+import { Route as CategoryRouteImport } from './routes/$category'
+import { Route as BookRouteImport } from './routes/book'
+import { Route as BusinessListingTermsRouteImport } from './routes/business-listing-terms'
+import { Route as BusinessNetworkRouteImport } from './routes/business-network'
+import { Route as ListYourBusinessRouteImport } from './routes/list-your-business'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
 import { Route as AccommodationSlugRouteImport } from './routes/accommodation.$slug'
+import { Route as BusinessSlugRouteImport } from './routes/business.$slug'
+import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
+import { Route as CategoriesCategoryRouteImport } from './routes/categories/$category'
+import { Route as EventsSlugRouteImport } from './routes/events.$slug'
+import { Route as FoodDiningPappasKitchenRouteImport } from './routes/food-dining.pappas-kitchen'
+import { Route as LocationsLocationRouteImport } from './routes/locations/$location'
+import { Route as PropertiesSlugRouteImport } from './routes/properties.$slug'
 
-const TermsOfUseRoute = TermsOfUseRouteImport.update({
-  id: '/terms-of-use',
-  path: '/terms-of-use',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReserveRoute = ReserveRouteImport.update({
-  id: '/reserve',
-  path: '/reserve',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ListYourBusinessRoute = ListYourBusinessRouteImport.update({
-  id: '/list-your-business',
-  path: '/list-your-business',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessNetworkRoute = BusinessNetworkRouteImport.update({
-  id: '/business-network',
-  path: '/business-network',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessListingTermsRoute = BusinessListingTermsRouteImport.update({
-  id: '/business-listing-terms',
-  path: '/business-listing-terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BookRoute = BookRouteImport.update({
-  id: '/book',
-  path: '/book',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoryRoute = CategoryRouteImport.update({
@@ -67,39 +37,44 @@ const CategoryRoute = CategoryRouteImport.update({
   path: '/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BookRoute = BookRouteImport.update({
+  id: '/book',
+  path: '/book',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
-  id: '/categories/',
-  path: '/categories/',
+const BusinessListingTermsRoute = BusinessListingTermsRouteImport.update({
+  id: '/business-listing-terms',
+  path: '/business-listing-terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
-  id: '/properties/$slug',
-  path: '/properties/$slug',
+const BusinessNetworkRoute = BusinessNetworkRouteImport.update({
+  id: '/business-network',
+  path: '/business-network',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocationsLocationRoute = LocationsLocationRouteImport.update({
-  id: '/locations/$location',
-  path: '/locations/$location',
+const ListYourBusinessRoute = ListYourBusinessRouteImport.update({
+  id: '/list-your-business',
+  path: '/list-your-business',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FoodDiningPappasKitchenRoute = FoodDiningPappasKitchenRouteImport.update({
-  id: '/food-dining/pappas-kitchen',
-  path: '/food-dining/pappas-kitchen',
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventsSlugRoute = EventsSlugRouteImport.update({
-  id: '/events/$slug',
-  path: '/events/$slug',
+const ReserveRoute = ReserveRouteImport.update({
+  id: '/reserve',
+  path: '/reserve',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategoriesCategoryRoute = CategoriesCategoryRouteImport.update({
-  id: '/categories/$category',
-  path: '/categories/$category',
+const TermsOfUseRoute = TermsOfUseRouteImport.update({
+  id: '/terms-of-use',
+  path: '/terms-of-use',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccommodationSlugRoute = AccommodationSlugRouteImport.update({
+  id: '/accommodation/$slug',
+  path: '/accommodation/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BusinessSlugRoute = BusinessSlugRouteImport.update({
@@ -107,9 +82,34 @@ const BusinessSlugRoute = BusinessSlugRouteImport.update({
   path: '/business/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccommodationSlugRoute = AccommodationSlugRouteImport.update({
-  id: '/accommodation/$slug',
-  path: '/accommodation/$slug',
+const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+  id: '/categories/',
+  path: '/categories/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesCategoryRoute = CategoriesCategoryRouteImport.update({
+  id: '/categories/$category',
+  path: '/categories/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsSlugRoute = EventsSlugRouteImport.update({
+  id: '/events/$slug',
+  path: '/events/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoodDiningPappasKitchenRoute = FoodDiningPappasKitchenRouteImport.update({
+  id: '/food-dining/pappas-kitchen',
+  path: '/food-dining/pappas-kitchen',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocationsLocationRoute = LocationsLocationRouteImport.update({
+  id: '/locations/$location',
+  path: '/locations/$location',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
+  id: '/properties/$slug',
+  path: '/properties/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -253,53 +253,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms-of-use': {
-      id: '/terms-of-use'
-      path: '/terms-of-use'
-      fullPath: '/terms-of-use'
-      preLoaderRoute: typeof TermsOfUseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reserve': {
-      id: '/reserve'
-      path: '/reserve'
-      fullPath: '/reserve'
-      preLoaderRoute: typeof ReserveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/list-your-business': {
-      id: '/list-your-business'
-      path: '/list-your-business'
-      fullPath: '/list-your-business'
-      preLoaderRoute: typeof ListYourBusinessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-network': {
-      id: '/business-network'
-      path: '/business-network'
-      fullPath: '/business-network'
-      preLoaderRoute: typeof BusinessNetworkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-listing-terms': {
-      id: '/business-listing-terms'
-      path: '/business-listing-terms'
-      fullPath: '/business-listing-terms'
-      preLoaderRoute: typeof BusinessListingTermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/book': {
-      id: '/book'
-      path: '/book'
-      fullPath: '/book'
-      preLoaderRoute: typeof BookRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$category': {
@@ -309,53 +267,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/book': {
+      id: '/book'
+      path: '/book'
+      fullPath: '/book'
+      preLoaderRoute: typeof BookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/categories/': {
-      id: '/categories/'
-      path: '/categories'
-      fullPath: '/categories/'
-      preLoaderRoute: typeof CategoriesIndexRouteImport
+    '/business-listing-terms': {
+      id: '/business-listing-terms'
+      path: '/business-listing-terms'
+      fullPath: '/business-listing-terms'
+      preLoaderRoute: typeof BusinessListingTermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/properties/$slug': {
-      id: '/properties/$slug'
-      path: '/properties/$slug'
-      fullPath: '/properties/$slug'
-      preLoaderRoute: typeof PropertiesSlugRouteImport
+    '/business-network': {
+      id: '/business-network'
+      path: '/business-network'
+      fullPath: '/business-network'
+      preLoaderRoute: typeof BusinessNetworkRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/locations/$location': {
-      id: '/locations/$location'
-      path: '/locations/$location'
-      fullPath: '/locations/$location'
-      preLoaderRoute: typeof LocationsLocationRouteImport
+    '/list-your-business': {
+      id: '/list-your-business'
+      path: '/list-your-business'
+      fullPath: '/list-your-business'
+      preLoaderRoute: typeof ListYourBusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/food-dining/pappas-kitchen': {
-      id: '/food-dining/pappas-kitchen'
-      path: '/food-dining/pappas-kitchen'
-      fullPath: '/food-dining/pappas-kitchen'
-      preLoaderRoute: typeof FoodDiningPappasKitchenRouteImport
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/events/$slug': {
-      id: '/events/$slug'
-      path: '/events/$slug'
-      fullPath: '/events/$slug'
-      preLoaderRoute: typeof EventsSlugRouteImport
+    '/reserve': {
+      id: '/reserve'
+      path: '/reserve'
+      fullPath: '/reserve'
+      preLoaderRoute: typeof ReserveRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/categories/$category': {
-      id: '/categories/$category'
-      path: '/categories/$category'
-      fullPath: '/categories/$category'
-      preLoaderRoute: typeof CategoriesCategoryRouteImport
+    '/terms-of-use': {
+      id: '/terms-of-use'
+      path: '/terms-of-use'
+      fullPath: '/terms-of-use'
+      preLoaderRoute: typeof TermsOfUseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accommodation/$slug': {
+      id: '/accommodation/$slug'
+      path: '/accommodation/$slug'
+      fullPath: '/accommodation/$slug'
+      preLoaderRoute: typeof AccommodationSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/business/$slug': {
@@ -365,11 +330,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/accommodation/$slug': {
-      id: '/accommodation/$slug'
-      path: '/accommodation/$slug'
-      fullPath: '/accommodation/$slug'
-      preLoaderRoute: typeof AccommodationSlugRouteImport
+    '/categories/': {
+      id: '/categories/'
+      path: '/categories'
+      fullPath: '/categories/'
+      preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories/$category': {
+      id: '/categories/$category'
+      path: '/categories/$category'
+      fullPath: '/categories/$category'
+      preLoaderRoute: typeof CategoriesCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$slug': {
+      id: '/events/$slug'
+      path: '/events/$slug'
+      fullPath: '/events/$slug'
+      preLoaderRoute: typeof EventsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/food-dining/pappas-kitchen': {
+      id: '/food-dining/pappas-kitchen'
+      path: '/food-dining/pappas-kitchen'
+      fullPath: '/food-dining/pappas-kitchen'
+      preLoaderRoute: typeof FoodDiningPappasKitchenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/locations/$location': {
+      id: '/locations/$location'
+      path: '/locations/$location'
+      fullPath: '/locations/$location'
+      preLoaderRoute: typeof LocationsLocationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/properties/$slug': {
+      id: '/properties/$slug'
+      path: '/properties/$slug'
+      fullPath: '/properties/$slug'
+      preLoaderRoute: typeof PropertiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -46,7 +46,11 @@ type CategoryIconProps = {
 
 export function CategoryIcon({ src, alt = "", className }: CategoryIconProps) {
   if (!src) return null;
-  const iconName = src.split("/").pop()?.replace(/\.svg$/, "") ?? "";
+  const iconName =
+    src
+      .split("/")
+      .pop()
+      ?.replace(/\.svg$/, "") ?? "";
   const fallbackIconName = iconName.replace(/[-_\s]+/g, "-").toLowerCase();
   const Icon = categoryIcons[fallbackIconName] ?? MapPin;
 

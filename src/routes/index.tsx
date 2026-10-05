@@ -30,10 +30,7 @@ import {
 import { CategoryCard } from "@/components/DiscoverCategory";
 import { MobileSiteMenu } from "@/components/MobileSiteMenu";
 import { SiteFooter } from "@/components/SiteFooter";
-import {
-  CategoryListingCard,
-  DiscoveryCardImage,
-} from "@/components/CategoryDiscoveryPage";
+import { CategoryListingCard, DiscoveryCardImage } from "@/components/CategoryDiscoveryPage";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
 import {
   categoryConfigs,
@@ -183,8 +180,12 @@ const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
 }));
 
 const searchSuggestions = [
-  { label: "Hotels and lodges", category: "Stay", terms: ["hotel", "lodge"] },
-  { label: "Restaurants and cafés", category: "Eat", terms: ["restaurant", "cafe"] },
+  {
+    label: "Hotels and lodges",
+    category: "Accommodation",
+    terms: ["hotel", "lodge", "accommodation"],
+  },
+  { label: "Restaurants and cafés", category: "Restaurants", terms: ["restaurant", "cafe"] },
   { label: "Health and wellness", category: "Health", terms: ["doctor", "clinic"] },
   { label: "Lawyers and accountants", category: "Professional", terms: ["lawyer", "accountant"] },
   { label: "Plumbers and property", category: "Home & Property", terms: ["plumber", "property"] },
@@ -328,8 +329,7 @@ function Home() {
         params: { category: intent.category.slug },
         search: {
           q: intent.query,
-          mode:
-            intent.category.slug === "automotive" ? intent.automotiveMode : undefined,
+          mode: intent.category.slug === "automotive" ? intent.automotiveMode : undefined,
           location: intent.location === "Mpumalanga" ? undefined : intent.location,
           type: undefined,
           amenities: undefined,
@@ -877,7 +877,7 @@ function FeaturedPartnersSection() {
       if (!stay) return null;
       return {
         name: stay.name,
-        category: "Stay",
+        category: "Accommodation",
         location: stay.location ?? "Mbombela",
         image: stay.image ?? "",
         imageFit: "cover" as const,
@@ -899,7 +899,7 @@ function FeaturedPartnersSection() {
       if (!dining) return null;
       return {
         name: dining.name,
-        category: "Eat",
+        category: "Restaurants",
         location: dining.location ?? "Mbombela",
         image: dining.image ?? "",
         imageFit: "cover" as const,
