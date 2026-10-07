@@ -78,6 +78,8 @@ export function MpumalangaMap({
   description = "Discover towns and explore local businesses across the province.",
   placeLabel = "stay",
   placesLabel = "stays",
+  showZoomControls = true,
+  showTownArrows = true,
 }: {
   onSelectTown?: (townName: string) => void;
   places?: readonly MpumalangaMapPlace[];
@@ -85,6 +87,8 @@ export function MpumalangaMap({
   description?: string;
   placeLabel?: string;
   placesLabel?: string;
+  showZoomControls?: boolean;
+  showTownArrows?: boolean;
 }) {
   const availablePlaces = places ?? locationDiscovery;
   const placesSignature = JSON.stringify(availablePlaces);
@@ -123,7 +127,11 @@ export function MpumalangaMap({
         if (cancelled || !mapElement.current) return;
 
         map = leaflet
-          .map(mapElement.current, { scrollWheelZoom: false, attributionControl: false })
+          .map(mapElement.current, {
+            scrollWheelZoom: false,
+            attributionControl: false,
+            zoomControl: showZoomControls,
+          })
           .fitBounds(
             mapPlaces.map((town) => [town.latitude, town.longitude]),
             { padding: [36, 36] },
@@ -183,7 +191,7 @@ export function MpumalangaMap({
       activeMap?.remove();
       mapInstance.current = null;
     };
-  }, [customPlaces, mapPlaces]);
+  }, [customPlaces, mapPlaces, showZoomControls]);
 
   const selectTown = (townName: string, latitude: number, longitude: number) => {
     setSelectedTown(townName);
@@ -283,7 +291,7 @@ export function MpumalangaMap({
                   }`}
                 >
                   <span className="truncate">{town.name}</span>
-                  <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+                  {showTownArrows && <ArrowRight className="h-3.5 w-3.5 shrink-0" />}
                 </button>
               ))}
             </div>

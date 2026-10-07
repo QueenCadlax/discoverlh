@@ -437,13 +437,13 @@ export function CategoryDiscoveryPage({
       initialFilters[filter.id] = initialValue;
     }
   });
-  if (config.slug === "accommodation") {
+  if (config.slug === "accommodation" || config.slug === "stay") {
     if (initialAccommodationType) initialFilters.type = [initialAccommodationType];
     if (initialAccommodationAmenities.length > 0) {
       initialFilters.amenities = initialAccommodationAmenities;
     }
   }
-  if (config.slug === "food-dining") {
+  if (config.slug === "food-dining" || config.slug === "eat") {
     if (initialFoodCuisines.length) initialFilters.cuisine = initialFoodCuisines;
     if (initialFoodDiningStyles.length) {
       initialFilters["dining-style"] = initialFoodDiningStyles;
@@ -541,7 +541,7 @@ export function CategoryDiscoveryPage({
         (distanceFromCenter(second, nearbyCenter) ?? Infinity)
       : compareListings(first, second, activeSortBy, query, config),
   );
-  const isAccommodation = config.slug === "accommodation";
+  const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
   const hasDesktopFilterSidebar =
     primaryDiscoveryCategorySlugs.includes(
       config.slug as (typeof primaryDiscoveryCategorySlugs)[number],
@@ -737,7 +737,7 @@ export function CategoryDiscoveryPage({
   );
 
   useEffect(() => {
-    if (config.slug !== "accommodation") return;
+    if (config.slug !== "accommodation" && config.slug !== "stay") return;
     setFilters((current) => ({
       ...current,
       type: initialAccommodationType ? [initialAccommodationType] : undefined,
@@ -747,7 +747,7 @@ export function CategoryDiscoveryPage({
   }, [config.slug, initialAccommodationAmenities, initialAccommodationType, initialLocation]);
 
   useEffect(() => {
-    if (config.slug !== "food-dining") return;
+    if (config.slug !== "food-dining" && config.slug !== "eat") return;
     setFilters((current) => ({
       ...current,
       cuisine: initialFoodCuisines,
@@ -764,7 +764,7 @@ export function CategoryDiscoveryPage({
   ]);
 
   function updateFoodSearch(nextFilters: Record<string, FilterValue>, nextQuery = query) {
-    if (config.slug !== "food-dining") return;
+    if (config.slug !== "food-dining" && config.slug !== "eat") return;
     const selected = (id: string) => {
       const value = nextFilters[id];
       return isStringFilterValue(value) ? value : [];
@@ -779,7 +779,14 @@ export function CategoryDiscoveryPage({
   }
 
   function updateDiscoverySearch(nextFilters: Record<string, FilterValue>, nextQuery = query) {
-    if (config.slug === "accommodation" || config.slug === "food-dining") return;
+    if (
+      config.slug === "accommodation" ||
+      config.slug === "stay" ||
+      config.slug === "food-dining" ||
+      config.slug === "eat"
+    ) {
+      return;
+    }
     const valueFor = (id: string) => {
       const value = nextFilters[id];
       return typeof value === "string"
@@ -801,7 +808,7 @@ export function CategoryDiscoveryPage({
     nextQuery = query,
     nextFilters: Record<string, FilterValue> = filters,
   ) {
-    if (config.slug !== "accommodation") return;
+    if (config.slug !== "accommodation" && config.slug !== "stay") return;
     onAccommodationSearchChange?.({
       query: nextQuery,
       location: typeof nextFilters.location === "string" ? nextFilters.location : undefined,
@@ -1351,7 +1358,7 @@ export function CategoryDiscoveryPage({
                         ? initialAutomotiveMode === "vehicles"
                           ? "Vehicles for sale"
                           : "Automotive services"
-                        : config.slug === "food-dining"
+                        : config.slug === "food-dining" || config.slug === "eat"
                           ? "Restaurants in Mpumalanga"
                           : `Explore ${config.label}`}
                   </h2>
@@ -1364,7 +1371,7 @@ export function CategoryDiscoveryPage({
                           : `${sortedListings.length} stays ${activeLocationName ? `in ${activeLocationName}` : "across Mpumalanga"}`
                       : config.slug === "home-construction"
                         ? "Find the right professionals for your project."
-                        : config.slug === "food-dining"
+                        : config.slug === "food-dining" || config.slug === "eat"
                           ? "Discover restaurants by cuisine, dining style and location."
                           : "Find listings by category, details and location."}
                   </p>
@@ -1594,12 +1601,16 @@ export function CategoryDiscoveryPage({
                 For local businesses
               </p>
               <h2 className="max-w-xl text-xl font-semibold leading-tight text-[#172a31] sm:text-2xl">
-                {config.slug === "automotive" || config.slug === "food-dining"
+                {config.slug === "automotive" ||
+                config.slug === "food-dining" ||
+                config.slug === "eat"
                   ? config.ownerHeading
                   : "Own a business? Get discovered."}
               </h2>
               <p className="mt-2 max-w-xl text-sm leading-6 text-[#68767a]">
-                {config.slug === "automotive" || config.slug === "food-dining"
+                {config.slug === "automotive" ||
+                config.slug === "food-dining" ||
+                config.slug === "eat"
                   ? config.ownerDescription
                   : "Get your business in front of people searching for services and businesses across Mpumalanga."}
               </p>
@@ -1853,10 +1864,10 @@ export function CategoryListingCard({
   if (config.slug === "events" && isEventListing(listing)) {
     return <EventListingCard listing={listing} config={config} />;
   }
-  if (config.slug === "food-dining") {
+  if (config.slug === "food-dining" || config.slug === "eat") {
     return <FoodDiningListingCard listing={listing} config={config} />;
   }
-  if (config.slug === "accommodation") {
+  if (config.slug === "accommodation" || config.slug === "stay") {
     return <AccommodationListingCard listing={listing} config={config} />;
   }
   if (

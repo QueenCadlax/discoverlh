@@ -80,17 +80,23 @@ export function CategoryCard({
     <a
       href={href}
       aria-label={`Browse ${label}`}
-      className="group flex h-full min-h-[108px] w-full min-w-0 items-center gap-2.5 rounded-md border border-[#e3e8e7] bg-white p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[116px] sm:gap-3 sm:p-3"
+      className="group flex h-full min-h-[108px] w-full min-w-0 items-center gap-2 rounded-md border border-[#e3e8e7] bg-white p-2 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[116px] sm:gap-3 sm:p-3"
     >
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-md bg-[#142b4a] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#142b4a] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] sm:h-10 sm:w-10">
         <CategoryIcon
           src={icon}
           alt=""
-          className="h-[19px] w-[19px] transition-colors group-hover:text-[#d8c49e]"
+          className="h-4 w-4 transition-colors group-hover:text-[#d8c49e] sm:h-[19px] sm:w-[19px]"
         />
       </span>
       <span className="flex min-h-0 min-w-0 flex-1 flex-col justify-center overflow-hidden">
-        <span className="block line-clamp-2 break-words text-xs font-semibold leading-[1.2] text-[#17242b] sm:text-sm">
+        <span
+          className={`block line-clamp-2 break-words font-semibold leading-[1.2] text-[#17242b] ${
+            label === "Accommodation"
+              ? "whitespace-nowrap text-[10px] sm:text-sm"
+              : "text-[11px] sm:text-sm"
+          }`}
+        >
           {label}
         </span>
         <span className="mt-1 block line-clamp-2 break-words text-[10px] leading-[14px] text-[#687378] sm:text-xs sm:leading-4">

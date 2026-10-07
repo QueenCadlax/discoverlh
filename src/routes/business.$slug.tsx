@@ -19,23 +19,26 @@ export const Route = createFileRoute("/business/$slug")({
     const config = categoryConfigs[profile.category];
     const location = profile.listing.location?.trim();
     const categoryLabel = profile.listing.subcategory || config.label;
-    const title =
+    const defaultTitle =
       profile.category === "accommodation"
         ? `${profile.listing.name} | Discover by Lowveld Hub`
         : profile.category === "food-dining"
           ? `${profile.listing.name} | Food & Dining in ${location || "Mpumalanga"} | Discover`
           : `${profile.listing.name} | ${categoryLabel}${location ? ` in ${location}` : ""} | Discover`;
+    const title = profile.listing.seoTitle ?? defaultTitle;
     const locationSuffix = location ? ` Located in ${location}, Mpumalanga.` : "";
     const descriptionText = profile.listing.description?.trim();
     const descriptionLimit = 160 - locationSuffix.length;
     const clippedDescription = descriptionText
       ? truncateDescription(descriptionText, descriptionLimit)
       : undefined;
-    const description = profile.listing.description
-      ? `${clippedDescription}${locationSuffix}`
-      : location
-        ? `Discover ${profile.listing.name} in ${location}, Mpumalanga.`
-        : undefined;
+    const description =
+      profile.listing.seoDescription ??
+      (profile.listing.description
+        ? `${clippedDescription}${locationSuffix}`
+        : location
+          ? `Discover ${profile.listing.name} in ${location}, Mpumalanga.`
+          : undefined);
     const canonical = getPublicUrl(`/business/${params.slug}`);
     const socialImage = profile.listing.image
       ? profile.listing.image.startsWith("http")

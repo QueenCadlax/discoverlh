@@ -16,8 +16,11 @@ export const Route = createFileRoute("/accommodation/$slug")({
       };
     }
 
-    const title = `${profile.listing.name} | Accommodation in Mbombela | Discover by Lowveld Hub`;
+    const title =
+      profile.listing.seoTitle ??
+      `${profile.listing.name} | Accommodation in Mbombela | Discover by Lowveld Hub`;
     const description =
+      profile.listing.seoDescription ??
       profile.listing.description ??
       `${profile.listing.name} is a premium accommodation option in Mbombela, Mpumalanga.`;
     const canonical = getPublicUrl(`/accommodation/${params.slug}`);

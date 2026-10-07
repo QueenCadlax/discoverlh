@@ -68,7 +68,6 @@ export const Route = createFileRoute("/categories/$category")({
       travel: "travel-transport",
       "professional-services": "professional",
       "home-construction": "home-property",
-      property: "home-property",
       "health-wellness": "health",
       beauty: "personal-beauty",
       "events-entertainment": "events",
@@ -108,11 +107,11 @@ export const Route = createFileRoute("/categories/$category")({
     const automotiveMode: AutomotiveMode =
       match.search.mode === "vehicles" ? "vehicles" : "services";
     const isAutomotive = config.slug === "automotive";
-    const isFoodDining = config.slug === "food-dining";
+    const isFoodDining = config.slug === "food-dining" || config.slug === "eat";
     const propertyMode: PropertyMode =
       match.search.mode === "businesses" ? "businesses" : "listings";
     const isProperty = config.slug === "property";
-    const isAccommodation = config.slug === "accommodation";
+    const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
     const title = isFoodDining
       ? "Restaurants in Mpumalanga | Discover"
       : isAccommodation
@@ -158,7 +157,7 @@ export const Route = createFileRoute("/categories/$category")({
       match.search.date ||
       match.search.status ||
       (isProperty && propertyMode === "businesses" && match.search.mode !== "businesses") ||
-      (config.slug === "food-dining" &&
+      (isFoodDining &&
         (match.search.cuisine?.length ||
           match.search.style?.length ||
           match.search.meal?.length)) ||
@@ -281,7 +280,7 @@ function CategoryBySlug() {
       initialFoodDiningStyles={style ?? []}
       initialFoodMealTypes={meal ?? []}
       onAccommodationSearchChange={(state) => {
-        if (config.slug !== "accommodation") return;
+        if (config.slug !== "accommodation" && config.slug !== "stay") return;
         void navigate({
           replace: true,
           search: (previous) => ({
@@ -294,7 +293,7 @@ function CategoryBySlug() {
         });
       }}
       onFoodSearchChange={(state) => {
-        if (config.slug !== "food-dining") return;
+        if (config.slug !== "food-dining" && config.slug !== "eat") return;
         void navigate({
           replace: true,
           search: (previous) => ({
@@ -308,7 +307,12 @@ function CategoryBySlug() {
         });
       }}
       onDiscoverySearchChange={(state) => {
-        if (config.slug === "accommodation" || config.slug === "food-dining") {
+        if (
+          config.slug === "accommodation" ||
+          config.slug === "stay" ||
+          config.slug === "food-dining" ||
+          config.slug === "eat"
+        ) {
           return;
         }
         void navigate({

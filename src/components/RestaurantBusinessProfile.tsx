@@ -2,9 +2,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowLeft,
   ArrowRight,
+  CalendarDays,
   Clock3,
+  Coffee,
   ExternalLink,
   Globe,
+  Mail,
   MapPin,
   MessageCircle,
   Navigation,
@@ -17,7 +20,9 @@ import {
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
+import { SavedBusinessButton } from "@/components/SavedBusinessButton";
 import {
+  getListingOpenStatus,
   getBusinessSlug,
   type CategoryConfig,
   type CategoryListing,
@@ -36,11 +41,20 @@ export function RestaurantBusinessProfile({
   const [activeImage, setActiveImage] = useState<number | null>(null);
   const [showMobileActions, setShowMobileActions] = useState(false);
   const [shareStatus, setShareStatus] = useState("");
+  const [liveOpenStatus, setLiveOpenStatus] = useState<boolean>();
   const profileRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const phoneHref = getPhoneHref(listing.phone, listing.country);
   const menuUrl = getSafeExternalUrl(listing.menuUrl);
+  const orderingUrl = getSafeExternalUrl(listing.orderingUrl);
+  const reservationUrl = getSafeExternalUrl(listing.bookingUrl);
   const website = getSafeExternalUrl(listing.website);
+  const socialLinks = (listing.socialLinks ?? []).flatMap((link) => {
+    const href = getSafeExternalUrl(link.href);
+    return href ? [{ ...link, href }] : [];
+  });
+  const emailHref = listing.email ? `mailto:${listing.email}` : undefined;
+  const restaurantProfile = listing.restaurantProfile;
   const fullAddress = [
     listing.address,
     listing.location,
@@ -54,14 +68,18 @@ export function RestaurantBusinessProfile({
     Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude)
       ? `${listing.latitude},${listing.longitude}`
       : fullAddress;
-  const directionsUrl = directionsQuery
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
-    : undefined;
+  const directionsUrl =
+    getSafeExternalUrl(listing.directionsUrl) ??
+    (directionsQuery
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
+      : undefined);
   const images = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
   const profileUrl = getPublicUrl(`/business/${getBusinessSlug(listing)}`);
   const openingHours = Object.entries(listing.openingHours ?? {});
   const hoursSummary =
-    openingHours.length === 1 && openingHours[0][0].toLocaleLowerCase() === "daily"
+    restaurantProfile
+      ? "See daily opening hours"
+      : openingHours.length === 1 && openingHours[0][0].toLocaleLowerCase() === "daily"
       ? `${openingHours[0][1]} daily`
       : openingHours.map(([day, hours]) => `${day}: ${hours}`).join(" · ");
   const services = listing.services ?? [];
@@ -71,11 +89,25 @@ export function RestaurantBusinessProfile({
     ...(listing.mealTypes ?? []),
   ];
   const schemaOpeningHours = openingHours.flatMap(([day, hours]) => {
-    const normalizedHours = hours.replace(/[–—]/g, "-");
+    const normalizedHours = normalizeSchemaHours(hours);
+    const schemaDay = schemaDays[day.trim().toLocaleLowerCase()];
     return day.trim().toLocaleLowerCase() === "daily"
       ? [`Mo-Su ${normalizedHours}`]
-      : [`${day} ${normalizedHours}`];
+      : schemaDay
+        ? [`${schemaDay} ${normalizedHours}`]
+        : [];
   });
+  useEffect(() => {
+    if (listing.id !== "mugg-and-bean-crossing-centre") {
+      setLiveOpenStatus(undefined);
+      return;
+    }
+    const updateOpenStatus = () => setLiveOpenStatus(getListingOpenStatus(listing));
+    updateOpenStatus();
+    const intervalId = window.setInterval(updateOpenStatus, 60_000);
+    return () => window.clearInterval(intervalId);
+  }, [listing]);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -83,12 +115,13 @@ export function RestaurantBusinessProfile({
     description: listing.description,
     url: profileUrl,
     ...(images.length ? { image: images } : {}),
-    ...(phoneHref ? { telephone: phoneHref } : {}),
-    ...(website || listing.socialLinks?.length
+    ...(phoneHref ? { telephone: listing.phone } : {}),
+    ...(listing.email ? { email: listing.email } : {}),
+    ...(website || socialLinks.length
       ? {
           sameAs: [
             ...(website ? [website] : []),
-            ...(listing.socialLinks ?? []).map((link) => link.href),
+            ...socialLinks.map((link) => link.href),
           ],
         }
       : {}),
@@ -115,6 +148,14 @@ export function RestaurantBusinessProfile({
       : {}),
     ...(listing.cuisineTypes?.length ? { servesCuisine: listing.cuisineTypes } : {}),
     ...(listing.menuUrl ? { hasMenu: listing.menuUrl } : {}),
+    ...(reservationUrl
+      ? {
+          potentialAction: {
+            "@type": "ReserveAction",
+            target: reservationUrl,
+          },
+        }
+      : {}),
     ...(schemaOpeningHours.length ? { openingHours: schemaOpeningHours } : {}),
   };
   const breadcrumbStructuredData = {
@@ -311,6 +352,11 @@ export function RestaurantBusinessProfile({
               <h1 className="mt-2 font-display text-4xl font-medium leading-[1.02] text-[#17242b] sm:text-5xl">
                 {listing.name}
               </h1>
+              {listing.diningStyles?.length ? (
+                <p className="mt-2 text-sm font-medium text-[#536267]">
+                  {listing.diningStyles.join(" · ")}
+                </p>
+              ) : null}
               <p className="mt-3 flex items-center gap-2 text-sm text-[#536267]">
                 <MapPin className="h-4 w-4 shrink-0 text-[#28718a]" />
                 {[listing.location, listing.province].filter(Boolean).join(", ")}
@@ -321,10 +367,32 @@ export function RestaurantBusinessProfile({
                 </p>
               )}
               <div className="mt-5 flex flex-wrap gap-2">
+                {orderingUrl && (
+                  <ExternalAction
+                    href={orderingUrl}
+                    primary
+                    newTab
+                    icon={<ExternalLink className="h-4 w-4" />}
+                  >
+                    Order Online
+                  </ExternalAction>
+                )}
+                {reservationUrl && (
+                  <ExternalAction
+                    href={reservationUrl}
+                    light={Boolean(orderingUrl)}
+                    primary={!orderingUrl}
+                    newTab
+                    icon={<CalendarDays className="h-4 w-4" />}
+                  >
+                    Reserve a Table
+                  </ExternalAction>
+                )}
                 {menuUrl && (
                   <ExternalAction
                     href={menuUrl}
-                    primary
+                    light={Boolean(reservationUrl || orderingUrl)}
+                    primary={!reservationUrl && !orderingUrl}
                     newTab
                     icon={<UtensilsCrossed className="h-4 w-4" />}
                   >
@@ -352,8 +420,16 @@ export function RestaurantBusinessProfile({
                 )}
                 {website && (
                   <ExternalAction href={website} light newTab icon={<Globe className="h-4 w-4" />}>
-                    Visit Website
+                    Website
                   </ExternalAction>
+                )}
+                {emailHref && (
+                  <ExternalAction href={emailHref} light icon={<Mail className="h-4 w-4" />}>
+                    Email
+                  </ExternalAction>
+                )}
+                {listing.id === "mugg-and-bean-crossing-centre" && (
+                  <SavedBusinessButton id={listing.id} name={listing.name} />
                 )}
                 {images.length > 0 && (
                   <a
@@ -378,6 +454,15 @@ export function RestaurantBusinessProfile({
             {hoursSummary && (
               <InfoPanel icon={<Clock3 className="h-4 w-4" />} eyebrow="Opening hours">
                 <p>{hoursSummary}</p>
+                {listing.id === "mugg-and-bean-crossing-centre" &&
+                  typeof liveOpenStatus === "boolean" && (
+                    <p
+                      className={`mt-1 font-semibold ${liveOpenStatus ? "text-[#287247]" : "text-[#687378]"}`}
+                      role="status"
+                    >
+                      {liveOpenStatus ? "Open now" : "Closed now"} · South African local time
+                    </p>
+                  )}
               </InfoPanel>
             )}
             {fullAddress && (
@@ -396,14 +481,16 @@ export function RestaurantBusinessProfile({
               </InfoPanel>
             )}
             {services.length > 0 && (
-              <InfoPanel icon={<Truck className="h-4 w-4" />} eyebrow="Dining & delivery">
+              <InfoPanel icon={<Truck className="h-4 w-4" />} eyebrow="Service options">
                 <p>{services.join(" · ")}</p>
                 {listing.deliveryAvailable && <p>Delivery available</p>}
               </InfoPanel>
             )}
           </section>
         )}
-        {Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude) && (
+        {!restaurantProfile &&
+          Number.isFinite(listing.latitude) &&
+          Number.isFinite(listing.longitude) && (
           <section className="container-x py-8 md:py-10">
             <MpumalangaMap
               places={[
@@ -422,7 +509,7 @@ export function RestaurantBusinessProfile({
               placesLabel="restaurants"
             />
           </section>
-        )}
+          )}
 
         <section className="container-x flex flex-wrap items-center justify-between gap-3 border-b border-[#e5ebeb] py-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
@@ -448,7 +535,7 @@ export function RestaurantBusinessProfile({
           </div>
         </section>
 
-        {(menuUrl || diningDetails.length > 0) && (
+        {!restaurantProfile && (menuUrl || diningDetails.length > 0) && (
           <section
             data-profile-reveal
             data-scroll-reveal="true"
@@ -562,11 +649,17 @@ export function RestaurantBusinessProfile({
               </p>
               <div className="max-w-3xl">
                 <h2 className="font-display text-2xl font-medium text-[#17242b] sm:text-3xl">
-                  About {listing.name}
+                  {restaurantProfile?.storyHeading ?? `About ${listing.name}`}
                 </h2>
-                {listing.description && (
+                {restaurantProfile
+                  ? restaurantProfile.story.map((paragraph) => (
+                      <p key={paragraph} className="mt-3 text-sm leading-7 text-[#5f6d72]">
+                        {paragraph}
+                      </p>
+                    ))
+                  : listing.description && (
                   <p className="mt-3 text-sm leading-7 text-[#5f6d72]">{listing.description}</p>
-                )}
+                    )}
                 {(listing.cuisine || listing.cuisineTypes?.length) && (
                   <p className="mt-4 text-xs font-medium text-[#536267]">
                     {listing.cuisineTypes?.join(" · ") ?? listing.cuisine}
@@ -577,7 +670,326 @@ export function RestaurantBusinessProfile({
           </section>
         )}
 
-        {(menuUrl || phoneHref || directionsUrl || website) && (
+        {restaurantProfile && (
+          <>
+            <section
+              data-profile-reveal
+              data-scroll-reveal="true"
+              data-revealed="false"
+              className="container-x py-10 md:py-14"
+            >
+              <div className="max-w-2xl">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                  {restaurantProfile.experienceEyebrow ?? `Dining at ${listing.name}`}
+                </p>
+                <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                  {restaurantProfile.experienceHeading ?? `The ${listing.name} Experience`}
+                </h2>
+              </div>
+              <div className="mt-6 grid gap-3 md:grid-cols-3">
+                {restaurantProfile.experienceHighlights.map((highlight, index) => {
+                  const Icon = index === 1 || index === 3 ? Coffee : UtensilsCrossed;
+                  return (
+                    <article
+                      key={highlight.title}
+                      className="border border-[#e5ebeb] bg-white p-5 sm:p-6"
+                    >
+                      <Icon aria-hidden="true" className="h-5 w-5 text-[#8a7655]" />
+                      <h3 className="mt-4 font-display text-xl font-medium text-[#17242b]">
+                        {highlight.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-[#687378]">
+                        {highlight.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+
+            {restaurantProfile.menuLinks.length > 0 && (
+              <section
+                id="restaurant-menu"
+                data-profile-reveal
+                data-scroll-reveal="true"
+                data-revealed="false"
+                className="bg-[#f7f9f8] py-10 md:py-14"
+              >
+                <div className="container-x">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                    Official menus
+                  </p>
+                  <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                    Explore the menu
+                  </h2>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687378]">
+                    {restaurantProfile.menuIntroduction ??
+                      `Visit ${listing.name}'s official menu pages for current dishes and details.`}
+                  </p>
+                  <div className="mt-6 grid gap-3 md:grid-cols-2">
+                    {restaurantProfile.menuLinks.map((menu) => {
+                      const href = getSafeExternalUrl(menu.href);
+                      if (!href) return null;
+                      return (
+                        <a
+                          key={menu.label}
+                          href={href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="group flex min-h-28 items-center justify-between gap-4 border border-[#e0e7e5] bg-white p-5 transition-colors hover:border-[#bdcbc7] sm:p-6"
+                        >
+                          <span>
+                            <span className="block font-display text-xl font-medium text-[#17242b]">
+                              {menu.label}
+                            </span>
+                            <span className="mt-1 block text-sm leading-5 text-[#687378]">
+                              {menu.description}
+                            </span>
+                          </span>
+                          <ExternalLink
+                            aria-hidden="true"
+                            className="h-4 w-4 shrink-0 text-[#8a7655] transition-transform group-hover:translate-x-0.5"
+                          />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {restaurantProfile.recognition?.length ? (
+              <section className="container-x border-b border-[#e5ebeb] py-9 md:py-11">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                  Brand recognition
+                </p>
+                <h2 className="mt-2 font-display text-2xl font-medium text-[#17242b] sm:text-3xl">
+                  Recognition
+                </h2>
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {restaurantProfile.recognition.map((item) => (
+                    <li
+                      key={item}
+                      className="border border-[#e5ebeb] bg-[#fbfcfb] px-3 py-2 text-sm text-[#536267]"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {listing.amenities?.length ? (
+              <section className="container-x py-10 md:py-14">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                  At a glance
+                </p>
+                <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                  Amenities
+                </h2>
+                <ul className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {listing.amenities.map((amenity) => (
+                    <li key={amenity} className="flex items-start gap-2 text-sm text-[#536267]">
+                      <span aria-hidden="true" className="mt-0.5 text-[#8a7655]">
+                        ·
+                      </span>
+                      {amenity}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {openingHours.length > 0 && (
+              <section className="bg-[#f7f9f8] py-10 md:py-14">
+                <div className="container-x grid gap-6 md:grid-cols-[0.7fr_1fr] md:gap-12">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                      Plan your visit
+                    </p>
+                    <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                      Opening hours
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#687378]">
+                      Official opening hours for {listing.name}.
+                    </p>
+                  </div>
+                  <dl className="divide-y divide-[#e1e8e6] border-y border-[#e1e8e6] bg-white px-4 sm:px-5">
+                    {openingHours.map(([day, hours]) => (
+                      <div
+                        key={day}
+                        className="flex min-h-12 items-center justify-between gap-4 py-2 text-sm"
+                      >
+                        <dt className="font-medium text-[#34474d]">{day}</dt>
+                        <dd className="text-right text-[#687378]">{hours}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </section>
+            )}
+
+            {restaurantProfile.celebrationTypes?.length ? (
+              <section className="container-x py-10 md:py-14">
+                <div className="grid items-center gap-6 border border-[#e5ebeb] bg-white p-5 sm:p-8 md:grid-cols-[1fr_auto] md:p-10">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                      Gather around the table
+                    </p>
+                    <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                      Make It A Celebration
+                    </h2>
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-[#687378]">
+                      Turn 'n Tender welcomes celebrations and special occasions.
+                    </p>
+                    <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#536267]">
+                      {restaurantProfile.celebrationTypes.map((occasion) => (
+                        <li key={occasion}>{occasion}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  {reservationUrl && (
+                    <ExternalAction
+                      href={reservationUrl}
+                      primary
+                      newTab
+                      icon={<CalendarDays className="h-4 w-4" />}
+                    >
+                      Reserve Your Table
+                    </ExternalAction>
+                  )}
+                </div>
+              </section>
+            ) : null}
+
+            <section className="bg-[#f7f9f8] py-10 md:py-14">
+              <div className="container-x grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
+                    Location & contact
+                  </p>
+                  <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
+                    Find {listing.name}
+                  </h2>
+                  <address className="mt-4 not-italic text-sm leading-6 text-[#536267]">
+                    {listing.address}
+                    <br />
+                    {listing.location}, {listing.province} {listing.postalCode}
+                    <br />
+                    {listing.country}
+                  </address>
+                  <div className="mt-5 grid gap-2 text-sm">
+                    {phoneHref && (
+                      <a className="text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4" href={`tel:${phoneHref}`}>
+                        {listing.phone}
+                      </a>
+                    )}
+                    {emailHref && (
+                      <a className="break-all text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4" href={emailHref}>
+                        {listing.email}
+                      </a>
+                    )}
+                    {website && (
+                      <a
+                        className="text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4"
+                        href={website}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Official website
+                      </a>
+                    )}
+                  </div>
+                  {socialLinks.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
+                      {socialLinks.map((link) => (
+                        <a
+                          key={`${link.label}-${link.href}`}
+                          href={link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#28718a]"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {orderingUrl && (
+                      <ExternalAction
+                        href={orderingUrl}
+                        primary
+                        newTab
+                        icon={<ExternalLink className="h-4 w-4" />}
+                      >
+                        Order Online
+                      </ExternalAction>
+                    )}
+                    {menuUrl && (
+                      <ExternalAction
+                        href={menuUrl}
+                        light
+                        newTab
+                        icon={<UtensilsCrossed className="h-4 w-4" />}
+                      >
+                        View Menu
+                      </ExternalAction>
+                    )}
+                    {directionsUrl && (
+                      <ExternalAction
+                        href={directionsUrl}
+                        light={!orderingUrl}
+                        newTab
+                        icon={<Navigation className="h-4 w-4" />}
+                      >
+                        Get Directions
+                      </ExternalAction>
+                    )}
+                    {reservationUrl && (
+                      <ExternalAction
+                        href={reservationUrl}
+                        primary
+                        newTab
+                        icon={<CalendarDays className="h-4 w-4" />}
+                      >
+                        Reserve a Table
+                      </ExternalAction>
+                    )}
+                  </div>
+                </div>
+                {Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude) ? (
+                  <MpumalangaMap
+                    places={[
+                      {
+                        name: listing.name,
+                        latitude: Number(listing.latitude),
+                        longitude: Number(listing.longitude),
+                        description: fullAddress,
+                        href: directionsUrl,
+                        locationAccuracy: listing.locationAccuracy,
+                      },
+                    ]}
+                    heading={`Find ${listing.name}`}
+                    description={fullAddress}
+                    placeLabel="restaurant"
+                    placesLabel="restaurants"
+                  />
+                ) : (
+                  <iframe
+                    title={`Map to ${listing.name}`}
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(`${listing.name}, ${fullAddress}`)}&output=embed`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="h-72 w-full border border-[#e1e8e6] bg-[#e8eeec] md:h-96"
+                  />
+                )}
+              </div>
+            </section>
+          </>
+        )}
+
+        {!restaurantProfile && (menuUrl || phoneHref || directionsUrl || website) && (
           <section
             data-profile-reveal
             data-scroll-reveal="true"
@@ -688,7 +1100,25 @@ export function RestaurantBusinessProfile({
         role="group"
         aria-label="Quick restaurant actions"
       >
-        {menuUrl && (
+        {orderingUrl ? (
+          <a
+            href={orderingUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm bg-[#17242b] px-2 text-xs font-semibold text-white"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> Order
+          </a>
+        ) : reservationUrl ? (
+          <a
+            href={reservationUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm bg-[#17242b] px-2 text-xs font-semibold text-white"
+          >
+            <CalendarDays className="h-3.5 w-3.5" /> Reserve
+          </a>
+        ) : menuUrl ? (
           <a
             href={menuUrl}
             target="_blank"
@@ -697,7 +1127,7 @@ export function RestaurantBusinessProfile({
           >
             <UtensilsCrossed className="h-3.5 w-3.5" /> Menu
           </a>
-        )}
+        ) : null}
         {phoneHref && (
           <a
             href={`tel:${phoneHref}`}
@@ -716,7 +1146,16 @@ export function RestaurantBusinessProfile({
             <Navigation className="h-3.5 w-3.5" /> Directions
           </a>
         )}
-        {website && (
+        {(reservationUrl || orderingUrl) && menuUrl ? (
+          <a
+            href={menuUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-[#dce4e5] px-2 text-xs font-semibold text-[#34474d]"
+          >
+            <UtensilsCrossed className="h-3.5 w-3.5" /> Menu
+          </a>
+        ) : website && !reservationUrl && !orderingUrl ? (
           <a
             href={website}
             target="_blank"
@@ -725,7 +1164,7 @@ export function RestaurantBusinessProfile({
           >
             <Globe className="h-3.5 w-3.5" /> Website
           </a>
-        )}
+        ) : null}
       </div>
 
       <Dialog open={activeImage !== null} onOpenChange={(open) => !open && setActiveImage(null)}>
@@ -823,6 +1262,32 @@ function getPhoneHref(value?: string, country?: string) {
   if (country === "South Africa" && digits.startsWith("0")) return `+27${digits.slice(1)}`;
   if (digits.startsWith("27")) return `+${digits}`;
   return normalized;
+}
+
+const schemaDays: Record<string, string> = {
+  monday: "Mo",
+  tuesday: "Tu",
+  wednesday: "We",
+  thursday: "Th",
+  friday: "Fr",
+  saturday: "Sa",
+  sunday: "Su",
+};
+
+function normalizeSchemaHours(value: string) {
+  const twelveHourRange = value.match(
+    /^(\d{1,2}):(\d{2})\s*(AM|PM)\s*[–—-]\s*(\d{1,2}):(\d{2})\s*(AM|PM)$/i,
+  );
+  if (!twelveHourRange) return value.replace(/[–—]/g, "-").replace(/\s+/g, "");
+  const [, startHour, startMinute, startPeriod, endHour, endMinute, endPeriod] =
+    twelveHourRange;
+  return `${toTwentyFourHourTime(startHour, startMinute, startPeriod)}-${toTwentyFourHourTime(endHour, endMinute, endPeriod)}`;
+}
+
+function toTwentyFourHourTime(hour: string, minute: string, period: string) {
+  const numericHour = Number(hour) % 12;
+  const adjustedHour = period.toUpperCase() === "PM" ? numericHour + 12 : numericHour;
+  return `${String(adjustedHour).padStart(2, "0")}:${minute}`;
 }
 
 function InfoPanel({

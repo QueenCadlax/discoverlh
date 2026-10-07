@@ -378,6 +378,8 @@ function Home() {
       <CategoryShortcuts />
       <FeaturedPartnersSection />
       <MpumalangaMap
+        showZoomControls={false}
+        showTownArrows={false}
         onSelectTown={(townName) => {
           void navigate({
             to: "/locations/$location",
@@ -946,10 +948,18 @@ function FeaturedPartnersSection() {
       };
     })(),
   ].filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const pappasFeaturedImage = featuredItems.find((item) => item.name === "Pappas Kitchen")?.image;
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!pappasFeaturedImage) return;
+    const image = new Image();
+    image.decoding = "async";
+    image.src = pappasFeaturedImage;
+  }, [pappasFeaturedImage]);
 
   useEffect(() => {
     if (featuredItems.length < 2) return;

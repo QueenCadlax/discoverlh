@@ -48,6 +48,10 @@ export function AccommodationBusinessProfile({
   const lightboxTouchStartX = useRef<number | null>(null);
   const website = getSafeExternalUrl(listing.website);
   const bookingUrl = getSafeExternalUrl(listing.bookingUrl);
+  const socialLinks = (listing.socialLinks ?? []).flatMap((link) => {
+    const href = getSafeExternalUrl(link.href);
+    return href ? [{ ...link, href }] : [];
+  });
   const phone = listing.phone?.replace(/[^\d+]/g, "");
   const email = listing.email?.trim();
   const propertyType = listing.accommodationType ?? listing.type;
@@ -135,6 +139,11 @@ export function AccommodationBusinessProfile({
       : [listing.address, listing.location, listing.province, listing.country]
           .filter(Boolean)
           .join(", ");
+  const directionsUrl =
+    getSafeExternalUrl(listing.directionsUrl) ??
+    (directionsQuery
+      ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
+      : undefined);
   const recommendations = getCategoryListings("accommodation")
     .filter((stay) => stay.id !== listing.id && isPublishedListing(stay))
     .slice(0, 4);
@@ -185,7 +194,9 @@ export function AccommodationBusinessProfile({
     ...(listing.description ? { description: listing.description } : {}),
     ...(profileUrl ? { url: profileUrl } : {}),
     ...(gallery.length ? { image: gallery } : {}),
-    ...(website ? { sameAs: [website] } : {}),
+    ...(website || socialLinks.length
+      ? { sameAs: [...(website ? [website] : []), ...socialLinks.map((link) => link.href)] }
+      : {}),
     ...(phone ? { telephone: listing.phone } : {}),
     ...(email ? { email } : {}),
     ...(listing.address || listing.location
@@ -462,9 +473,9 @@ export function AccommodationBusinessProfile({
                   WhatsApp
                 </a>
               )}
-              {directionsQuery && (
+              {directionsUrl && (
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`}
+                  href={directionsUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
@@ -499,6 +510,21 @@ export function AccommodationBusinessProfile({
                 </a>
               )}
             </div>
+            {socialLinks.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#e5ebeb] pt-4 text-xs font-semibold">
+                {socialLinks.map((link) => (
+                  <a
+                    key={`${link.label}-${link.href}`}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#28718a]"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </aside>
 
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">
@@ -604,9 +630,9 @@ export function AccommodationBusinessProfile({
                     <p className="mt-2">{listing.address}</p>
                   </details>
                 )}
-                {directionsQuery && (
+                {directionsUrl && (
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`}
+                    href={directionsUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-3 inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#39703b]"
@@ -697,11 +723,11 @@ export function AccommodationBusinessProfile({
         />
       </main>
 
-      {(bookingUrl || website || directionsQuery) && (
+      {(bookingUrl || website || directionsUrl) && (
         <div
           className="fixed inset-x-0 bottom-0 z-40 grid gap-2 border-t border-[#dce4e5] bg-white/95 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-8px_28px_-18px_rgba(23,36,43,.28)] backdrop-blur-md md:hidden"
           style={{
-            gridTemplateColumns: `repeat(${Number(Boolean(bookingUrl || website)) + Number(Boolean(directionsQuery))}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${Number(Boolean(bookingUrl || website)) + Number(Boolean(directionsUrl))}, minmax(0, 1fr))`,
           }}
           role="group"
           aria-label="Quick accommodation actions"
@@ -716,9 +742,9 @@ export function AccommodationBusinessProfile({
               {bookingUrl ? "Check availability" : "Visit website"}
             </a>
           )}
-          {directionsQuery && (
+          {directionsUrl && (
             <a
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`}
+              href={directionsUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-[#dce4e5] px-2 text-xs font-semibold text-[#34474d]"
