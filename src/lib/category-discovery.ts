@@ -384,7 +384,6 @@ const locationFilter: CategoryFilterConfig = {
 };
 const accommodationLocationFilter: CategoryFilterConfig = {
   ...locationFilter,
-  defaultValue: "Mbombela",
 };
 const discoveryLocationFilter: CategoryFilterConfig = {
   ...locationFilter,

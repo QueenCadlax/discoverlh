@@ -6,6 +6,7 @@ import {
   type CSSProperties,
   type FormEvent,
   type KeyboardEvent,
+  type MouseEvent,
 } from "react";
 import {
   Bookmark,
@@ -16,6 +17,7 @@ import {
   MapPin,
   Menu,
   Search,
+  Share2,
   SlidersHorizontal,
   X,
 } from "lucide-react";
@@ -742,7 +744,7 @@ export function CategoryDiscoveryPage({
       ...current,
       type: initialAccommodationType ? [initialAccommodationType] : undefined,
       amenities: initialAccommodationAmenities.length ? initialAccommodationAmenities : undefined,
-      location: initialLocation ?? "Mbombela",
+      location: initialLocation,
     }));
   }, [config.slug, initialAccommodationAmenities, initialAccommodationType, initialLocation]);
 
@@ -841,7 +843,7 @@ export function CategoryDiscoveryPage({
     setNearbyCenter(null);
     setNearbyRadiusKm(25);
     setLocationMessage("");
-    updateAccommodationSearch("", { ...defaultFilters, location: "Mbombela" });
+    updateAccommodationSearch("", defaultFilters);
     updateFoodSearch(defaultFilters, "");
     updateDiscoverySearch(defaultFilters, "");
   }
@@ -1953,6 +1955,7 @@ function PremiumListingCard({
           )}
         </div>
       </a>
+      <ShareListingButton name={listing.name} href={href} />
       <SavedListingButton name={listing.name} />
     </article>
   );
@@ -1987,6 +1990,46 @@ function SavedListingButton({ name }: { name: string }) {
         fill={saved ? "currentColor" : "none"}
         strokeWidth={1.8}
       />
+    </button>
+  );
+}
+
+function ShareListingButton({ name, href }: { name: string; href: string }) {
+  const [status, setStatus] = useState("");
+
+  async function shareListing(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+    event.stopPropagation();
+    const url = new URL(href, window.location.origin).toString();
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: name, url });
+        setStatus("Listing shared.");
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+        setStatus("Listing link copied.");
+      } else {
+        setStatus("Sharing is unavailable in this browser.");
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      setStatus("Could not share this listing.");
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      aria-label={`Share ${name}`}
+      title="Share"
+      onClick={shareListing}
+      className="absolute right-12 top-2.5 z-10 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-[#34474d] shadow-[0_1px_8px_rgba(20,30,30,.18)] transition-[transform,color,background-color] duration-200 hover:scale-105 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#172a31] motion-reduce:transition-none"
+    >
+      <Share2 aria-hidden="true" className="h-4 w-4" />
+      <span className="sr-only" role="status" aria-live="polite">
+        {status}
+      </span>
     </button>
   );
 }
