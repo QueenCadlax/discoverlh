@@ -138,9 +138,7 @@ export function MpumalangaMap({
           );
         const fittedZoom = map.getZoom();
         const initialZoom =
-          customPlaces && mapPlaces.length === 1
-            ? Math.min(fittedZoom, 15)
-            : fittedZoom - 1;
+          customPlaces && mapPlaces.length === 1 ? Math.min(fittedZoom, 15) : fittedZoom - 1;
         map.setZoom(Math.max(customPlaces ? 11 : 5, initialZoom));
         mapInstance.current = map;
 
