@@ -348,8 +348,6 @@ function Home() {
           cuisine: undefined,
           style: undefined,
           meal: undefined,
-          date: undefined,
-          status: undefined,
         },
       });
       return;

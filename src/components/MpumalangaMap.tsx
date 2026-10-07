@@ -136,7 +136,12 @@ export function MpumalangaMap({
             mapPlaces.map((town) => [town.latitude, town.longitude]),
             { padding: [36, 36] },
           );
-        map.setZoom(Math.max(customPlaces ? 11 : 5, map.getZoom() - 1));
+        const fittedZoom = map.getZoom();
+        const initialZoom =
+          customPlaces && mapPlaces.length === 1
+            ? Math.min(fittedZoom, 15)
+            : fittedZoom - 1;
+        map.setZoom(Math.max(customPlaces ? 11 : 5, initialZoom));
         mapInstance.current = map;
 
         leaflet

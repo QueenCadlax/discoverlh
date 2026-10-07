@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { CategoryListingCard } from "@/components/CategoryDiscoveryPage";
+import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
@@ -510,21 +511,9 @@ export function AccommodationBusinessProfile({
                 </a>
               )}
             </div>
-            {socialLinks.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#e5ebeb] pt-4 text-xs font-semibold">
-                {socialLinks.map((link) => (
-                  <a
-                    key={`${link.label}-${link.href}`}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#28718a]"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="mt-4">
+              <BusinessSocialLinks businessName={listing.name} links={socialLinks} />
+            </div>
           </aside>
 
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">

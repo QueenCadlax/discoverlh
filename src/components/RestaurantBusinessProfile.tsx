@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
+import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
 import { SavedBusinessButton } from "@/components/SavedBusinessButton";
 import {
@@ -76,10 +77,9 @@ export function RestaurantBusinessProfile({
   const images = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
   const profileUrl = getPublicUrl(`/business/${getBusinessSlug(listing)}`);
   const openingHours = Object.entries(listing.openingHours ?? {});
-  const hoursSummary =
-    restaurantProfile
-      ? "See daily opening hours"
-      : openingHours.length === 1 && openingHours[0][0].toLocaleLowerCase() === "daily"
+  const hoursSummary = restaurantProfile
+    ? "See daily opening hours"
+    : openingHours.length === 1 && openingHours[0][0].toLocaleLowerCase() === "daily"
       ? `${openingHours[0][1]} daily`
       : openingHours.map(([day, hours]) => `${day}: ${hours}`).join(" · ");
   const services = listing.services ?? [];
@@ -119,10 +119,7 @@ export function RestaurantBusinessProfile({
     ...(listing.email ? { email: listing.email } : {}),
     ...(website || socialLinks.length
       ? {
-          sameAs: [
-            ...(website ? [website] : []),
-            ...socialLinks.map((link) => link.href),
-          ],
+          sameAs: [...(website ? [website] : []), ...socialLinks.map((link) => link.href)],
         }
       : {}),
     ...(listing.address || listing.location
@@ -491,24 +488,24 @@ export function RestaurantBusinessProfile({
         {!restaurantProfile &&
           Number.isFinite(listing.latitude) &&
           Number.isFinite(listing.longitude) && (
-          <section className="container-x py-8 md:py-10">
-            <MpumalangaMap
-              places={[
-                {
-                  name: listing.name,
-                  latitude: Number(listing.latitude),
-                  longitude: Number(listing.longitude),
-                  description: listing.address,
-                  href: website,
-                  locationAccuracy: listing.locationAccuracy,
-                },
-              ]}
-              heading="Find Pappas Kitchen"
-              description={fullAddress}
-              placeLabel="restaurant"
-              placesLabel="restaurants"
-            />
-          </section>
+            <section className="container-x py-8 md:py-10">
+              <MpumalangaMap
+                places={[
+                  {
+                    name: listing.name,
+                    latitude: Number(listing.latitude),
+                    longitude: Number(listing.longitude),
+                    description: listing.address,
+                    href: website,
+                    locationAccuracy: listing.locationAccuracy,
+                  },
+                ]}
+                heading="Find Pappas Kitchen"
+                description={fullAddress}
+                placeLabel="restaurant"
+                placesLabel="restaurants"
+              />
+            </section>
           )}
 
         <section className="container-x flex flex-wrap items-center justify-between gap-3 border-b border-[#e5ebeb] py-4">
@@ -658,7 +655,7 @@ export function RestaurantBusinessProfile({
                       </p>
                     ))
                   : listing.description && (
-                  <p className="mt-3 text-sm leading-7 text-[#5f6d72]">{listing.description}</p>
+                      <p className="mt-3 text-sm leading-7 text-[#5f6d72]">{listing.description}</p>
                     )}
                 {(listing.cuisine || listing.cuisineTypes?.length) && (
                   <p className="mt-4 text-xs font-medium text-[#536267]">
@@ -880,12 +877,18 @@ export function RestaurantBusinessProfile({
                   </address>
                   <div className="mt-5 grid gap-2 text-sm">
                     {phoneHref && (
-                      <a className="text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4" href={`tel:${phoneHref}`}>
+                      <a
+                        className="text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4"
+                        href={`tel:${phoneHref}`}
+                      >
                         {listing.phone}
                       </a>
                     )}
                     {emailHref && (
-                      <a className="break-all text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4" href={emailHref}>
+                      <a
+                        className="break-all text-[#34474d] underline decoration-[#b7c8cc] underline-offset-4"
+                        href={emailHref}
+                      >
                         {listing.email}
                       </a>
                     )}
@@ -900,21 +903,9 @@ export function RestaurantBusinessProfile({
                       </a>
                     )}
                   </div>
-                  {socialLinks.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold">
-                      {socialLinks.map((link) => (
-                        <a
-                          key={`${link.label}-${link.href}`}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#28718a]"
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                  <div className="mt-4">
+                    <BusinessSocialLinks businessName={listing.name} links={socialLinks} />
+                  </div>
                   <div className="mt-5 flex flex-wrap gap-2">
                     {orderingUrl && (
                       <ExternalAction
@@ -1279,8 +1270,7 @@ function normalizeSchemaHours(value: string) {
     /^(\d{1,2}):(\d{2})\s*(AM|PM)\s*[–—-]\s*(\d{1,2}):(\d{2})\s*(AM|PM)$/i,
   );
   if (!twelveHourRange) return value.replace(/[–—]/g, "-").replace(/\s+/g, "");
-  const [, startHour, startMinute, startPeriod, endHour, endMinute, endPeriod] =
-    twelveHourRange;
+  const [, startHour, startMinute, startPeriod, endHour, endMinute, endPeriod] = twelveHourRange;
   return `${toTwentyFourHourTime(startHour, startMinute, startPeriod)}-${toTwentyFourHourTime(endHour, endMinute, endPeriod)}`;
 }
 

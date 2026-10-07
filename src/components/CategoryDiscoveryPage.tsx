@@ -1516,6 +1516,14 @@ export function CategoryDiscoveryPage({
                       places={directoryMapPlaces}
                       heading={`${config.label} in ${activeLocationName ?? "Mpumalanga"}`}
                       description={`Select a marker to explore ${config.label.toLocaleLowerCase()}.`}
+                      placeLabel={
+                        config.resultNoun === "restaurants"
+                          ? "restaurant"
+                          : config.resultNoun === "accommodation"
+                            ? "place to stay"
+                            : "listing"
+                      }
+                      placesLabel={config.resultNoun}
                     />
                   </div>
                 ) : (
@@ -1863,7 +1871,7 @@ export function CategoryListingCard({
   if (config.slug === "property" && isPropertyListing(listing)) {
     return <PropertyListingCard listing={listing} config={config} />;
   }
-  if (config.slug === "events" && isEventListing(listing)) {
+  if (config.slug === "leisure-entertainment" && isEventListing(listing)) {
     return <EventListingCard listing={listing} config={config} />;
   }
   if (config.slug === "food-dining" || config.slug === "eat") {

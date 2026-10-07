@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
+import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { RestaurantBusinessProfile } from "@/components/RestaurantBusinessProfile";
 import {
   getBusinessSlug,
@@ -484,21 +485,9 @@ export function BusinessProfilePage({
                 </a>
               )}
             </div>
-            {socialLinks.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 border-t border-[#e5ebeb] pt-4 text-sm">
-                {socialLinks.map((link) => (
-                  <a
-                    key={`${link.label}-${link.href}`}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[#536267] underline underline-offset-4 hover:text-[#172a31]"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            )}
+            <div className="mt-5">
+              <BusinessSocialLinks businessName={listing.name} links={socialLinks} />
+            </div>
             {listing.location && (
               <p className="mt-5 flex items-start gap-2 border-t border-[#e5ebeb] pt-4 text-sm leading-6 text-[#68767a]">
                 <MapPin className="mt-1 h-4 w-4 shrink-0" /> {listing.location}

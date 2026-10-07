@@ -41,7 +41,7 @@ function ListingRequestPage() {
     "Food & Dining": "Restaurants",
     Eat: "Restaurants",
     Stay: "Accommodation",
-    "Events": "Leisure & Entertainment",
+    Events: "Leisure & Entertainment",
     "Events & Entertainment": "Leisure & Entertainment",
     "Professional Services": "Professional",
     "Home & Construction": "Home & Property",

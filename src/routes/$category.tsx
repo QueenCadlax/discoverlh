@@ -34,8 +34,6 @@ export const Route = createFileRoute("/$category")({
           cuisine: getList("cuisine").length ? getList("cuisine") : undefined,
           style: getList("style").length ? getList("style") : undefined,
           meal: getList("meal").length ? getList("meal") : undefined,
-          date: searchParams.get("date") ?? undefined,
-          status: searchParams.get("status") ?? undefined,
         },
       });
     }

@@ -87,8 +87,6 @@ export const Route = createFileRoute("/categories/$category")({
           cuisine: undefined,
           style: undefined,
           meal: undefined,
-          date: undefined,
-          status: undefined,
         },
       });
     }
