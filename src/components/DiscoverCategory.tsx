@@ -1,7 +1,6 @@
 import {
   BedDouble,
   BriefcaseBusiness,
-  CalendarDays,
   CarFront,
   Compass,
   GraduationCap,
@@ -20,7 +19,7 @@ import {
 const categoryIcons: Record<string, LucideIcon> = {
   stay: BedDouble,
   eat: Utensils,
-  events: CalendarDays,
+  "leisure-entertainment": Compass,
   shop: ShoppingBag,
   travel: Plane,
   "travel-transport": Plane,

@@ -1,13 +1,17 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
   Globe,
+  Images,
   Mail,
   MapPin,
   MessageCircle,
   Navigation,
   Phone,
   Share2,
+  X,
 } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
@@ -37,6 +41,7 @@ export function BusinessProfilePage({
   const email = listing.email?.trim();
   const website = getSafeExternalUrl(listing.website);
   const bookingUrl = getSafeExternalUrl(listing.bookingUrl);
+  const isAutomotive = config.slug === "automotive";
   if (config.slug === "food-dining") {
     return <RestaurantBusinessProfile listing={listing} config={config} />;
   }
@@ -50,19 +55,24 @@ export function BusinessProfilePage({
       : [listing.address, listing.location, listing.province, listing.postalCode, listing.country]
           .filter(Boolean)
           .join(", ");
-  const gallery = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
+  const gallery = isAutomotive
+    ? []
+    : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
   const services = toDisplayValues(listing.services ?? listing.serviceType);
   const profileUrl = getPublicUrl(`/business/${getBusinessSlug(listing)}`);
-  const profileImages = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))]
+  const profileImages = (
+    isAutomotive ? [] : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))]
+  )
     .map(
       (image) =>
         getSafeExternalUrl(image) ?? (image.startsWith("/") ? getPublicUrl(image) : undefined),
     )
     .filter((image): image is string => Boolean(image));
-  const logoUrl = listing.logo
-    ? (getSafeExternalUrl(listing.logo) ??
-      (listing.logo.startsWith("/") ? getPublicUrl(listing.logo) : undefined))
-    : undefined;
+  const logoUrl =
+    listing.logo && !isAutomotive
+      ? (getSafeExternalUrl(listing.logo) ??
+        (listing.logo.startsWith("/") ? getPublicUrl(listing.logo) : undefined))
+      : undefined;
   const locationPage = locationDiscovery.find(
     ({ name }) => name.toLocaleLowerCase() === listing.location?.trim().toLocaleLowerCase(),
   );
@@ -207,7 +217,9 @@ export function BusinessProfilePage({
 
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.5fr)_minmax(260px,0.7fr)] lg:gap-10">
           <div className="min-w-0">
-            {gallery.length > 0 ? (
+            {config.slug === "leisure-entertainment" ? (
+              <LeisurePhotoGallery listing={listing} images={gallery} />
+            ) : gallery.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2">
                 {gallery.slice(0, 4).map((image, index) => (
                   <img
@@ -242,7 +254,7 @@ export function BusinessProfilePage({
 
             <div className="mt-6 flex flex-wrap items-start justify-between gap-4 border-b border-[#e5ebeb] pb-5">
               <div className="flex min-w-0 items-center gap-3">
-                {listing.logo && (
+                {listing.logo && !isAutomotive && (
                   <img
                     src={listing.logo}
                     alt={`${listing.name} logo`}
@@ -509,6 +521,201 @@ export function BusinessProfilePage({
       </div>
       <SiteFooter />
     </div>
+  );
+}
+
+function LeisurePhotoGallery({ listing, images }: { listing: CategoryListing; images: string[] }) {
+  const [failedImages, setFailedImages] = useState<string[]>([]);
+  const [activeImage, setActiveImage] = useState<number | null>(null);
+  const visibleImages = images.filter((image) => !failedImages.includes(image));
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const galleryTriggerRef = useRef<HTMLButtonElement>(null);
+  const touchStartX = useRef<number | null>(null);
+
+  const closeGallery = useCallback(() => {
+    setActiveImage(null);
+    galleryTriggerRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    if (activeImage === null) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeGallery();
+      if (event.key === "ArrowRight") {
+        setActiveImage((index) => (index === null ? null : (index + 1) % visibleImages.length));
+      }
+      if (event.key === "ArrowLeft") {
+        setActiveImage((index) =>
+          index === null ? null : (index - 1 + visibleImages.length) % visibleImages.length,
+        );
+      }
+      if (event.key === "Tab") {
+        const buttons = lightboxRef.current?.querySelectorAll<HTMLButtonElement>("button");
+        if (!buttons?.length) return;
+        const first = buttons[0];
+        const last = buttons[buttons.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    closeButtonRef.current?.focus();
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeImage, closeGallery, visibleImages.length]);
+
+  const getAlt = (image: string, index: number) => {
+    const sourceIndex = images.indexOf(image);
+    return (
+      (sourceIndex === 0 ? listing.imageAlt : listing.imageAlts?.[sourceIndex - 1]) ??
+      `${listing.name}${index ? `, photo ${index + 1}` : ""}`
+    );
+  };
+
+  if (!visibleImages.length) {
+    return (
+      <div className="grid h-48 place-items-center rounded-md bg-[#edf2f0] px-6 text-center text-sm text-[#68767a]">
+        Photos coming soon
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <section aria-label={`${listing.name} photo gallery`} className="relative">
+        <div
+          role="group"
+          aria-label="Select a photo to enlarge"
+          className="grid grid-cols-2 gap-2 overflow-hidden rounded-md sm:h-[280px] sm:grid-cols-[1.8fr_1fr_1fr] sm:grid-rows-2 md:h-[340px]"
+        >
+          {visibleImages.slice(0, 5).map((image, index) => (
+            <button
+              key={image}
+              type="button"
+              onClick={(event) => {
+                galleryTriggerRef.current = event.currentTarget;
+                setActiveImage(index);
+              }}
+              aria-label={`Open photo ${index + 1} of ${visibleImages.length} for ${listing.name}`}
+              className={`group relative block min-w-0 overflow-hidden bg-[#edf0f0] text-left focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] sm:h-full sm:aspect-auto ${index === 0 ? "col-span-2 aspect-[16/9] sm:col-span-1 sm:row-span-2" : `aspect-[4/3] ${index > 2 ? "hidden sm:block" : ""}`}`}
+            >
+              <img
+                src={image}
+                alt={getAlt(image, index)}
+                fetchPriority={index === 0 ? "high" : undefined}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                onError={() => {
+                  setFailedImages((current) =>
+                    current.includes(image) ? current : [...current, image],
+                  );
+                  setActiveImage(null);
+                }}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transform-none"
+              />
+            </button>
+          ))}
+        </div>
+        {visibleImages.length > 1 && (
+          <button
+            type="button"
+            onClick={() => {
+              galleryTriggerRef.current =
+                document.activeElement instanceof HTMLButtonElement ? document.activeElement : null;
+              setActiveImage(0);
+            }}
+            className="absolute bottom-3 right-3 inline-flex min-h-10 items-center gap-2 rounded-sm border border-white/80 bg-white/95 px-3 text-xs font-semibold text-[#17242b] shadow-sm transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a]"
+          >
+            <Images className="h-4 w-4" />
+            View all {visibleImages.length} photos
+          </button>
+        )}
+      </section>
+
+      {activeImage !== null && visibleImages[activeImage] && (
+        <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${listing.name} photo gallery`}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4 sm:p-8"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) closeGallery();
+          }}
+          onTouchStart={(event) => {
+            touchStartX.current = event.changedTouches[0]?.clientX ?? null;
+          }}
+          onTouchEnd={(event) => {
+            const startX = touchStartX.current;
+            const endX = event.changedTouches[0]?.clientX;
+            touchStartX.current = null;
+            if (startX == null || endX == null || Math.abs(endX - startX) < 40) return;
+            setActiveImage((index) =>
+              index === null
+                ? null
+                : (index + (endX < startX ? 1 : -1) + visibleImages.length) % visibleImages.length,
+            );
+          }}
+        >
+          <button
+            type="button"
+            aria-label="Close photo gallery"
+            ref={closeButtonRef}
+            onClick={closeGallery}
+            className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            aria-label="Previous photo"
+            onClick={() =>
+              setActiveImage((index) =>
+                index === null ? null : (index - 1 + visibleImages.length) % visibleImages.length,
+              )
+            }
+            className="absolute left-3 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white sm:left-6"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <img
+            src={visibleImages[activeImage]}
+            alt={getAlt(visibleImages[activeImage], activeImage)}
+            onError={() => {
+              setFailedImages((current) =>
+                current.includes(visibleImages[activeImage])
+                  ? current
+                  : [...current, visibleImages[activeImage]],
+              );
+              closeGallery();
+            }}
+            className="max-h-[82vh] max-w-full rounded-sm object-contain"
+          />
+          <button
+            type="button"
+            aria-label="Next photo"
+            onClick={() =>
+              setActiveImage((index) =>
+                index === null ? null : (index + 1) % visibleImages.length,
+              )
+            }
+            className="absolute right-3 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-white sm:right-6"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+          <p className="absolute bottom-5 text-xs text-white/80" aria-live="polite">
+            {activeImage + 1} of {visibleImages.length}
+          </p>
+        </div>
+      )}
+    </>
   );
 }
 

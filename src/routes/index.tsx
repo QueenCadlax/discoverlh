@@ -171,7 +171,15 @@ const categorySearchTerms: Record<(typeof primaryDiscoveryCategorySlugs)[number]
   automotive: ["mechanic", "car", "tyres", "towing", "automotive", "auto electrical"],
   "personal-beauty": ["beauty", "salon", "barber", "spa", "massage", "fitness"],
   "travel-transport": ["airport transfer", "shuttle", "car hire", "tour operator", "travel"],
-  events: ["event", "festival", "entertainment", "venue", "concert", "market"],
+  "leisure-entertainment": [
+    "leisure",
+    "entertainment",
+    "casino",
+    "attraction",
+    "water park",
+    "things to do",
+    "activities",
+  ],
 };
 
 const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
@@ -191,7 +199,11 @@ const searchSuggestions = [
   { label: "Plumbers and property", category: "Home & Property", terms: ["plumber", "property"] },
   { label: "Mechanics and tyres", category: "Automotive", terms: ["mechanic", "tyres"] },
   { label: "Salons and beauty", category: "Personal & Beauty", terms: ["salon", "beauty"] },
-  { label: "Events and venues", category: "Events", terms: ["event", "venue"] },
+  {
+    label: "Leisure and entertainment",
+    category: "Leisure & Entertainment",
+    terms: ["casino", "water park", "attraction", "things to do"],
+  },
   { label: "Malls and markets", category: "Shop", terms: ["mall", "market"] },
   {
     label: "Shuttles and transfers",

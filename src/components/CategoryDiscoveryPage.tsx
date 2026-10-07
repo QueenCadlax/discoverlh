@@ -1923,19 +1923,22 @@ function PremiumListingCard({
     .join(" · ");
   const location =
     listing.location ?? (typeof listing.area === "string" ? listing.area : undefined);
+  const showListingImage = config.slug !== "automotive";
 
   return (
     <article className="group relative h-full min-w-0 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none">
       <a
         href={href}
-        className="block h-full min-w-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a]"
+        className={`block h-full min-w-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] ${showListingImage ? "" : "border border-[#e5ebeb] bg-white p-3 transition-colors hover:border-[#c7d4d1]"}`}
       >
-        <DiscoveryCardImage
-          image={listing.image}
-          alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
-          name={listing.name}
-        />
-        <div className="pt-3">
+        {showListingImage && (
+          <DiscoveryCardImage
+            image={listing.image}
+            alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
+            name={listing.name}
+          />
+        )}
+        <div className={showListingImage ? "pt-3" : ""}>
           <h3 className="line-clamp-1 text-[15px] font-semibold leading-5 text-[#172a31] transition-colors group-hover:text-[#28718a]">
             {listing.listingKind === "vehicle" && listing.listingType === "Vehicles for Sale"
               ? [listing.year, listing.make, listing.model].filter(hasValue).join(" ") ||

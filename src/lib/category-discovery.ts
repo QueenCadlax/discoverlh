@@ -8,7 +8,7 @@ export type CategorySlug =
   | "home-property"
   | "personal-beauty"
   | "travel-transport"
-  | "events"
+  | "leisure-entertainment"
   | "shop"
   | "travel"
   | "services"
@@ -20,7 +20,6 @@ export type CategorySlug =
   | "health-wellness"
   | "beauty"
   | "property"
-  | "events-entertainment"
   | "education-training";
 
 export const primaryDiscoveryCategorySlugs = [
@@ -33,7 +32,7 @@ export const primaryDiscoveryCategorySlugs = [
   "automotive",
   "personal-beauty",
   "travel-transport",
-  "events",
+  "leisure-entertainment",
 ] as const satisfies readonly CategorySlug[];
 
 export type PrimaryDiscoveryCategorySlug = (typeof primaryDiscoveryCategorySlugs)[number];
@@ -163,29 +162,21 @@ export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readon
     "Guided Tours",
     "Travel Services",
   ],
-  events: [
-    "Concerts",
-    "Festivals",
-    "Markets",
-    "Exhibitions",
-    "Sporting Events",
-    "Conferences",
-    "Shows",
-    "Community Events",
-    "Family Events",
-    "Cultural Events",
+  "leisure-entertainment": [
+    "Casino & Entertainment",
+    "Water Park & Recreation",
+    "Attractions",
+    "Family Entertainment",
+    "Adventure Activities",
+    "Outdoor Experiences",
+    "Cinema & Theatre",
+    "Gaming & Nightlife",
+    "Tourist Attractions",
+    "Amusement Parks",
+    "Activity Centres",
+    "Experiences",
   ],
 };
-
-const eventVenueTypes = [
-  "Wedding Venues",
-  "Conference Venues",
-  "Function Venues",
-  "Party Venues",
-  "Corporate/Event Spaces",
-  "Outdoor Venues",
-  "Entertainment Venues",
-] as const;
 
 export type FilterKind = "single" | "multi" | "tabs" | "range" | "number-range";
 
@@ -235,6 +226,7 @@ export type CategoryListing = {
   roomCount?: number;
   amenities?: string[];
   facilities?: string[];
+  visitorInformation?: string[];
   features?: string[];
   bookingUrl?: string;
   orderingUrl?: string;
@@ -278,6 +270,7 @@ export type CategoryListing = {
   logo?: string;
   images?: string[];
   imageAlts?: string[];
+  imageSourceUrls?: string[];
   services?: string[];
   products?: string[];
   menuUrl?: string;
@@ -508,7 +501,7 @@ export const categorySlugByLabel: Record<string, CategorySlug> = {
   Automotive: "automotive",
   "Personal & Beauty": "personal-beauty",
   "Travel & Transport": "travel-transport",
-  Events: "events",
+  "Leisure & Entertainment": "leisure-entertainment",
 };
 
 export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
@@ -872,70 +865,46 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       },
     ],
   }),
-  events: {
-    slug: "events",
-    label: "Events",
-    eyebrow: "Events",
-    headline: "Find what’s happening",
-    description: "Discover events, venues and local happenings across Mpumalanga.",
-    shortDescription: "Festivals, concerts, markets, venues and local events.",
-    searchPlaceholder: "Search events, venues or locations...",
+  "leisure-entertainment": {
+    slug: "leisure-entertainment",
+    label: "Leisure & Entertainment",
+    eyebrow: "Leisure & Entertainment",
+    headline: "Find something worth experiencing.",
+    description: "Discover places to relax, play, explore and enjoy across the Lowveld.",
+    shortDescription: "Attractions, recreation and experiences across Mpumalanga.",
+    seoTitle: "Leisure & Entertainment in Mpumalanga | Discover by Lowveld Hub",
+    seoDescription:
+      "Find things to do in Mpumalanga, from entertainment in Mbombela to water parks and attractions across the Lowveld.",
+    searchPlaceholder: "Search casinos, attractions or experiences...",
     searchFields: [
       "name",
       "type",
-      "eventStartDate",
-      "venue",
-      "venueType",
+      "subcategory",
       "location",
+      "address",
       "description",
+      "services",
+      "facilities",
     ],
-    heroImage: "/EVENTS.jpg",
-    icon: "events",
-    iconAlt: "Events category",
+    heroImage: "/leisure/mafunyane-pool-and-slide.jpg",
+    icon: "leisure-entertainment",
+    iconAlt: "Leisure and entertainment category",
     cardVariant: "venue",
     cardFields: [{ label: "Location", field: "location" }],
     filters: [
-      categoryTypeFilter("Event Type", discoverySubcategories.events),
-      {
-        id: "venue-type",
-        label: "Venue Type",
-        field: "venueType",
-        kind: "single",
-        options: [...eventVenueTypes],
-        optional: true,
-      },
+      categoryTypeFilter(
+        "Experience Type",
+        discoverySubcategories["leisure-entertainment"],
+        "multi",
+      ),
       discoveryLocationFilter,
-      {
-        id: "event-date",
-        label: "Date",
-        field: "eventStartDate",
-        kind: "single",
-        datePreset: true,
-        options: ["Today", "This Week", "This Weekend", "This Month", "Custom Date"],
-      },
-      {
-        id: "event-status",
-        label: "Event Status",
-        field: "eventStatus",
-        kind: "single",
-        options: ["Upcoming", "Happening Now", "Past"],
-        defaultValue: "Upcoming",
-      },
-      {
-        id: "event-admission",
-        label: "Admission",
-        field: "eventAdmission",
-        kind: "single",
-        optionsFromData: true,
-        optional: true,
-      },
     ],
     sortOptions: [nameSort],
-    resultNoun: "events",
+    resultNoun: "places",
     emptyTitle: "More to discover",
-    emptyDescription: "We're adding more events and local experiences across Mpumalanga.",
-    ownerHeading: "List an event.",
-    ownerDescription: "Help people find your event and plan their visit.",
+    emptyDescription: "We're adding more places and experiences across the Lowveld.",
+    ownerHeading: "List a leisure or entertainment business.",
+    ownerDescription: "Help people discover the places and experiences you offer.",
     ownerBenefits: businessOwnerBenefits,
   },
   shop: {
@@ -1803,133 +1772,6 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     ownerDescription: "Give people a clear way to discover your property and get in touch.",
     ownerBenefits: businessOwnerBenefits,
   },
-  "events-entertainment": {
-    slug: "events-entertainment",
-    label: "Events & Entertainment",
-    eyebrow: "Events & Entertainment",
-    headline: "Plan something worth remembering.",
-    description: "Discover wedding and event venues, planners and suppliers across Mpumalanga.",
-    searchPlaceholder: "Search venues, event services, entertainment...",
-    searchFields: ["name", "serviceType", "eventType", "location", "description"],
-    heroImage: "/WEDDING.jpg",
-    cardVariant: "venue",
-    cardFields: [
-      { label: "Venue type", field: "serviceType" },
-      { label: "Capacity", field: "guestCapacity", unit: "guests" },
-      { label: "Features", field: "features" },
-    ],
-    filters: [
-      {
-        id: "service-type",
-        label: "Service type",
-        field: "serviceType",
-        kind: "multi",
-        options: [
-          "Wedding Venue",
-          "Event Venue",
-          "Wedding Planner",
-          "Decor",
-          "Catering",
-          "Photography",
-          "Videography",
-          "Florist",
-          "DJ",
-          "Entertainment",
-          "Makeup",
-          "Wedding Dress",
-          "Suits",
-          "Cakes",
-          "Transport",
-          "Equipment Hire",
-          "Event Planners",
-          "Party Services",
-          "Event Equipment",
-          "Event Suppliers",
-        ],
-      },
-      {
-        id: "event-type",
-        label: "Event type",
-        field: "eventType",
-        kind: "multi",
-        options: [
-          "Wedding",
-          "Birthday",
-          "Corporate",
-          "Private Event",
-          "Conference",
-          "Celebration",
-          "Party",
-          "Entertainment",
-        ],
-      },
-      {
-        id: "capacity",
-        label: "Guest capacity",
-        field: "guestCapacity",
-        kind: "number-range",
-        optional: true,
-      },
-      {
-        id: "venue-type",
-        label: "Venue Type",
-        field: "venueType",
-        kind: "multi",
-        options: [
-          "Wedding Venue",
-          "Event Venue",
-          "Conference Venue",
-          "Banquet Hall",
-          "Outdoor Venue",
-        ],
-      },
-      {
-        id: "budget",
-        label: "Price / Budget",
-        field: "price",
-        kind: "range",
-        optional: true,
-        unit: "ZAR",
-      },
-      locationFilter,
-      {
-        id: "venue-features",
-        label: "Venue features",
-        field: "features",
-        kind: "multi",
-        options: [
-          "Indoor",
-          "Outdoor",
-          "Accommodation",
-          "Catering",
-          "Parking",
-          "Garden",
-          "Chapel",
-          "Conference Facilities",
-        ],
-        optional: true,
-      },
-    ],
-    sortOptions: [
-      nameSort,
-      relevanceSort,
-      newestSort,
-      {
-        id: "capacity",
-        label: "Capacity",
-        field: "guestCapacity",
-        direction: "desc",
-        requiresData: true,
-      },
-      lowPriceSort,
-    ],
-    resultNoun: "listings",
-    emptyTitle: "No events and entertainment listings yet.",
-    emptyDescription: "We're growing the events and entertainment network across Mpumalanga.",
-    ownerHeading: "List your event business.",
-    ownerDescription: "Help people discover your venue, services or event expertise.",
-    ownerBenefits: businessOwnerBenefits,
-  },
   "food-dining": {
     slug: "food-dining",
     label: "Restaurants",
@@ -2096,7 +1938,120 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
   },
 };
 
-export const eventListings: EventListing[] = [];
+const leisureEntertainmentListings: CategoryListing[] = [
+  {
+    id: "emnotweni-casino",
+    slug: "emnotweni-casino",
+    listingKind: "business",
+    type: "Casino & Entertainment",
+    subcategory: "Casino & Entertainment",
+    name: "Emnotweni Casino",
+    location: "Mbombela",
+    province: "Mpumalanga",
+    country: "South Africa",
+    description:
+      "Emnotweni Casino brings gaming, dining and entertainment together in Mbombela. Its official site lists slot machines, table games and dining; check there for current visitor information.",
+    image: "/leisure/emnotweni-casino-floor.jpg",
+    imageAlt: "Representative casino gaming floor; this is not a photograph of Emnotweni",
+    images: ["/leisure/emnotweni-bel-ombre-dining.jpg", "/leisure/emnotweni-deli.jpg"],
+    imageAlts: [
+      "Restaurant dining room image supplied for Emnotweni",
+      "Deli food image supplied for Emnotweni",
+    ],
+    imageSourceUrls: [
+      "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://zb2g8qspmxpc-u2909.pressidiumcdn.com/wp-content/uploads/elementor/thumbs/belombrehome-rlzvapgckbuwmsohk8xs1gldd9fftxjxzv564pufyi.jpg",
+      "https://zb2g8qspmxpc-u2909.pressidiumcdn.com/wp-content/uploads/elementor/thumbs/DELI-main-image-rlzwdwc3iniaphr3possi2k90m9drm51puczh1qiiy.jpg",
+    ],
+    website: "https://www.tsogosun.com/casino/emnotweni-home/",
+    directionsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Emnotweni+Casino+Mbombela+Mpumalanga",
+    services: ["Slot machines", "Table games", "Dining", "Entertainment"],
+    seoTitle: "Emnotweni Casino | Discover by Lowveld Hub",
+    seoDescription:
+      "Discover Emnotweni Casino in Mbombela, with gaming, dining and entertainment. Check the official site for current visitor information.",
+    source: "https://www.tsogosun.com/casino/emnotweni-home/",
+    sourceUrl: "https://www.tsogosun.com/casino/emnotweni-home/",
+    locationAccuracy: "approximate",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    status: "published",
+  },
+  {
+    id: "mafunyane-water-park",
+    slug: "mafunyane-water-park",
+    listingKind: "business",
+    type: "Water Park & Recreation",
+    subcategory: "Water Park & Recreation",
+    name: "Mafunyane Water Park",
+    location: "Mbombela",
+    province: "Mpumalanga",
+    country: "South Africa",
+    description:
+      "A seasonal water park in Mbombela with water rides, a recreational pool and an adventure river with tubes. The park also lists shaded seating, braai facilities and a tuck shop. Hours and ride availability depend on the season and weather, so check the official site before visiting.",
+    image: "/leisure/mafunyane-pool-and-slide.jpg",
+    imageAlt: "Pool and water slides at Mafunyane Water Park",
+    images: [
+      "/leisure/mafunyane-aerial-pools.jpg",
+      "/leisure/mafunyane-recreational-pool.jpg",
+      "/leisure/mafunyane-water-slide.jpg",
+      "/leisure/mafunyane-entrance.jpg",
+    ],
+    imageAlts: [
+      "Aerial view of pools and slides at Mafunyane Water Park",
+      "Visitors in the recreational pool at Mafunyane Water Park",
+      "Water slide at Mafunyane Water Park",
+      "Mafunyane Water Park entrance",
+    ],
+    imageSourceUrls: [
+      "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlkxY92bd9mIKy1M-CSenSKkO6HibdTb1XWBxCTQVeQeWNJMfCQo-hMw8ke5QDwhGDqq5c9eWCcSyPnuEVxiHg17CpKEbfxv1OhfBb9RKbJaos7jjOqK0SbjEkkaVgH_keLzRAH=s680-w680-h510-rw",
+      "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlJWQV22oRMWf8O0cG1QwDtyjO8V1HbZAWrEWi51tRbJc_13d40gpaTemjeHCCXdoh_daSCl9ZWryo7G0wgSvDMOhjb3pnNTNch7FzOTty435_tQ7gJFWE7-q_pdzeYEgoFs2VMZQ=s680-w680-h510-rw",
+      "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlUvqp2xNhLHCYG4kmC4UjYJLpbhYIJqQVTw18iYRJDpAYOX2N40uWw5ADqt1rMMsNZeDu4QZ6QdzjZ-dL9ruI0MbdDg3O1xZsOfOXKnx5CT5GHRZqs_X455tBFQVkTdJkcVP6t=s680-w680-h510-rw",
+      "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWnbQNk-EdbwJAGm3Pz_XSd65NW3Mau8xKcUYkTSK_Ep-CVYAsrf5qMWnaw0S9EK1kpk1_2K_w7Av-kGTDTDumtNfwW_Wa5s4fODuGJJqzU0m3HJcSy0BIo8SxvzpB-QoUO_PB3y=s680-w680-h510-rw",
+      "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlz6_ZBEH3VrLabr8c2twzxlDxL6HYHQ5UivWs2sUPq-y--kxh3wPzT4l2KmRcIZV8-kCJgECVfkjv1EL1ZnG1LDErMG3oqMQkrPJDriD_E3CS3E2gHzECV5Co8s10_9Rtl-iBwFMTOEE3S=s680-w680-h510-rw",
+    ],
+    website: "https://www.mafunyane.co.za/",
+    directionsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Mafunyane+Riverside+Water+Park+Mbombela+Mpumalanga",
+    socialLinks: [{ label: "Facebook", href: "https://www.facebook.com/mafunyanewaterpark/" }],
+    services: ["11 water rides", "Recreational pool", "Adventure river with tubes"],
+    facilities: [
+      "Wheelchair access",
+      "Shaded seating",
+      "Braai facilities",
+      "Tuck shop and takeaways",
+      "Parking",
+    ],
+    visitorInformation: [
+      "Children under 12 must be accompanied by a parent or guardian.",
+      "Proper swimwear is required; glass items are not allowed.",
+      "Weather and safety conditions can affect ride and pool availability.",
+    ],
+    openingHours: {
+      Monday: "Closed",
+      Tuesday: "Closed",
+      Wednesday: "14:00–17:00",
+      Thursday: "14:00–17:00",
+      Friday: "14:00–17:00",
+      Saturday: "09:30–17:00",
+      Sunday: "09:30–17:00",
+      "Public and school holidays": "09:30–17:00",
+    },
+    seoTitle: "Mafunyane Water Park | Discover by Lowveld Hub",
+    seoDescription:
+      "Plan a day at Mafunyane Water Park in Mbombela, with water rides, a recreational pool and an adventure river. Check seasonal hours before visiting.",
+    source: "https://www.mafunyane.co.za/",
+    sourceUrl: "https://www.mafunyane.co.za/",
+    locationAccuracy: "approximate",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    status: "published",
+  },
+];
 
 export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   stay: [],
@@ -2161,12 +2116,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Kiaat Private Hospital is a private medical facility in Mbombela serving the local community with hospital-level care and specialist treatment.",
       image:
         "https://z-p3-scontent.fjnb12-1.fna.fbcdn.net/v/t39.30808-1/558046305_1253818243428267_2769257100528381657_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s720x720&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=3ab345&_nc_ohc=8Lf40eJ8sJUQ7kNvwHaqW-H&_nc_oc=AdpjOV9h0NreF9WMSjyhVTauoyKmm0y_rmMeiwglYvV_bhBY6h3whgmCupl0pzyMuOg&_nc_zt=24&_nc_ht=z-p3-scontent.fjnb12-1.fna&_nc_gid=-eFzjrI8yrHq0-Fl3-Ac2A&_nc_ss=7f100&oh=00_AQOB9OJWYe2V-ZzGXyeqjWVjGECGmDT06s84CXr8CvuPGw&oe=6ACBA080",
-      services: [
-        "Hospital care",
-        "Specialist services",
-        "Medical treatment",
-        "Patient support",
-      ],
+      services: ["Hospital care", "Specialist services", "Medical treatment", "Patient support"],
       locationAccuracy: "approximate",
       seeded: true,
       sourceType: "seeded_public_data",
@@ -2355,7 +2305,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   "home-property": [],
   "personal-beauty": [],
   "travel-transport": [],
-  events: eventListings,
+  "leisure-entertainment": leisureEntertainmentListings,
   shop: [
     {
       id: "riverside-mall",
@@ -2716,20 +2666,13 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Wheelchair accessible rooms on request",
         "Smoking rooms on request",
       ],
-      facilities: [
-        "Jasmine Restaurant",
-        "Poolside terrace",
-        "Swimming pool",
-        "Gardens",
-        "Gym",
-      ],
+      facilities: ["Jasmine Restaurant", "Poolside terrace", "Swimming pool", "Gardens", "Gym"],
       phone: "+27137573000",
       email: "mbombela.reservations@southernsun.com",
       website: "https://www.southernsun.com/southern-sun-mbombela",
       bookingUrl:
         "https://hotelreservations.southernsun.com/?locale=en-GB&currency=ZAR&themecode=ssmba&configcode=sshi&hotel=5336",
-      directionsUrl:
-        "https://www.google.com/maps/dir/?api=1&destination=-25.440685%2C30.967202",
+      directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=-25.440685%2C30.967202",
       socialLinks: [
         { label: "Facebook", href: "https://www.facebook.com/SouthernSunHotels/" },
         { label: "Twitter", href: "https://twitter.com/SouthernSunGrp" },
@@ -2769,238 +2712,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   ],
   "professional-services": [],
   "home-construction": [],
-  automotive: [
-    {
-      id: "ford-mbombela",
-      slug: "ford-mbombela",
-      listingKind: "business",
-      type: "Dealership",
-      name: "Ford Mbombela",
-      location: "Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Ford Mbombela serves the Lowveld with vehicle sales, servicing and parts support for Ford drivers in Mbombela and surrounding areas.",
-      website: "https://www.ford.co.za/",
-      services: ["New vehicle sales", "Used vehicle sales", "Servicing", "Parts"],
-      source: "https://www.ford.co.za/",
-      sourceUrl: "https://www.ford.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "toyota-nelspruit",
-      slug: "toyota-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "Toyota Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Toyota Nelspruit supports local drivers with Toyota vehicle sales, service support and after-sales care in the Mbombela area.",
-      website: "https://www.toyota.co.za/",
-      services: ["New vehicle sales", "Used vehicles", "Servicing", "Parts"],
-      source: "https://www.toyota.co.za/",
-      sourceUrl: "https://www.toyota.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "renault-nelspruit",
-      slug: "renault-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "Renault Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Renault Nelspruit is an automotive dealership serving road users in Mbombela with new and used vehicle sales, servicing and vehicle support.",
-      website: "https://www.renault.co.za/",
-      services: ["New vehicle sales", "Used vehicles", "Servicing", "Parts"],
-      source: "https://www.renault.co.za/",
-      sourceUrl: "https://www.renault.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "cmh-nelspruit",
-      slug: "cmh-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "CMH Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "CMH Nelspruit brings automotive sales and after-sales support to the Mbombela market through a multi-brand dealership model.",
-      website: "https://www.cmh.co.za/",
-      services: ["Vehicle sales", "Vehicle finance", "Servicing", "Parts"],
-      source: "https://www.cmh.co.za/",
-      sourceUrl: "https://www.cmh.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "mccarthy-nelspruit",
-      slug: "mccarthy-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "McCarthy Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "McCarthy Nelspruit provides automotive sales, finance and service support for vehicle buyers and owners in Mbombela and the wider Lowveld.",
-      website: "https://www.mccarthy.co.za/",
-      services: ["New vehicle sales", "Used vehicles", "Finance", "Servicing"],
-      source: "https://www.mccarthy.co.za/",
-      sourceUrl: "https://www.mccarthy.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "kia-nelspruit",
-      slug: "kia-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "Kia Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Kia Nelspruit serves Mbombela motorists with new and used vehicle sales, service support and ownership care in the Lowveld.",
-      website: "https://www.kia.co.za/",
-      services: ["New vehicle sales", "Used vehicles", "Servicing", "Parts"],
-      source: "https://www.kia.co.za/",
-      sourceUrl: "https://www.kia.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "mahindra-nelspruit",
-      slug: "mahindra-nelspruit",
-      listingKind: "business",
-      type: "Dealership",
-      name: "Mahindra Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Mahindra Nelspruit is a vehicle dealership providing local motorists with model information, sales support and vehicle service assistance.",
-      website: "https://www.mahindra.co.za/",
-      services: ["Vehicle sales", "Service support", "Parts", "Vehicle enquiries"],
-      source: "https://www.mahindra.co.za/",
-      sourceUrl: "https://www.mahindra.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "supa-quick-nelspruit",
-      slug: "supa-quick-nelspruit",
-      listingKind: "business",
-      type: "Tyre Centre",
-      name: "Supa Quick Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Supa Quick Nelspruit offers tyre, wheel and routine vehicle care services for drivers seeking quick tyre, fitment and maintenance support in Mbombela.",
-      website: "https://www.supaquick.co.za/",
-      services: ["Tyres", "Wheel balancing", "Wheel alignment", "Puncture repair", "Brake services"],
-      source: "https://www.supaquick.co.za/",
-      sourceUrl: "https://www.supaquick.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "tiger-wheel-tyre-nelspruit",
-      slug: "tiger-wheel-tyre-nelspruit",
-      listingKind: "business",
-      type: "Tyre Centre",
-      name: "Tiger Wheel & Tyre Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Tiger Wheel & Tyre Nelspruit delivers tyre, wheel and fitment services for passenger and commercial vehicles in the Lowveld region.",
-      website: "https://www.tigerwheelandtyre.co.za/",
-      services: ["Tyres", "Wheel alignment", "Wheel balancing", "Puncture repair", "Suspension"],
-      source: "https://www.tigerwheelandtyre.co.za/",
-      sourceUrl: "https://www.tigerwheelandtyre.co.za/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-    {
-      id: "bosch-car-service-nelspruit",
-      slug: "bosch-car-service-nelspruit",
-      listingKind: "business",
-      type: "Workshop",
-      name: "Bosch Car Service Nelspruit",
-      location: "Nelspruit / Mbombela",
-      province: "Mpumalanga",
-      country: "South Africa",
-      description:
-        "Bosch Car Service Nelspruit offers workshop diagnostics, maintenance and vehicle repair support for drivers seeking reliable automotive service in Mbombela.",
-      website: "https://www.boschcarservice.com/",
-      services: ["Vehicle servicing", "Diagnostics", "Mechanical repairs", "Brake services"],
-      source: "https://www.boschcarservice.com/",
-      sourceUrl: "https://www.boschcarservice.com/",
-      locationAccuracy: "approximate",
-      seeded: true,
-      sourceType: "seeded_public_data",
-      claimed: true,
-      verified: false,
-      featured: true,
-      status: "published",
-    },
-  ],
+  automotive: [],
   "food-dining": [
     {
       id: "the-orange-restaurant",
@@ -3035,7 +2747,8 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       website: "https://www.eatatorange.co.za/",
       bookingUrl: "https://eatatorange.co.za/booking/",
-      menuUrl: "https://www.eatatorange.co.za/wp-content/uploads/2025/10/ORANGE-RESTAURANT-MENU-2025.pdf",
+      menuUrl:
+        "https://www.eatatorange.co.za/wp-content/uploads/2025/10/ORANGE-RESTAURANT-MENU-2025.pdf",
       directionsUrl:
         "https://www.google.com/maps/search/?api=1&query=The+Orange+Restaurant+Mbombela+Mpumalanga",
       services: ["Dine in", "Lunch", "Dinner", "Cocktails", "Bar", "Private events"],
@@ -3136,8 +2849,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       country: "South Africa",
       description:
         "Salsa Mexican Grill brings vibrant Mexican dining to Mbombela with tacos, burritos, quesadillas, cocktails and a lively celebration atmosphere. The official site highlights festive dining, family-friendly gatherings and a warm fiesta spirit at Ilanga Mall.",
-      image:
-        "https://salsamexicangrill.co.za/wp-content/uploads/2020/11/Salsa-Web-1.png",
+      image: "https://salsamexicangrill.co.za/wp-content/uploads/2020/11/Salsa-Web-1.png",
       imageAlt: "Salsa Mexican Grill restaurant at Ilanga Mall",
       images: [
         "https://salsamexicangrill.co.za/wp-content/uploads/2020/11/Salsa-Web-1.png",
@@ -3233,8 +2945,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       diningStyles: ["Coffee", "Breakfast & Brunch", "Lunch"],
       location: "Mbombela / Nelspruit",
       town: "Mbombela",
-      address:
-        "Shop 31 & 32, The Crossing Shopping Centre, Madiba Drive, West Acres",
+      address: "Shop 31 & 32, The Crossing Shopping Centre, Madiba Drive, West Acres",
       province: "Mpumalanga",
       postalCode: "1211",
       country: "South Africa",
@@ -3247,10 +2958,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "https://d1fbczgvp9hkii.cloudfront.net/assets/images/img-pages/blog/2026/lunch/may/M%26B_Lunch_Banner.webp",
         "https://d1fbczgvp9hkii.cloudfront.net/assets/images/img-pages/blog/2026/lunch/july/lunch-sit-down-burger-salad-bowl.webp",
       ],
-      imageAlts: [
-        "Mugg & Bean lunch campaign",
-        "A burger with fries served alongside lunch bowls",
-      ],
+      imageAlts: ["Mugg & Bean lunch campaign", "A burger with fries served alongside lunch bowls"],
       phone: "+27137522250",
       email: "info@muggandbean.co.za",
       website: "https://www.muggandbean.co.za/",
@@ -3406,7 +3114,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   "health-wellness": [],
   beauty: [],
   property: [],
-  "events-entertainment": [],
   "education-training": [],
 };
 
@@ -3475,8 +3182,7 @@ function getMuggAndBeanOpenStatus(openingHours?: Record<string, string>, now = n
   const toMinutes = (hourValue: string, minuteValue: string, meridiem: string) => {
     const normalizedHour = Number(hourValue) % 12;
     return (
-      (normalizedHour + (meridiem.toLocaleUpperCase() === "PM" ? 12 : 0)) * 60 +
-      Number(minuteValue)
+      (normalizedHour + (meridiem.toLocaleUpperCase() === "PM" ? 12 : 0)) * 60 + Number(minuteValue)
     );
   };
   const opensAt = toMinutes(match[1], match[2], match[3]);
@@ -3497,6 +3203,20 @@ export function getListingConfirmationLabel(listing: CategoryListing) {
 
 export function isPublishedListing(listing: CategoryListing) {
   return listing.status === "published";
+}
+
+export function isEventListing(listing: CategoryListing): listing is EventListing {
+  return (
+    listing.listingKind === "event" &&
+    typeof listing.eventStartDate === "string" &&
+    typeof listing.venue === "string"
+  );
+}
+
+export function getPublishedEventListings() {
+  return getCategoryListings("leisure-entertainment")
+    .filter(isEventListing)
+    .filter(isPublishedListing);
 }
 
 export function getPublishedCategoryListings() {
@@ -3535,9 +3255,7 @@ export function getBusinessSlug(listing: CategoryListing): string {
 
 export function findBusinessBySlug(slug: string) {
   return getPublishedCategoryListings().find(
-    ({ category, listing }) =>
-      !(category === "events" && listing.listingKind === "event") &&
-      getBusinessSlug(listing) === slug,
+    ({ listing }) => listing.listingKind !== "event" && getBusinessSlug(listing) === slug,
   );
 }
 

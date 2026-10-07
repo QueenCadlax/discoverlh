@@ -63,14 +63,15 @@ function validateFoodFilters(value: unknown, allowed: Set<string>) {
 export const Route = createFileRoute("/categories/$category")({
   beforeLoad: ({ params }) => {
     const redirects: Record<string, string> = {
-      "weddings-events": "events",
+      events: "leisure-entertainment",
+      "weddings-events": "leisure-entertainment",
       education: "education-training",
       travel: "travel-transport",
       "professional-services": "professional",
       "home-construction": "home-property",
       "health-wellness": "health",
       beauty: "personal-beauty",
-      "events-entertainment": "events",
+      "events-entertainment": "leisure-entertainment",
     };
     const category = redirects[params.category];
     if (category) {
@@ -143,9 +144,11 @@ export const Route = createFileRoute("/categories/$category")({
         ? `/categories/${config.slug}?mode=businesses`
         : `/categories/${config.slug}`,
     );
-    const socialImage = config.heroImage.startsWith("http")
-      ? config.heroImage
-      : getPublicUrl(config.heroImage);
+    const socialImage = config.heroImage
+      ? config.heroImage.startsWith("http")
+        ? config.heroImage
+        : getPublicUrl(config.heroImage)
+      : undefined;
     const isEmpty = isProperty
       ? propertyMode === "listings"
         ? propertyListings.filter(isPublishedListing).length === 0
@@ -154,8 +157,6 @@ export const Route = createFileRoute("/categories/$category")({
     const hasSearch = Boolean(
       match.search.q?.trim() ||
       match.search.location ||
-      match.search.date ||
-      match.search.status ||
       (isProperty && propertyMode === "businesses" && match.search.mode !== "businesses") ||
       (isFoodDining &&
         (match.search.cuisine?.length ||
@@ -221,18 +222,6 @@ export const Route = createFileRoute("/categories/$category")({
     cuisine: validateFoodFilters(search.cuisine, foodCuisines),
     style: validateFoodFilters(search.style, foodDiningStyles),
     meal: validateFoodFilters(search.meal, foodMealTypes),
-    date:
-      typeof search.date === "string" &&
-      (["Today", "This Week", "This Weekend", "This Month"].includes(search.date) ||
-        (/^\d{4}-\d{2}-\d{2}$/.test(search.date) &&
-          !Number.isNaN(Date.parse(`${search.date}T00:00:00`))))
-        ? search.date
-        : undefined,
-    status:
-      typeof search.status === "string" &&
-      ["Upcoming", "Happening Now", "Past"].includes(search.status)
-        ? search.status
-        : undefined,
   }),
   component: CategoryBySlug,
 });
@@ -240,8 +229,7 @@ export const Route = createFileRoute("/categories/$category")({
 function CategoryBySlug() {
   const navigate = Route.useNavigate();
   const { category } = Route.useParams();
-  const { q, location, mode, type, amenities, cuisine, style, meal, date, status } =
-    Route.useSearch();
+  const { q, location, mode, type, amenities, cuisine, style, meal } = Route.useSearch();
   const config = (categoryConfigs as Record<string, CategoryConfig | undefined>)[category];
 
   if (!config) {
@@ -260,7 +248,7 @@ function CategoryBySlug() {
 
   return (
     <CategoryDiscoveryPage
-      key={`${config.slug}-${q ?? ""}-${location ?? ""}-${mode ?? ""}-${type ?? ""}-${date ?? ""}-${status ?? ""}`}
+      key={`${config.slug}-${q ?? ""}-${location ?? ""}-${mode ?? ""}-${type ?? ""}`}
       config={config}
       initialQuery={q ?? ""}
       initialLocation={location}
@@ -272,8 +260,6 @@ function CategoryBySlug() {
       }
       initialDiscoveryFilters={{
         ...(type && config.slug === "automotive" ? { "service-type": type } : {}),
-        ...(date ? { "event-date": date } : {}),
-        ...(status ? { "event-status": status } : {}),
       }}
       initialAccommodationAmenities={amenities?.split(",").filter(Boolean) ?? []}
       initialFoodCuisines={cuisine ?? []}
@@ -322,8 +308,6 @@ function CategoryBySlug() {
             q: state.query || undefined,
             location: state.location,
             type: state.type,
-            date: state.date,
-            status: state.status,
           }),
         });
       }}

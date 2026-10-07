@@ -1,13 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteFooter } from "@/components/SiteFooter";
-import { eventListings, getBusinessSlug, isPublishedListing } from "@/lib/category-discovery";
+import { getBusinessSlug, getPublishedEventListings } from "@/lib/category-discovery";
 import { getPublicUrl } from "@/lib/site-url";
 
 function findEvent(slug: string) {
-  return eventListings.find(
-    (event) => getBusinessSlug(event) === slug && isPublishedListing(event),
-  );
+  return getPublishedEventListings().find((event) => getBusinessSlug(event) === slug);
 }
 
 export const Route = createFileRoute("/events/$slug")({
@@ -44,10 +42,10 @@ function EventBySlug() {
           This event may have ended or is not currently listed.
         </p>
         <a
-          href="/categories/events"
+          href="/categories/leisure-entertainment"
           className="mt-5 inline-flex min-h-11 items-center rounded-sm bg-[#17242b] px-4 text-sm font-semibold text-white"
         >
-          Browse events
+          Browse Leisure & Entertainment
         </a>
       </main>
     );
@@ -72,8 +70,11 @@ function EventBySlug() {
               </span>
             </span>
           </a>
-          <a href="/categories/events" className="text-sm font-medium text-[#536267]">
-            Browse Events
+          <a
+            href="/categories/leisure-entertainment"
+            className="text-sm font-medium text-[#536267]"
+          >
+            Browse Leisure & Entertainment
           </a>
         </div>
       </header>
@@ -84,8 +85,8 @@ function EventBySlug() {
             Home
           </a>
           <span aria-hidden="true">/</span>
-          <a href="/categories/events" className="hover:text-[#172a31]">
-            Events
+          <a href="/categories/leisure-entertainment" className="hover:text-[#172a31]">
+            Leisure & Entertainment
           </a>
           <span aria-hidden="true">/</span>
           <span aria-current="page" className="text-[#34474d]">
