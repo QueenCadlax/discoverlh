@@ -79,7 +79,7 @@ export function CategoryCard({
     <a
       href={href}
       aria-label={`Browse ${label}`}
-      className="group flex h-full min-h-[108px] w-full min-w-0 items-center gap-2 rounded-md border border-[#e3e8e7] bg-white p-2 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[116px] sm:gap-3 sm:p-3"
+      className="group flex h-full min-h-[92px] w-full min-w-0 items-center gap-2 rounded-md border border-[#e3e8e7] bg-white p-2 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[100px] sm:gap-2 sm:p-2"
     >
       <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#142b4a] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] sm:h-10 sm:w-10">
         <CategoryIcon

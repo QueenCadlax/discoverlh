@@ -870,16 +870,16 @@ function WeatherWidget() {
 function CategoryShortcuts() {
   return (
     <section id="categories" className="category-rail-surface relative z-10">
-      <div className="container-x py-8 md:py-10">
-        <ScrollReveal className="mb-5">
+      <div className="container-x py-6 md:py-7">
+        <ScrollReveal className="mb-3">
           <h2 className="font-display text-2xl font-medium text-[#17242b] md:text-3xl">
             Explore by category
           </h2>
-          <p className="mt-2 text-sm text-[#687378]">
+          <p className="mt-1 text-sm text-[#687378]">
             Find the right business, service or place for what you need.
           </p>
         </ScrollReveal>
-        <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
+        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-3">
           {shortcuts.map((shortcut, index) => {
             const category = categoryConfigs[shortcut.slug];
             return (
