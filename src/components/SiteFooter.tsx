@@ -1,6 +1,8 @@
 const links = [
   ["Home", "/#top"],
   ["Categories", "/#categories"],
+  ["Property", "/property"],
+  ["Auto", "/categories/automotive?mode=vehicles"],
   ["Business Network", "/business-network"],
   ["List Your Business", "/list-your-business"],
 ];
@@ -10,19 +12,23 @@ export function SiteFooter() {
     <footer className="border-t border-[#2d4148] bg-[#17242b] text-white">
       <div className="container-x flex flex-col gap-5 py-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <a
-            href="/"
-            className="inline-flex items-center gap-2.5"
-            aria-label="Discover by Lowveld Hub home"
-          >
+          <div className="inline-flex items-center gap-2.5">
             <img src="/logo%202.jpg" alt="" className="h-8 w-8 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
-              <span className="text-sm font-semibold">Discover</span>
-              <span className="mt-0.5 text-[8px] font-normal uppercase tracking-[0.16em] text-[#b7c0c2]">
-                by Lowveld Hub
+              <a href="/" className="text-sm font-semibold" aria-label="Discover home">
+                Discover
+              </a>
+              <span className="mt-0.5 flex items-center gap-1 text-[8px] font-normal uppercase tracking-[0.16em] text-[#b7c0c2]">
+                by{" "}
+                <a
+                  href="https://lowveldhub.co.za/"
+                  className="underline underline-offset-2 hover:text-white"
+                >
+                  Lowveld Hub
+                </a>
               </span>
             </span>
-          </a>
+          </div>
           <p className="mt-2 max-w-sm text-xs leading-relaxed text-[#c1c9ca]">
             Discover businesses, places, services and experiences across Mpumalanga.
           </p>

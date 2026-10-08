@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { CategoryListingCard } from "@/components/CategoryDiscoveryPage";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -54,6 +54,16 @@ export const Route = createFileRoute("/locations/$location")({
         ? getCanonicalCategorySlug(search.category as CategorySlug)
         : undefined,
   }),
+  beforeLoad: ({ params, search }) => {
+    if (search.category === "property") {
+      const location = findDiscoveryLocation(params.location);
+      throw redirect({
+        to: "/property",
+        search: { location: location?.name },
+        replace: true,
+      });
+    }
+  },
   head: ({ params, match }) => {
     const location = findDiscoveryLocation(params.location);
     if (!location) {

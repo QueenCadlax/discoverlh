@@ -51,25 +51,28 @@ import {
   type WeatherSnapshot,
 } from "@/lib/weather";
 
-const homepageTitle = "Discover Mpumalanga | Discover by Lowveld Hub";
+const homepageTitle = "Discover by Lowveld Hub | Mpumalanga Directory";
 const homepageDescription =
-  "Find places, businesses, services and experiences worth discovering across Mpumalanga.";
+  "Discover by Lowveld Hub is a local directory for finding businesses, services and places across Mpumalanga, published by Lowveld Hub.";
 const homepageUrl = getPublicUrl("/");
+const lowveldHubOrganizationId = "https://lowveldhub.co.za/#organization";
 const homepageStructuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
+      "@id": lowveldHubOrganizationId,
       name: "Lowveld Hub",
-      url: homepageUrl,
-      logo: getPublicUrl("/logo%202.jpg"),
+      url: "https://lowveldhub.co.za/",
+      logo: getPublicUrl("/lowveldhublogo.png"),
     },
     {
       "@type": "WebSite",
+      "@id": `${homepageUrl}#website`,
       name: "Discover by Lowveld Hub",
       url: homepageUrl,
       description: homepageDescription,
-      publisher: { "@type": "Organization", name: "Lowveld Hub" },
+      publisher: { "@id": lowveldHubOrganizationId },
     },
   ],
 };
@@ -130,6 +133,7 @@ export const Route = createFileRoute("/")({
         { title: homepageTitle },
         { name: "description", content: homepageDescription },
         { name: "robots", content: "index,follow" },
+        { property: "og:site_name", content: "Discover by Lowveld Hub" },
         { property: "og:title", content: homepageTitle },
         { property: "og:description", content: homepageDescription },
         { property: "og:type", content: "website" },
@@ -146,13 +150,16 @@ export const Route = createFileRoute("/")({
 });
 
 type Shortcut = {
-  slug: (typeof primaryDiscoveryCategorySlugs)[number];
+  slug: CategorySlug;
   terms: string[];
 };
 
 const listingContactHref = "/list-your-business";
 
-const categorySearchTerms: Record<(typeof primaryDiscoveryCategorySlugs)[number], string[]> = {
+const categorySearchTerms: Record<
+  (typeof primaryDiscoveryCategorySlugs)[number] | "property",
+  string[]
+> = {
   stay: ["hotel", "lodge", "guesthouse", "guest house", "resort", "b&b", "camp", "accommodation"],
   eat: ["restaurant", "cafe", "café", "food", "dining", "takeaway", "brewery"],
   shop: ["mall", "market", "boutique", "store", "shopping"],
@@ -162,12 +169,16 @@ const categorySearchTerms: Record<(typeof primaryDiscoveryCategorySlugs)[number]
     "plumber",
     "electrician",
     "builder",
-    "property",
-    "estate agent",
     "cleaning",
     "landscaping",
+    "roofing",
+    "painting",
+    "air conditioning",
+    "maintenance",
+    "security",
     "home service",
   ],
+  property: ["property", "real estate", "estate agent", "house for sale", "home for sale"],
   automotive: ["mechanic", "car", "tyres", "towing", "automotive", "auto electrical"],
   "personal-beauty": ["beauty", "salon", "barber", "spa", "massage", "fitness"],
   "travel-transport": ["airport transfer", "shuttle", "car hire", "tour operator", "travel"],
@@ -186,6 +197,7 @@ const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
   slug,
   terms: categorySearchTerms[slug],
 }));
+shortcuts.push({ slug: "property", terms: categorySearchTerms.property });
 
 const searchSuggestions = [
   {
@@ -196,7 +208,16 @@ const searchSuggestions = [
   { label: "Restaurants and cafés", category: "Restaurants", terms: ["restaurant", "cafe"] },
   { label: "Health and wellness", category: "Health", terms: ["doctor", "clinic"] },
   { label: "Lawyers and accountants", category: "Professional", terms: ["lawyer", "accountant"] },
-  { label: "Plumbers and property", category: "Home & Property", terms: ["plumber", "property"] },
+  {
+    label: "Plumbers and home services",
+    category: "Home Services",
+    terms: ["plumber", "electrician", "home service"],
+  },
+  {
+    label: "Property across Mpumalanga",
+    category: "Property",
+    terms: ["property", "house for sale", "home for sale", "property for rent"],
+  },
   { label: "Mechanics and tyres", category: "Automotive", terms: ["mechanic", "tyres"] },
   { label: "Salons and beauty", category: "Personal & Beauty", terms: ["salon", "beauty"] },
   {
@@ -302,28 +323,34 @@ function getIntent(value: string, selectedLocation: string) {
     .replace(/[\s,.:;-]+$/g, " ");
   query = normalizeQuery(query);
   const normalized = query.toLocaleLowerCase();
-  const category =
-    shortcuts.find(({ slug, terms }) => {
-      const label = categoryConfigs[slug].label;
-      return (
-        normalized.includes(label.toLocaleLowerCase()) ||
-        terms.some((term) => normalized.includes(term))
-      );
-    }) ??
-    shortcuts.find(({ slug }) => {
-      const label = categoryConfigs[slug].label;
-      const matchedSuggestion = allSearchSuggestions.find(
-        (suggestion) =>
-          suggestion.category !== "Location" &&
-          suggestion.label.length >= 3 &&
-          normalized.includes(suggestion.label.toLocaleLowerCase()),
-      );
-      return label === matchedSuggestion?.category;
-    });
+  const propertyIntent =
+    /\b(?:property|real estate|estate agent|house|home|apartment|townhouse|farm|land for sale|house for sale|home for sale|house to rent|home to rent|property for sale|property for rent)\b/i.test(
+      normalized,
+    );
+  const category = propertyIntent
+    ? undefined
+    : (shortcuts.find(({ slug, terms }) => {
+        const label = categoryConfigs[slug].label;
+        return (
+          normalized.includes(label.toLocaleLowerCase()) ||
+          terms.some((term) => normalized.includes(term))
+        );
+      }) ??
+      shortcuts.find(({ slug }) => {
+        const label = categoryConfigs[slug].label;
+        const matchedSuggestion = allSearchSuggestions.find(
+          (suggestion) =>
+            suggestion.category !== "Location" &&
+            suggestion.label.length >= 3 &&
+            normalized.includes(suggestion.label.toLocaleLowerCase()),
+        );
+        return label === matchedSuggestion?.category;
+      }));
 
   return {
     query,
     category,
+    propertyIntent,
     location: matchingLocation?.name ?? selectedLocation,
     automotiveMode:
       category?.slug === "automotive" &&
@@ -346,6 +373,16 @@ function Home() {
     const intent = getIntent(value, location);
     setQuery(value);
     setLocation(intent.location);
+    if (intent.propertyIntent) {
+      void navigate({
+        to: "/property",
+        search: {
+          q: intent.query || undefined,
+          location: intent.location === "Mpumalanga" ? undefined : intent.location,
+        },
+      });
+      return;
+    }
     if (intent.category?.slug) {
       void navigate({
         to: "/categories/$category",
@@ -456,6 +493,15 @@ function Nav() {
           <a href="#categories" className="site-nav-link hover:text-[#17242b]">
             Categories
           </a>
+          <a href="/property" className="site-nav-link hover:text-[#17242b]">
+            Property
+          </a>
+          <a
+            href="/categories/automotive?mode=vehicles"
+            className="site-nav-link hover:text-[#17242b]"
+          >
+            Auto
+          </a>
           <a href="/business-network" className="site-nav-link hover:text-[#17242b]">
             Business Network
           </a>
@@ -537,6 +583,16 @@ function Hero({
               style={{ animationDelay: "140ms" }}
             >
               Find places, businesses, services and experiences worth discovering.
+            </p>
+            <p className="mt-2 text-xs leading-5 text-white/75 md:text-[#687378]">
+              Discover is a local directory from{" "}
+              <a
+                href="https://lowveldhub.co.za/"
+                className="underline underline-offset-2 hover:text-white md:hover:text-[#17242b]"
+              >
+                Lowveld Hub
+              </a>
+              .
             </p>
           </div>
           <form
@@ -823,17 +879,17 @@ function CategoryShortcuts() {
             Find the right business, service or place for what you need.
           </p>
         </ScrollReveal>
-        <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
+        <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 lg:gap-4">
           {shortcuts.map((shortcut, index) => {
             const category = categoryConfigs[shortcut.slug];
             return (
               <ScrollReveal
                 key={shortcut.slug}
-                className="h-full min-w-0"
+                className="h-full min-w-0 w-full max-w-[270px]"
                 delay={Math.min(index * 40, 280)}
               >
                 <CategoryCard
-                  href={`/categories/${shortcut.slug}`}
+                  href={shortcut.slug === "property" ? "/property" : `/categories/${shortcut.slug}`}
                   label={category.label}
                   description={category.shortDescription ?? category.description}
                   icon={category.icon}

@@ -347,10 +347,12 @@ function getAutomotiveModeHref(automotiveMode: AutomotiveMode, query: string, lo
 }
 
 function getPropertyModeHref(propertyMode: PropertyMode, query: string, location?: string) {
-  const search = new URLSearchParams({ mode: propertyMode });
+  const search = new URLSearchParams();
   if (query.trim()) search.set("q", query.trim());
   if (location) search.set("location", location);
-  return `/categories/property?${search.toString()}`;
+  if (propertyMode === "businesses") search.set("view", "professionals");
+  const queryString = search.toString();
+  return `/property${queryString ? `?${queryString}` : ""}`;
 }
 
 export function CategoryDiscoveryPage({
@@ -2003,7 +2005,7 @@ function PremiumListingCard({
 function getListingCardHref(listing: CategoryListing): string {
   const slug = getBusinessSlug(listing);
   if (listing.listingKind === "event") return `/events/${slug}`;
-  if (listing.listingKind === "property") return `/properties/${slug}`;
+  if (listing.listingKind === "property") return `/property/${slug}`;
   if (listing.listingKind === "accommodation") return `/accommodation/${slug}`;
   return `/business/${slug}`;
 }
@@ -2130,7 +2132,7 @@ function PropertyListingCard({
     <PremiumListingCard
       listing={listing}
       config={config}
-      href={`/properties/${getBusinessSlug(listing)}`}
+      href={`/property/${getBusinessSlug(listing)}`}
     />
   );
 }

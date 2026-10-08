@@ -44,10 +44,10 @@ function ListingRequestPage() {
     Events: "Leisure & Entertainment",
     "Events & Entertainment": "Leisure & Entertainment",
     "Professional Services": "Professional",
-    "Home & Construction": "Home & Property",
+    "Home & Construction": "Home Services",
+    "Home & Property": "Home Services",
     Automotive: "Automotive",
     Beauty: "Personal & Beauty",
-    Property: "Home & Property",
     "Health & Wellness": "Health",
     "Education & Training": "Professional",
   };

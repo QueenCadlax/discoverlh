@@ -2,7 +2,6 @@ import {
   getCategoryListings,
   getCanonicalCategorySlug,
   getCategoryListingPath,
-  getBusinessSlug,
   getPublishedCategoryListings,
   getPublishedPropertyListings,
   getPublishedListingsInLocation,
@@ -10,6 +9,11 @@ import {
   type CategorySlug,
 } from "./category-discovery";
 import { locationDiscovery } from "./location-discovery";
+import {
+  getPropertyListingPath,
+  getPropertyProfessionalPath,
+  getPublishedPropertyProfessionals,
+} from "./property";
 import { getPublicUrl } from "./site-url";
 
 function escapeXml(value: string) {
@@ -26,6 +30,8 @@ export function generateSitemapXml() {
   const paths = new Set<string>();
   const homepage = getPublicUrl("/");
   if (homepage) paths.add(homepage);
+  const propertyLandingPage = getPublicUrl("/property");
+  if (propertyLandingPage) paths.add(propertyLandingPage);
 
   const sitemapCategories = new Set<CategorySlug>();
   entries.forEach(({ category }) => {
@@ -41,14 +47,6 @@ export function generateSitemapXml() {
     const url = getPublicUrl(path);
     if (url) paths.add(url);
   });
-
-  const hasPropertyBusinesses = getCategoryListings("property").some(
-    (listing) => listing.listingKind === "business" && isPublishedListing(listing),
-  );
-  if (hasPropertyBusinesses) {
-    const url = getPublicUrl("/categories/property?mode=businesses");
-    if (url) paths.add(url);
-  }
 
   locationDiscovery.forEach((location) => {
     const locationListings = getPublishedListingsInLocation(location.name);
@@ -71,7 +69,12 @@ export function generateSitemapXml() {
   });
 
   getPublishedPropertyListings().forEach((listing) => {
-    const url = getPublicUrl(`/properties/${getBusinessSlug(listing)}`);
+    const url = getPublicUrl(getPropertyListingPath(listing));
+    if (url) paths.add(url);
+  });
+
+  getPublishedPropertyProfessionals().forEach((professional) => {
+    const url = getPublicUrl(getPropertyProfessionalPath(professional));
     if (url) paths.add(url);
   });
 

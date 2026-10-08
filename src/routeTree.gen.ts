@@ -16,6 +16,7 @@ import { Route as BusinessListingTermsRouteImport } from './routes/business-list
 import { Route as BusinessNetworkRouteImport } from './routes/business-network'
 import { Route as ListYourBusinessRouteImport } from './routes/list-your-business'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as PropertyRouteImport } from './routes/property'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as TermsOfUseRouteImport } from './routes/terms-of-use'
 import { Route as AccommodationSlugRouteImport } from './routes/accommodation.$slug'
@@ -26,6 +27,8 @@ import { Route as EventsSlugRouteImport } from './routes/events.$slug'
 import { Route as FoodDiningPappasKitchenRouteImport } from './routes/food-dining.pappas-kitchen'
 import { Route as LocationsLocationRouteImport } from './routes/locations/$location'
 import { Route as PropertiesSlugRouteImport } from './routes/properties.$slug'
+import { Route as PropertySlugRouteImport } from './routes/property.$slug'
+import { Route as PropertyProfessionalsSlugRouteImport } from './routes/property.professionals.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -60,6 +63,11 @@ const ListYourBusinessRoute = ListYourBusinessRouteImport.update({
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PropertyRoute = PropertyRouteImport.update({
+  id: '/property',
+  path: '/property',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReserveRoute = ReserveRouteImport.update({
@@ -112,6 +120,17 @@ const PropertiesSlugRoute = PropertiesSlugRouteImport.update({
   path: '/properties/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PropertySlugRoute = PropertySlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PropertyRoute,
+} as any)
+const PropertyProfessionalsSlugRoute =
+  PropertyProfessionalsSlugRouteImport.update({
+    id: '/professionals/$slug',
+    path: '/professionals/$slug',
+    getParentRoute: () => PropertyRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -121,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/business-network': typeof BusinessNetworkRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/reserve': typeof ReserveRoute
   '/terms-of-use': typeof TermsOfUseRoute
   '/accommodation/$slug': typeof AccommodationSlugRoute
@@ -130,7 +150,9 @@ export interface FileRoutesByFullPath {
   '/food-dining/pappas-kitchen': typeof FoodDiningPappasKitchenRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/property/$slug': typeof PropertySlugRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/property/professionals/$slug': typeof PropertyProfessionalsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,6 +162,7 @@ export interface FileRoutesByTo {
   '/business-network': typeof BusinessNetworkRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/reserve': typeof ReserveRoute
   '/terms-of-use': typeof TermsOfUseRoute
   '/accommodation/$slug': typeof AccommodationSlugRoute
@@ -149,7 +172,9 @@ export interface FileRoutesByTo {
   '/food-dining/pappas-kitchen': typeof FoodDiningPappasKitchenRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/property/$slug': typeof PropertySlugRoute
   '/categories': typeof CategoriesIndexRoute
+  '/property/professionals/$slug': typeof PropertyProfessionalsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -160,6 +185,7 @@ export interface FileRoutesById {
   '/business-network': typeof BusinessNetworkRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/property': typeof PropertyRouteWithChildren
   '/reserve': typeof ReserveRoute
   '/terms-of-use': typeof TermsOfUseRoute
   '/accommodation/$slug': typeof AccommodationSlugRoute
@@ -169,7 +195,9 @@ export interface FileRoutesById {
   '/food-dining/pappas-kitchen': typeof FoodDiningPappasKitchenRoute
   '/locations/$location': typeof LocationsLocationRoute
   '/properties/$slug': typeof PropertiesSlugRoute
+  '/property/$slug': typeof PropertySlugRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/property/professionals/$slug': typeof PropertyProfessionalsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -181,6 +209,7 @@ export interface FileRouteTypes {
     | '/business-network'
     | '/list-your-business'
     | '/privacy-policy'
+    | '/property'
     | '/reserve'
     | '/terms-of-use'
     | '/accommodation/$slug'
@@ -190,7 +219,9 @@ export interface FileRouteTypes {
     | '/food-dining/pappas-kitchen'
     | '/locations/$location'
     | '/properties/$slug'
+    | '/property/$slug'
     | '/categories/'
+    | '/property/professionals/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -200,6 +231,7 @@ export interface FileRouteTypes {
     | '/business-network'
     | '/list-your-business'
     | '/privacy-policy'
+    | '/property'
     | '/reserve'
     | '/terms-of-use'
     | '/accommodation/$slug'
@@ -209,7 +241,9 @@ export interface FileRouteTypes {
     | '/food-dining/pappas-kitchen'
     | '/locations/$location'
     | '/properties/$slug'
+    | '/property/$slug'
     | '/categories'
+    | '/property/professionals/$slug'
   id:
     | '__root__'
     | '/'
@@ -219,6 +253,7 @@ export interface FileRouteTypes {
     | '/business-network'
     | '/list-your-business'
     | '/privacy-policy'
+    | '/property'
     | '/reserve'
     | '/terms-of-use'
     | '/accommodation/$slug'
@@ -228,7 +263,9 @@ export interface FileRouteTypes {
     | '/food-dining/pappas-kitchen'
     | '/locations/$location'
     | '/properties/$slug'
+    | '/property/$slug'
     | '/categories/'
+    | '/property/professionals/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -239,6 +276,7 @@ export interface RootRouteChildren {
   BusinessNetworkRoute: typeof BusinessNetworkRoute
   ListYourBusinessRoute: typeof ListYourBusinessRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  PropertyRoute: typeof PropertyRouteWithChildren
   ReserveRoute: typeof ReserveRoute
   TermsOfUseRoute: typeof TermsOfUseRoute
   AccommodationSlugRoute: typeof AccommodationSlugRoute
@@ -300,6 +338,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy-policy'
       fullPath: '/privacy-policy'
       preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/property': {
+      id: '/property'
+      path: '/property'
+      fullPath: '/property'
+      preLoaderRoute: typeof PropertyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reserve': {
@@ -372,8 +417,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PropertiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/property/$slug': {
+      id: '/property/$slug'
+      path: '/$slug'
+      fullPath: '/property/$slug'
+      preLoaderRoute: typeof PropertySlugRouteImport
+      parentRoute: typeof PropertyRoute
+    }
+    '/property/professionals/$slug': {
+      id: '/property/professionals/$slug'
+      path: '/professionals/$slug'
+      fullPath: '/property/professionals/$slug'
+      preLoaderRoute: typeof PropertyProfessionalsSlugRouteImport
+      parentRoute: typeof PropertyRoute
+    }
   }
 }
+
+interface PropertyRouteChildren {
+  PropertySlugRoute: typeof PropertySlugRoute
+  PropertyProfessionalsSlugRoute: typeof PropertyProfessionalsSlugRoute
+}
+
+const PropertyRouteChildren: PropertyRouteChildren = {
+  PropertySlugRoute: PropertySlugRoute,
+  PropertyProfessionalsSlugRoute: PropertyProfessionalsSlugRoute,
+}
+
+const PropertyRouteWithChildren = PropertyRoute._addFileChildren(
+  PropertyRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -383,6 +456,7 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessNetworkRoute: BusinessNetworkRoute,
   ListYourBusinessRoute: ListYourBusinessRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  PropertyRoute: PropertyRouteWithChildren,
   ReserveRoute: ReserveRoute,
   TermsOfUseRoute: TermsOfUseRoute,
   AccommodationSlugRoute: AccommodationSlugRoute,

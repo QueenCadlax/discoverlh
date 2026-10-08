@@ -44,6 +44,8 @@ export function BusinessProfilePage({
   const website = getSafeExternalUrl(listing.website);
   const bookingUrl = getSafeExternalUrl(listing.bookingUrl);
   const isAutomotive = config.slug === "automotive";
+  const isProfessionalServices =
+    config.slug === "professional" || config.slug === "professional-services";
   if (config.slug === "food-dining") {
     return <RestaurantBusinessProfile listing={listing} config={config} />;
   }
@@ -80,11 +82,13 @@ export function BusinessProfilePage({
   const structuredData = {
     "@context": "https://schema.org",
     "@type":
-      config.slug === "accommodation"
-        ? "LodgingBusiness"
-        : listing.diningType === "Restaurant"
-          ? "Restaurant"
-          : "LocalBusiness",
+      listing.type === "Law Firm"
+        ? "LegalService"
+        : config.slug === "accommodation"
+          ? "LodgingBusiness"
+          : listing.diningType === "Restaurant"
+            ? "Restaurant"
+            : "LocalBusiness",
     name: listing.name,
     ...(listing.description ? { description: listing.description } : {}),
     ...(profileUrl ? { url: profileUrl } : {}),
@@ -115,6 +119,7 @@ export function BusinessProfilePage({
             ...(listing.address ? { streetAddress: listing.address } : {}),
             ...(listing.location ? { addressLocality: listing.location } : {}),
             addressRegion: "Mpumalanga",
+            ...(listing.postalCode ? { postalCode: listing.postalCode } : {}),
             addressCountry: "ZA",
           },
         }
@@ -342,13 +347,15 @@ export function BusinessProfilePage({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={shareOnWhatsApp}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-sm border border-[#dce4e5] px-3 text-sm font-medium text-[#34474d] hover:bg-[#f7f9f9]"
-                >
-                  <MessageCircle className="h-4 w-4" /> WhatsApp
-                </button>
+                {!isProfessionalServices && (
+                  <button
+                    type="button"
+                    onClick={shareOnWhatsApp}
+                    className="inline-flex min-h-10 items-center gap-2 rounded-sm border border-[#dce4e5] px-3 text-sm font-medium text-[#34474d] hover:bg-[#f7f9f9]"
+                  >
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={shareProfile}
@@ -442,10 +449,23 @@ export function BusinessProfilePage({
 
             {services.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
-                <h2 className="text-base font-semibold">Services</h2>
-                <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[#5f6d72]">
+                <h2 className="text-base font-semibold">
+                  {isProfessionalServices ? "Practice areas" : "Services"}
+                </h2>
+                <ul
+                  className={`mt-3 flex flex-wrap gap-2 ${isProfessionalServices ? "" : "gap-x-5 gap-y-2 text-sm text-[#5f6d72]"}`}
+                >
                   {services.map((service) => (
-                    <li key={service}>{service}</li>
+                    <li
+                      key={service}
+                      className={
+                        isProfessionalServices
+                          ? "border border-[#e2e8e9] bg-[#f8faf9] px-3 py-2 text-xs font-medium text-[#536267]"
+                          : undefined
+                      }
+                    >
+                      {service}
+                    </li>
                   ))}
                 </ul>
               </section>
@@ -550,6 +570,44 @@ export function BusinessProfilePage({
         </a>
       </div>
       <SiteFooter />
+      {isProfessionalServices && (
+        <>
+          <nav
+            aria-label={`Contact ${listing.name}`}
+            className="fixed inset-x-0 bottom-0 z-40 flex gap-2 border-t border-[#dce4e5] bg-white/95 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-8px_28px_-18px_rgba(23,36,43,.28)] backdrop-blur-md md:hidden"
+          >
+            {phone && (
+              <a
+                href={`tel:${phone}`}
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 border border-[#dce4e5] px-3 text-sm font-semibold text-[#34474d]"
+              >
+                <Phone className="h-4 w-4" /> Call
+              </a>
+            )}
+            {whatsapp && (
+              <a
+                href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(whatsappMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#1f6b45] px-3 text-sm font-semibold text-white"
+              >
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+            )}
+            {website && (
+              <a
+                href={website}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 flex-1 items-center justify-center gap-2 bg-[#142b4a] px-3 text-sm font-semibold text-white"
+              >
+                <Globe className="h-4 w-4" /> Website
+              </a>
+            )}
+          </nav>
+          <div aria-hidden="true" className="h-16 md:hidden" />
+        </>
+      )}
     </div>
   );
 }

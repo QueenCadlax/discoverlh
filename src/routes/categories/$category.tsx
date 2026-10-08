@@ -62,7 +62,18 @@ function validateFoodFilters(value: unknown, allowed: Set<string>) {
   return values.length ? values : undefined;
 }
 export const Route = createFileRoute("/categories/$category")({
-  beforeLoad: ({ params }) => {
+  beforeLoad: ({ params, search }) => {
+    if (params.category === "property") {
+      throw redirect({
+        to: "/property",
+        search: {
+          q: search.q,
+          location: search.location,
+          view: search.mode === "businesses" ? "professionals" : "listings",
+        },
+        replace: true,
+      });
+    }
     const redirects: Record<string, string> = {
       events: "leisure-entertainment",
       "weddings-events": "leisure-entertainment",

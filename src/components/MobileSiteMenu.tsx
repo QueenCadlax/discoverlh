@@ -4,6 +4,8 @@ import { Menu, X } from "lucide-react";
 const links = [
   ["Home", "/"],
   ["Categories", "/#categories"],
+  ["Property", "/property"],
+  ["Auto", "/categories/automotive?mode=vehicles"],
   ["Business Network", "/business-network"],
   ["List Your Business", "/list-your-business"],
 ];

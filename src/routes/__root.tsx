@@ -15,7 +15,8 @@ import { trackDiscoverEvent } from "../lib/analytics";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { getPublicUrl } from "../lib/site-url";
 
-const siteDescription = "Discover local businesses, services and places across Mpumalanga.";
+const siteDescription =
+  "Discover by Lowveld Hub helps people find local businesses, services and places across Mpumalanga.";
 const siteLogo = getPublicUrl("/logo%202.jpg");
 
 function NotFoundComponent() {
@@ -80,16 +81,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Discover by Lowveld Hub | Mpumalanga" },
+      { name: "application-name", content: "Discover by Lowveld Hub" },
       {
         name: "description",
         content: siteDescription,
       },
-      { name: "author", content: "Lowveld Hub" },
+      { name: "author", content: "Discover by Lowveld Hub" },
       { name: "robots", content: "index,follow" },
       {
         property: "og:title",
         content: "Discover by Lowveld Hub | Mpumalanga",
       },
+      { property: "og:site_name", content: "Discover by Lowveld Hub" },
       {
         property: "og:description",
         content: siteDescription,
@@ -175,7 +178,7 @@ function AnalyticsTracker() {
 
   useEffect(() => {
     trackDiscoverEvent("page_view", { page_path: pathname });
-    if (/^\/(?:business|accommodation|properties)\//.test(pathname)) {
+    if (/^\/(?:business|accommodation|properties|property)\//.test(pathname)) {
       trackDiscoverEvent("listing_view");
     }
   }, [pathname]);
@@ -211,7 +214,9 @@ function AnalyticsTracker() {
         trackDiscoverEvent("category_click", {
           category: href.split("/")[2]?.split("?")[0] ?? "",
         });
-      } else if (/^\/(?:business|accommodation|properties)\//.test(href)) {
+      } else if (href.split("?")[0] === "/property") {
+        trackDiscoverEvent("category_click", { category: "property" });
+      } else if (/^\/(?:business|accommodation|properties|property)\//.test(href)) {
         trackDiscoverEvent("listing_click", detail);
       } else if (href.split("?")[0] === "/business-network") {
         trackDiscoverEvent("business_network_click");
