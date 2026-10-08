@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { getBusinessSlug, getPublishedEventListings } from "@/lib/category-discovery";
+import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
 function findEvent(slug: string) {
@@ -12,16 +13,31 @@ export const Route = createFileRoute("/events/$slug")({
   head: ({ params }) => {
     const event = findEvent(params.slug);
     const canonical = getPublicUrl(`/events/${params.slug}`);
+    const title = event
+      ? `${event.name} | Events in Mpumalanga | Discover`
+      : "Event not found | Discover by Lowveld Hub";
+    const description = event?.description;
+    const socialImage = event?.image
+      ? event.image.startsWith("http")
+        ? event.image
+        : getPublicUrl(event.image)
+      : undefined;
     return {
       meta: [
-        {
-          title: event ? `${event.name} | Events in Mpumalanga | Discover` : "Event not found",
-        },
-        ...(event?.description ? [{ name: "description", content: event.description }] : []),
+        { title },
+        ...(description ? [{ name: "description", content: description }] : []),
         { name: "robots", content: event ? "index,follow" : "noindex,follow" },
+        { property: "og:title", content: title },
+        ...(description ? [{ property: "og:description", content: description }] : []),
+        { property: "og:type", content: "website" },
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
+        ...(socialImage ? [{ property: "og:image", content: socialImage }] : []),
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        ...(description ? [{ name: "twitter:description", content: description }] : []),
+        ...(socialImage ? [{ name: "twitter:image", content: socialImage }] : []),
       ],
-      ...(canonical ? { links: [{ rel: "canonical", href: canonical }] } : {}),
+      ...(event && canonical ? { links: [{ rel: "canonical", href: canonical }] } : {}),
     };
   },
   component: EventBySlug,
@@ -56,6 +72,32 @@ function EventBySlug() {
     ? event.eventStartDate
     : new Intl.DateTimeFormat("en-ZA", { dateStyle: "full", timeZone: "UTC" }).format(date);
   const externalHref = event.ticketUrl ?? event.website;
+  const canonical = getPublicUrl(`/events/${slug}`);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: event.name,
+    ...(event.description ? { description: event.description } : {}),
+    ...(Number.isNaN(date.getTime())
+      ? {}
+      : { startDate: `${event.eventStartDate}T00:00:00+02:00` }),
+    ...(event.image ? { image: event.image } : {}),
+    ...(canonical ? { url: canonical } : {}),
+    location: {
+      "@type": "Place",
+      name: event.venue,
+      ...(event.location
+        ? {
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: event.location,
+              addressRegion: "Mpumalanga",
+              addressCountry: "ZA",
+            },
+          }
+        : {}),
+    },
+  };
 
   return (
     <div className="min-h-screen bg-white text-[#172a31]">
@@ -80,6 +122,10 @@ function EventBySlug() {
       </header>
 
       <main className="container-x max-w-5xl py-8 md:py-14">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
+        />
         <nav aria-label="Breadcrumb" className="mb-6 flex gap-2 text-xs text-[#7d898d]">
           <a href="/" className="hover:text-[#172a31]">
             Home

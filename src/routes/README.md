@@ -13,6 +13,7 @@ is `src/routes/__root.tsx`.
 | `about.tsx` | `/about` |
 | `users/index.tsx` | `/users` |
 | `users/$id.tsx` | `/users/:id` (dynamic — bare `$`, no curly braces) |
+| `locations/$location.tsx` | `/locations/:location` (supports curated `?category=<slug>` pages when published listings exist) |
 | `posts/{-$category}.tsx` | `/posts/:category?` (optional segment) |
 | `files/$.tsx` | `/files/*` (splat — read via `_splat` param, never `*`) |
 | `_layout.tsx` | layout route (renders children via `<Outlet />`) |

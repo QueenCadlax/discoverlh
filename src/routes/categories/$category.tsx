@@ -3,6 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import { CategoryDiscoveryPage } from "@/components/CategoryDiscoveryPage";
 import {
   categoryConfigs,
+  getCanonicalCategorySlug,
   categoryListings,
   discoverySubcategories,
   getCategoryListings,
@@ -137,10 +138,11 @@ export const Route = createFileRoute("/categories/$category")({
               ? "Browse vehicle listings across Mpumalanga, with useful details for comparing available vehicles."
               : "Find mechanics, tyre shops, auto electricians, panel beaters and other automotive services across Mpumalanga."
             : (config.seoDescription ?? config.description);
+    const canonicalCategorySlug = getCanonicalCategorySlug(config.slug);
     const canonical = getPublicUrl(
       isProperty && propertyMode === "businesses"
-        ? `/categories/${config.slug}?mode=businesses`
-        : `/categories/${config.slug}`,
+        ? `/categories/${canonicalCategorySlug}?mode=businesses`
+        : `/categories/${canonicalCategorySlug}`,
     );
     const socialImage = config.heroImage
       ? config.heroImage.startsWith("http")

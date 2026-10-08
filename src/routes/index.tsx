@@ -41,7 +41,7 @@ import {
   searchTextMatches,
   type CategorySlug,
 } from "@/lib/category-discovery";
-import { locationSlug, mpumalangaLocations } from "@/lib/location-discovery";
+import { locationDiscovery, locationSlug, mpumalangaLocations } from "@/lib/location-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 import {
@@ -229,11 +229,13 @@ const configuredSearchSuggestions = Object.values(categoryConfigs)
       ),
   ]);
 
-const locationSearchSuggestions = mpumalangaLocations.map((location) => ({
-  label: location,
-  category: "Location",
-  terms: [location],
-}));
+const locationSearchSuggestions = locationDiscovery.flatMap(({ name, alternateNames }) =>
+  [name, ...alternateNames].map((location) => ({
+    label: location,
+    category: "Location",
+    terms: [name],
+  })),
+);
 
 const allSearchSuggestions = [
   ...searchSuggestions,
@@ -270,20 +272,29 @@ function normalizeQuery(value: string) {
 
 function containsKnownLocation(value: string) {
   const query = value.toLocaleLowerCase();
-  return mpumalangaLocations.some((location) => query.includes(location.toLocaleLowerCase()));
+  return locationDiscovery.some(({ name, alternateNames }) =>
+    [name, ...alternateNames].some((locationName) =>
+      query.includes(locationName.toLocaleLowerCase()),
+    ),
+  );
 }
 
 function getIntent(value: string, selectedLocation: string) {
   const lowerQuery = value.toLocaleLowerCase();
-  const matchingLocation = mpumalangaLocations.find((town) =>
-    lowerQuery.includes(town.toLocaleLowerCase()),
+  const matchingLocation = locationDiscovery.find(({ name, alternateNames }) =>
+    [name, ...alternateNames].some((town) => lowerQuery.includes(town.toLocaleLowerCase())),
   );
   let query = value.trim();
   if (matchingLocation) {
-    query = query.replace(
-      new RegExp(matchingLocation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
-      " ",
-    );
+    const matchedName = [matchingLocation.name, ...matchingLocation.alternateNames]
+      .filter((town) => lowerQuery.includes(town.toLocaleLowerCase()))
+      .sort((first, second) => second.length - first.length)[0];
+    if (matchedName) {
+      query = query.replace(
+        new RegExp(matchedName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i"),
+        " ",
+      );
+    }
   }
   query = query
     .replace(/\b(?:in|near)\s+me\b/gi, " ")
@@ -313,7 +324,7 @@ function getIntent(value: string, selectedLocation: string) {
   return {
     query,
     category,
-    location: matchingLocation ?? selectedLocation,
+    location: matchingLocation?.name ?? selectedLocation,
     automotiveMode:
       category?.slug === "automotive" &&
       /\b(?:vehicles? for sale|cars? for sale|used cars?|dealership inventory)\b/i.test(value)
@@ -394,6 +405,7 @@ function Home() {
           void navigate({
             to: "/locations/$location",
             params: { location: locationSlug(townName) },
+            search: { category: undefined },
           });
         }}
       />

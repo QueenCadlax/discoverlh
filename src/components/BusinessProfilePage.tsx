@@ -18,11 +18,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { RestaurantBusinessProfile } from "@/components/RestaurantBusinessProfile";
 import {
-  getBusinessSlug,
+  getCanonicalCategorySlug,
+  getCategoryListingPath,
   type CategoryConfig,
   type CategoryListing,
 } from "@/lib/category-discovery";
-import { locationDiscovery, locationSlug } from "@/lib/location-discovery";
+import { findDiscoveryLocation } from "@/lib/location-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
@@ -60,7 +61,7 @@ export function BusinessProfilePage({
     ? []
     : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
   const services = toDisplayValues(listing.services ?? listing.serviceType);
-  const profileUrl = getPublicUrl(`/business/${getBusinessSlug(listing)}`);
+  const profileUrl = getPublicUrl(getCategoryListingPath(config.slug, listing));
   const profileImages = (
     isAutomotive ? [] : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))]
   )
@@ -74,9 +75,7 @@ export function BusinessProfilePage({
       ? (getSafeExternalUrl(listing.logo) ??
         (listing.logo.startsWith("/") ? getPublicUrl(listing.logo) : undefined))
       : undefined;
-  const locationPage = locationDiscovery.find(
-    ({ name }) => name.toLocaleLowerCase() === listing.location?.trim().toLocaleLowerCase(),
-  );
+  const locationPage = listing.location ? findDiscoveryLocation(listing.location) : undefined;
   const openingHoursSpecification = getOpeningHoursSpecification(listing.openingHours);
   const structuredData = {
     "@context": "https://schema.org",
@@ -130,6 +129,34 @@ export function BusinessProfilePage({
         }
       : {}),
     ...(openingHoursSpecification.length ? { openingHoursSpecification } : {}),
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: getPublicUrl("/") },
+        ...(locationPage
+          ? [
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: locationPage.name,
+                item: getPublicUrl(`/locations/${locationPage.slug}`),
+              },
+            ]
+          : []),
+        {
+          "@type": "ListItem",
+          position: locationPage ? 3 : 2,
+          name: config.label,
+          item: getPublicUrl(`/categories/${getCanonicalCategorySlug(config.slug)}`),
+        },
+        {
+          "@type": "ListItem",
+          position: locationPage ? 4 : 3,
+          name: listing.name,
+          ...(profileUrl ? { item: profileUrl } : {}),
+        },
+      ],
+    },
   };
   async function shareProfile() {
     const url = window.location.href;
@@ -203,11 +230,25 @@ export function BusinessProfilePage({
             Home
           </a>
           <span aria-hidden="true">/</span>
-          <a href="/#categories" className="hover:text-[#172a31]">
-            Categories
-          </a>
-          <span aria-hidden="true">/</span>
-          <a href={`/categories/${config.slug}`} className="hover:text-[#172a31]">
+          {locationPage ? (
+            <>
+              <a href={`/locations/${locationPage.slug}`} className="hover:text-[#172a31]">
+                {locationPage.name}
+              </a>
+              <span aria-hidden="true">/</span>
+            </>
+          ) : (
+            <>
+              <a href="/#categories" className="hover:text-[#172a31]">
+                Categories
+              </a>
+              <span aria-hidden="true">/</span>
+            </>
+          )}
+          <a
+            href={`/categories/${getCanonicalCategorySlug(config.slug)}`}
+            className="hover:text-[#172a31]"
+          >
             {config.label}
           </a>
           <span aria-hidden="true">/</span>
@@ -285,7 +326,7 @@ export function BusinessProfilePage({
                           <p>
                             {locationPage ? (
                               <a
-                                href={`/locations/${locationSlug(locationPage.name)}`}
+                                href={`/locations/${locationPage.slug}`}
                                 className="underline decoration-[#c7d0d2] underline-offset-2 hover:text-[#172a31]"
                               >
                                 {listing.location}

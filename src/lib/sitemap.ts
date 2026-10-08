@@ -1,13 +1,15 @@
 import {
   getCategoryListings,
+  getCanonicalCategorySlug,
+  getCategoryListingPath,
   getBusinessSlug,
   getPublishedCategoryListings,
   getPublishedPropertyListings,
+  getPublishedListingsInLocation,
   isPublishedListing,
-  primaryDiscoveryCategorySlugs,
   type CategorySlug,
 } from "./category-discovery";
-import { locationDiscovery, locationSlug } from "./location-discovery";
+import { locationDiscovery } from "./location-discovery";
 import { getPublicUrl } from "./site-url";
 
 function escapeXml(value: string) {
@@ -25,12 +27,12 @@ export function generateSitemapXml() {
   const homepage = getPublicUrl("/");
   if (homepage) paths.add(homepage);
 
-  const sitemapCategories: CategorySlug[] = [
-    ...primaryDiscoveryCategorySlugs,
-    "accommodation",
-    "food-dining",
-  ];
-  sitemapCategories.forEach((category) => {
+  const sitemapCategories = new Set<CategorySlug>();
+  entries.forEach(({ category }) => {
+    sitemapCategories.add(getCanonicalCategorySlug(category));
+  });
+  [...sitemapCategories].forEach((category) => {
+    if (!getCategoryListings(category).some(isPublishedListing)) return;
     const url = getPublicUrl(`/categories/${category}`);
     if (url) paths.add(url);
   });
@@ -48,21 +50,23 @@ export function generateSitemapXml() {
     if (url) paths.add(url);
   }
 
-  const populatedLocations = new Set(
-    entries.map(({ listing }) => listing.location?.trim().toLocaleLowerCase()).filter(Boolean),
-  );
   locationDiscovery.forEach((location) => {
-    if (!populatedLocations.has(location.name.toLocaleLowerCase())) return;
-    const url = getPublicUrl(`/locations/${locationSlug(location.name)}`);
-    if (url) paths.add(url);
+    const locationListings = getPublishedListingsInLocation(location.name);
+    if (!locationListings.length) return;
+    const basePath = `/locations/${location.slug}`;
+    const locationUrl = getPublicUrl(basePath);
+    if (locationUrl) paths.add(locationUrl);
+    const locationCategories = new Set(
+      locationListings.map(({ category }) => getCanonicalCategorySlug(category)),
+    );
+    locationCategories.forEach((category) => {
+      const categoryUrl = getPublicUrl(`${basePath}?category=${encodeURIComponent(category)}`);
+      if (categoryUrl) paths.add(categoryUrl);
+    });
   });
 
-  entries.forEach(({ listing }) => {
-    const path =
-      listing.listingKind === "event"
-        ? `/events/${getBusinessSlug(listing)}`
-        : `/business/${getBusinessSlug(listing)}`;
-    const url = getPublicUrl(path);
+  entries.forEach(({ category, listing }) => {
+    const url = getPublicUrl(getCategoryListingPath(category, listing));
     if (url) paths.add(url);
   });
 

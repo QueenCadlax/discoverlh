@@ -2,7 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AccommodationBusinessProfile } from "@/components/AccommodationBusinessProfile";
 import { BusinessProfilePage } from "@/components/BusinessProfilePage";
-import { categoryConfigs, findBusinessBySlug, type CategoryConfig } from "@/lib/category-discovery";
+import {
+  categoryConfigs,
+  findBusinessBySlug,
+  getCategoryListingPath,
+  type CategoryConfig,
+} from "@/lib/category-discovery";
 import { getPublicUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/business/$slug")({
@@ -39,7 +44,7 @@ export const Route = createFileRoute("/business/$slug")({
         : location
           ? `Discover ${profile.listing.name} in ${location}, Mpumalanga.`
           : undefined);
-    const canonical = getPublicUrl(`/business/${params.slug}`);
+    const canonical = getPublicUrl(getCategoryListingPath(profile.category, profile.listing));
     const socialImage = profile.listing.image
       ? profile.listing.image.startsWith("http")
         ? profile.listing.image

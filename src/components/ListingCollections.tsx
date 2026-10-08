@@ -4,7 +4,7 @@ import { Bookmark, Check, Heart, Scale, X } from "lucide-react";
 import {
   categoryConfigs,
   categoryListings,
-  getBusinessSlug,
+  getCategoryListingPath,
   isPublishedListing,
   type CategoryConfig,
   type CategoryListing,
@@ -180,7 +180,7 @@ export function ListingCollectionsPanel() {
                       <li key={key} className="flex items-center justify-between gap-4 py-3">
                         <div className="min-w-0">
                           <a
-                            href={`/business/${getBusinessSlug(item.listing)}`}
+                            href={getCategoryListingPath(item.config.slug, item.listing)}
                             className="truncate text-sm font-semibold text-[#172a31] hover:underline"
                           >
                             {item.listing.name}
@@ -216,7 +216,7 @@ export function ListingCollectionsPanel() {
                               className="min-w-36 border-b border-[#dce4e5] px-3 py-2 align-top"
                             >
                               <a
-                                href={`/business/${getBusinessSlug(item.listing)}`}
+                                href={getCategoryListingPath(item.config.slug, item.listing)}
                                 className="font-semibold text-[#172a31] hover:underline"
                               >
                                 {item.listing.name}

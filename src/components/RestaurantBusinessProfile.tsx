@@ -23,11 +23,13 @@ import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
 import { SavedBusinessButton } from "@/components/SavedBusinessButton";
 import {
+  getCanonicalCategorySlug,
+  getCategoryListingPath,
   getListingOpenStatus,
-  getBusinessSlug,
   type CategoryConfig,
   type CategoryListing,
 } from "@/lib/category-discovery";
+import { findDiscoveryLocation } from "@/lib/location-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -65,6 +67,7 @@ export function RestaurantBusinessProfile({
   ]
     .filter(Boolean)
     .join(", ");
+  const locationPage = listing.location ? findDiscoveryLocation(listing.location) : undefined;
   const directionsQuery =
     Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude)
       ? `${listing.latitude},${listing.longitude}`
@@ -75,7 +78,7 @@ export function RestaurantBusinessProfile({
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
       : undefined);
   const images = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
-  const profileUrl = getPublicUrl(`/business/${getBusinessSlug(listing)}`);
+  const profileUrl = getPublicUrl(getCategoryListingPath(config.slug, listing));
   const openingHours = Object.entries(listing.openingHours ?? {});
   const hoursSummary = restaurantProfile
     ? "See daily opening hours"
@@ -160,7 +163,18 @@ export function RestaurantBusinessProfile({
     "@type": "BreadcrumbList",
     itemListElement: [
       { name: "Home", url: getPublicUrl("/") },
-      { name: config.label, url: getPublicUrl(`/categories/${config.slug}`) },
+      ...(locationPage
+        ? [
+            {
+              name: locationPage.name,
+              url: getPublicUrl(`/locations/${locationPage.slug}`),
+            },
+          ]
+        : []),
+      {
+        name: config.label,
+        url: getPublicUrl(`/categories/${getCanonicalCategorySlug(config.slug)}`),
+      },
       { name: listing.name, url: profileUrl },
     ].flatMap(({ name, url }, index) =>
       url ? [{ "@type": "ListItem", position: index + 1, name, item: url }] : [],
@@ -293,11 +307,20 @@ export function RestaurantBusinessProfile({
               Home
             </a>
             <span aria-hidden="true">/</span>
-            <a href="/#categories" className="hover:text-[#172a31]">
-              Categories
-            </a>
+            {locationPage ? (
+              <a href={`/locations/${locationPage.slug}`} className="hover:text-[#172a31]">
+                {locationPage.name}
+              </a>
+            ) : (
+              <a href="/#categories" className="hover:text-[#172a31]">
+                Categories
+              </a>
+            )}
             <span aria-hidden="true">/</span>
-            <a href={`/categories/${config.slug}`} className="hover:text-[#172a31]">
+            <a
+              href={`/categories/${getCanonicalCategorySlug(config.slug)}`}
+              className="hover:text-[#172a31]"
+            >
               {config.label}
             </a>
             <span aria-hidden="true">/</span>

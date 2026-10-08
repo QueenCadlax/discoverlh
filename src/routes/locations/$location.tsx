@@ -4,22 +4,58 @@ import { CategoryListingCard } from "@/components/CategoryDiscoveryPage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   categoryConfigs,
-  getBusinessSlug,
+  getCanonicalCategorySlug,
+  getCategoryListingPath,
   getPublishedListingsInLocation,
+  type CategorySlug,
 } from "@/lib/category-discovery";
-import { locationDiscovery, locationSlug } from "@/lib/location-discovery";
+import { findDiscoveryLocation, locationDiscovery, locationSlug } from "@/lib/location-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
-function getLocation(nameOrSlug: string) {
-  return locationDiscovery.find(
-    (location) => locationSlug(location.name) === nameOrSlug || location.name === nameOrSlug,
-  );
+function getCategoryListings(locationName: string, category?: CategorySlug) {
+  const listings = getPublishedListingsInLocation(locationName);
+  return category
+    ? listings.filter(
+        ({ category: listingCategory, listing }) =>
+          getCanonicalCategorySlug(listingCategory) === category ||
+          listing.additionalCategorySlugs?.some(
+            (slug) => getCanonicalCategorySlug(slug) === category,
+          ),
+      )
+    : listings;
+}
+
+function getLocationPath(locationSlugValue: string, category?: CategorySlug) {
+  const canonicalCategory = category ? getCanonicalCategorySlug(category) : undefined;
+  const search = canonicalCategory ? `?category=${encodeURIComponent(canonicalCategory)}` : "";
+  return `/locations/${locationSlugValue}${search}`;
+}
+
+function getLocationPageSeo(
+  location: NonNullable<ReturnType<typeof findDiscoveryLocation>>,
+  category?: CategorySlug,
+) {
+  const config = category ? categoryConfigs[category] : undefined;
+  return {
+    config,
+    title: config ? `${config.label} in ${location.name}` : `Businesses in ${location.name}`,
+    description: config
+      ? `Explore currently listed ${config.label.toLocaleLowerCase()} in ${location.name}, ${location.province}. ${location.introduction}`
+      : location.seoDescription,
+    canonicalPath: getLocationPath(location.slug, category),
+  };
 }
 
 export const Route = createFileRoute("/locations/$location")({
-  head: ({ params }) => {
-    const location = getLocation(params.location);
+  validateSearch: (search: Record<string, unknown>) => ({
+    category:
+      typeof search.category === "string" && search.category in categoryConfigs
+        ? getCanonicalCategorySlug(search.category as CategorySlug)
+        : undefined,
+  }),
+  head: ({ params, match }) => {
+    const location = findDiscoveryLocation(params.location);
     if (!location) {
       return {
         meta: [
@@ -29,23 +65,29 @@ export const Route = createFileRoute("/locations/$location")({
       };
     }
 
-    const listings = getPublishedListingsInLocation(location.name);
-    const title = `Businesses in ${location.name} | Discover by Lowveld Hub`;
-    const description = `Discover local businesses, services, restaurants, accommodation and more in ${location.name}, Mpumalanga.`;
-    const canonical = getPublicUrl(`/locations/${locationSlug(location.name)}`);
+    const category = match.search.category;
+    const listings = getCategoryListings(location.name, category);
+    const seo = getLocationPageSeo(location, category);
+    const title = category ? `${seo.title} | Discover by Lowveld Hub` : location.seoTitle;
+    const canonical = getPublicUrl(seo.canonicalPath);
+    const socialImage = location.image;
+    const isIndexable =
+      listings.length > 0 || (location.indexability === "always" && category === undefined);
 
     return {
       meta: [
         { title },
-        { name: "description", content: description },
-        { name: "robots", content: listings.length ? "index,follow" : "noindex,follow" },
+        { name: "description", content: seo.description },
+        { name: "robots", content: isIndexable ? "index,follow" : "noindex,follow" },
         { property: "og:title", content: title },
-        { property: "og:description", content: description },
+        { property: "og:description", content: seo.description },
         { property: "og:type", content: "website" },
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
-        { name: "twitter:card", content: "summary" },
+        { property: "og:image", content: socialImage },
+        { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
+        { name: "twitter:description", content: seo.description },
+        { name: "twitter:image", content: socialImage },
       ],
       ...(canonical ? { links: [{ rel: "canonical", href: canonical }] } : {}),
     };
@@ -55,7 +97,8 @@ export const Route = createFileRoute("/locations/$location")({
 
 function LocationBySlug() {
   const { location: locationParam } = Route.useParams();
-  const location = getLocation(locationParam);
+  const { category } = Route.useSearch();
+  const location = findDiscoveryLocation(locationParam);
 
   if (!location) {
     return (
@@ -68,24 +111,67 @@ function LocationBySlug() {
     );
   }
 
-  const listings = getPublishedListingsInLocation(location.name);
-  const canonical = getPublicUrl(`/locations/${locationSlug(location.name)}`);
-  const description = `Discover local businesses, services, restaurants, accommodation and more in ${location.name}, Mpumalanga.`;
+  const allListings = getPublishedListingsInLocation(location.name);
+  const listings = getCategoryListings(location.name, category);
+  const listedCategories = new Set(
+    allListings.map(({ category: slug }) => getCanonicalCategorySlug(slug)),
+  );
+  const categorySlugs = [
+    ...new Set([
+      ...location.relevantCategorySlugs
+        .map(getCanonicalCategorySlug)
+        .filter((slug) => listedCategories.has(slug)),
+      ...listedCategories,
+    ]),
+  ];
+  const seo = getLocationPageSeo(location, category);
+  const { config, title } = seo;
+  const description = config ? seo.description : location.introduction;
+  const canonical = getPublicUrl(seo.canonicalPath);
+  const nearbyLocations = location.nearbyLocations.flatMap((nearbyName) => {
+    const nearby = locationDiscovery.find(({ name }) => name === nearbyName);
+    return nearby && getPublishedListingsInLocation(nearby.name).length > 0 ? [nearby] : [];
+  });
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Businesses in ${location.name}`,
+    name: title,
     description,
     ...(canonical ? { url: canonical } : {}),
+    about: {
+      "@type": "City",
+      name: location.name,
+      containedInPlace: {
+        "@type": "AdministrativeArea",
+        name: location.province,
+      },
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: getPublicUrl("/") },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: location.name,
+          item: getPublicUrl(getLocationPath(location.slug)),
+        },
+        ...(config
+          ? [{ "@type": "ListItem", position: 3, name: config.label, item: canonical }]
+          : []),
+      ],
+    },
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: listings.length,
-      itemListElement: listings.map(({ listing }, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        name: listing.name,
-        url: getPublicUrl(`/business/${getBusinessSlug(listing)}`),
-      })),
+      itemListElement: listings.map(({ category: listingCategory, listing }, index) => {
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          name: listing.name,
+          url: getPublicUrl(getCategoryListingPath(listingCategory, listing)),
+        };
+      }),
     },
   };
 
@@ -115,41 +201,87 @@ function LocationBySlug() {
             Home
           </a>
           <span aria-hidden="true">/</span>
-          <span aria-current="page" className="font-medium text-[#34474d]">
-            {location.name}
-          </span>
+          {config ? (
+            <>
+              <a href={getLocationPath(location.slug)} className="hover:text-[#172a31]">
+                {location.name}
+              </a>
+              <span aria-hidden="true">/</span>
+              <span aria-current="page" className="font-medium text-[#34474d]">
+                {config.label}
+              </span>
+            </>
+          ) : (
+            <span aria-current="page" className="font-medium text-[#34474d]">
+              {location.name}
+            </span>
+          )}
         </nav>
         <section className="border-b border-[#e5ebeb] py-6">
           <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#39703b]">
-            Local discovery
+            Local discovery · {location.province}
           </p>
           <h1 className="mt-2 font-display text-3xl font-medium text-[#172a31] sm:text-4xl">
-            Businesses in {location.name}
+            {title}
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[#68767a]">{description}</p>
         </section>
+        {categorySlugs.length > 0 && (
+          <nav aria-label={`Categories in ${location.name}`} className="flex flex-wrap gap-2 py-4">
+            <a
+              href={getLocationPath(location.slug)}
+              aria-current={category ? undefined : "page"}
+              className={`rounded-sm border px-3 py-2 text-xs font-semibold ${
+                category
+                  ? "border-[#dce4e5] text-[#536267]"
+                  : "border-[#17242b] bg-[#17242b] text-white"
+              }`}
+            >
+              All listings
+            </a>
+            {categorySlugs.map((slug) => (
+              <a
+                key={slug}
+                href={getLocationPath(location.slug, slug)}
+                aria-current={category === slug ? "page" : undefined}
+                className={`rounded-sm border px-3 py-2 text-xs font-semibold ${
+                  category === slug
+                    ? "border-[#17242b] bg-[#17242b] text-white"
+                    : "border-[#dce4e5] text-[#536267]"
+                }`}
+              >
+                {categoryConfigs[slug].label}
+              </a>
+            ))}
+          </nav>
+        )}
         <section className="py-6" aria-labelledby="location-results-title">
           <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[#e5ebeb] pb-3">
             <h2 id="location-results-title" className="text-lg font-semibold">
-              Local listings
+              {config
+                ? `${config.label} in ${location.name}`
+                : `Local listings in ${location.name}`}
             </h2>
             <p className="text-sm text-[#68767a]" aria-live="polite">
-              {listings.length} {listings.length === 1 ? "business" : "businesses"}
+              {listings.length} {listings.length === 1 ? "listing" : "listings"}
             </p>
           </div>
           {listings.length ? (
             <div className="mt-5 grid gap-x-5 gap-y-7 sm:grid-cols-2 xl:grid-cols-4">
-              {listings.map(({ category, listing }) => (
+              {listings.map(({ category: listingCategory, listing }) => (
                 <CategoryListingCard
-                  key={`${category}:${listing.id}`}
+                  key={`${listingCategory}:${listing.id}`}
                   listing={listing}
-                  config={categoryConfigs[category]}
+                  config={categoryConfigs[listingCategory]}
                 />
               ))}
             </div>
           ) : (
             <div className="py-8">
-              <h3 className="font-semibold">No businesses listed in {location.name} yet.</h3>
+              <h3 className="font-semibold">
+                No {config ? `${config.label.toLocaleLowerCase()} ` : ""}listings in {location.name}{" "}
+                yet.
+              </h3>
               <p className="mt-1 text-sm text-[#68767a]">
                 Try another town or browse categories while local businesses join.
               </p>
@@ -164,6 +296,25 @@ function LocationBySlug() {
             </div>
           )}
         </section>
+        {nearbyLocations.length > 0 && (
+          <nav
+            aria-label={`Nearby locations to ${location.name}`}
+            className="border-t border-[#e5ebeb] py-5"
+          >
+            <h2 className="text-sm font-semibold">Explore nearby locations</h2>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm">
+              {nearbyLocations.map((nearby) => (
+                <a
+                  key={nearby.slug}
+                  href={getLocationPath(nearby.slug)}
+                  className="text-[#536267] underline underline-offset-4 hover:text-[#172a31]"
+                >
+                  {nearby.name}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}

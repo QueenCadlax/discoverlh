@@ -5,7 +5,7 @@ import { CategoryListingCard } from "@/components/CategoryDiscoveryPage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   categoryConfigs,
-  getBusinessSlug,
+  getCategoryListingPath,
   getPublishedCategoryListings,
   searchTextMatches,
   type BusinessNetworkConnectionType,
@@ -104,11 +104,11 @@ function BusinessNetworkPage() {
         mainEntity: {
           "@type": "ItemList",
           numberOfItems: matchingListings.length,
-          itemListElement: matchingListings.map(({ listing }, index) => ({
+          itemListElement: matchingListings.map(({ category, listing }, index) => ({
             "@type": "ListItem",
             position: index + 1,
             name: listing.name,
-            url: getPublicUrl(`/business/${getBusinessSlug(listing)}`),
+            url: getPublicUrl(getCategoryListingPath(category, listing)),
           })),
         },
       }

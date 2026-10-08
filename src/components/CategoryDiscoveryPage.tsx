@@ -36,6 +36,8 @@ import {
 } from "@/components/ui/sheet";
 import {
   categoryListings,
+  getCanonicalCategorySlug,
+  getCategoryListingPath,
   getCategoryListings,
   type AutomotiveMode,
   getListingOpenStatus,
@@ -56,6 +58,7 @@ import {
 } from "@/lib/category-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
+import { findDiscoveryLocation, locationDiscovery } from "@/lib/location-discovery";
 
 type NumericFilterValue = [number | null, number | null];
 type FilterValue = string | string[] | NumericFilterValue | undefined;
@@ -523,6 +526,17 @@ export function CategoryDiscoveryPage({
   const activeLocationFilter = config.filters.find((filter) => filter.field === "location");
   const activeLocation = activeLocationFilter ? filters[activeLocationFilter.id] : initialLocation;
   const activeLocationName = typeof activeLocation === "string" ? activeLocation : undefined;
+  const locationCategorySlug =
+    config.slug === "stay" ? "accommodation" : config.slug === "eat" ? "food-dining" : config.slug;
+  const locationsWithListings = locationDiscovery
+    .filter((location) =>
+      listings.some((listing) =>
+        [listing.location, listing.area]
+          .filter((value): value is string => typeof value === "string")
+          .some((value) => findDiscoveryLocation(value)?.slug === location.slug),
+      ),
+    )
+    .slice(0, 6);
 
   const matchingListings = listings.filter((listing) => {
     const searchable = config.searchFields
@@ -560,16 +574,13 @@ export function CategoryDiscoveryPage({
                 latitude: Number(listing.latitude),
                 longitude: Number(listing.longitude),
                 description: listing.description,
-                href:
-                  listing.listingKind === "event"
-                    ? `/events/${getBusinessSlug(listing)}`
-                    : `/business/${getBusinessSlug(listing)}`,
+                href: getCategoryListingPath(config.slug, listing),
                 locationAccuracy: listing.locationAccuracy,
               },
             ]
           : [],
       ),
-    [sortedListings],
+    [config.slug, sortedListings],
   );
   const hasMappedListings = listings.some(
     (listing) => Number.isFinite(listing.latitude) && Number.isFinite(listing.longitude),
@@ -586,7 +597,7 @@ export function CategoryDiscoveryPage({
             }),
         )
       : [];
-  const categoryCanonical = getPublicUrl(`/categories/${config.slug}`);
+  const categoryCanonical = getPublicUrl(`/categories/${getCanonicalCategorySlug(config.slug)}`);
   const categoryStructuredData = listings.length
     ? {
         "@context": "https://schema.org",
@@ -601,7 +612,7 @@ export function CategoryDiscoveryPage({
             "@type": "ListItem",
             position: index + 1,
             name: listing.name,
-            url: getPublicUrl(`/business/${getBusinessSlug(listing)}`),
+            url: getPublicUrl(getCategoryListingPath(config.slug, listing)),
           })),
         },
       }
@@ -1443,6 +1454,23 @@ export function CategoryDiscoveryPage({
                   </label>
                 </div>
               </div>
+              {!activeLocationName && locationsWithListings.length > 0 && (
+                <nav
+                  aria-label={`${config.label} by location`}
+                  className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-[#e5ebeb] py-3 text-xs"
+                >
+                  <span className="font-semibold text-[#68767a]">Explore by town</span>
+                  {locationsWithListings.map((location) => (
+                    <a
+                      key={location.slug}
+                      href={`/locations/${location.slug}?category=${locationCategorySlug}`}
+                      className="font-medium text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
+                    >
+                      {location.name}
+                    </a>
+                  ))}
+                </nav>
+              )}
               {locationMessage && (
                 <p className="mt-2 text-xs text-[#a53e34]" role="status">
                   {locationMessage}
@@ -2232,6 +2260,14 @@ function matchesFilter(
     return filter.match === "all"
       ? selectedValues.every((selected) => matchingValues.includes(selected))
       : selectedValues.some((selected) => matchingValues.includes(selected));
+  }
+  if (filter.field === "location" && typeof value === "string") {
+    const selectedLocation = findDiscoveryLocation(value);
+    if (selectedLocation) {
+      return listingValues.some(
+        (listingLocation) => findDiscoveryLocation(listingLocation)?.slug === selectedLocation.slug,
+      );
+    }
   }
   if (filter.kind === "range") {
     const [minimum, maximum] = value as NumericFilterValue;

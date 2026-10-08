@@ -1,4 +1,4 @@
-import { mpumalangaLocations } from "./location-discovery";
+import { findDiscoveryLocation, mpumalangaLocations } from "./location-discovery";
 
 export type CategorySlug =
   | "stay"
@@ -36,6 +36,12 @@ export const primaryDiscoveryCategorySlugs = [
 ] as const satisfies readonly CategorySlug[];
 
 export type PrimaryDiscoveryCategorySlug = (typeof primaryDiscoveryCategorySlugs)[number];
+
+export function getCanonicalCategorySlug(category: CategorySlug): CategorySlug {
+  if (category === "accommodation") return "stay";
+  if (category === "food-dining") return "eat";
+  return category;
+}
 
 export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readonly string[]> = {
   stay: [
@@ -361,6 +367,12 @@ export type CategoryConfig = {
   filters: CategoryFilterConfig[];
   sortOptions: CategorySortConfig[];
   resultNoun: string;
+  parentSlug?: CategorySlug;
+  childSlugs?: readonly CategorySlug[];
+  relatedSlugs?: readonly CategorySlug[];
+  searchKeywords?: readonly string[];
+  relevantLocationSlugs?: readonly string[];
+  indexability?: "data-dependent" | "always";
   emptyTitle: string;
   emptyDescription: string;
   ownerHeading: string;
@@ -3121,11 +3133,15 @@ export const vehicleListings: VehicleListing[] = [];
 export const propertyListings: PropertyListing[] = [];
 
 export function getCategoryListings(category: CategorySlug): CategoryListing[] {
-  const baseListings = categoryListings[category] ?? [];
+  const sourceCategory =
+    category === "stay" ? "accommodation" : category === "eat" ? "food-dining" : category;
+  const baseListings = categoryListings[sourceCategory] ?? [];
   const crossListed = Object.values(categoryListings)
     .flat()
     .filter((listing) => listing.additionalCategorySlugs?.includes(category));
-  return [...baseListings, ...crossListed];
+  return [
+    ...new Map([...baseListings, ...crossListed].map((listing) => [listing.id, listing])).values(),
+  ];
 }
 
 export function getPublishedVehicleListings() {
@@ -3235,10 +3251,15 @@ export function getPublishedCategoryListings() {
 }
 
 export function getPublishedListingsInLocation(location: string) {
+  const target = findDiscoveryLocation(location);
   const normalizedLocation = location.trim().toLocaleLowerCase();
-  return getPublishedCategoryListings().filter(
-    ({ listing }) => listing.location?.trim().toLocaleLowerCase() === normalizedLocation,
-  );
+  return getPublishedCategoryListings().filter(({ listing }) => {
+    const listingLocation = listing.location?.trim();
+    if (!listingLocation) return false;
+    const discoveredLocation = findDiscoveryLocation(listingLocation);
+    if (target && discoveredLocation) return target.slug === discoveredLocation.slug;
+    return listingLocation.toLocaleLowerCase() === normalizedLocation;
+  });
 }
 
 export function getBusinessSlug(listing: CategoryListing): string {
@@ -3251,6 +3272,20 @@ export function getBusinessSlug(listing: CategoryListing): string {
       .replace(/^-|-$/g, "");
   if (listing.slug) return slugPart(listing.slug) || "business-listing";
   return `${slugPart(listing.name) || "business"}-${slugPart(listing.id) || "listing"}`;
+}
+
+export function getCategoryListingPath(category: CategorySlug, listing: CategoryListing) {
+  const slug = getBusinessSlug(listing);
+  if (listing.listingKind === "event") return `/events/${slug}`;
+  if (listing.listingKind === "property") return `/properties/${slug}`;
+  if (
+    category === "accommodation" ||
+    category === "stay" ||
+    listing.listingKind === "accommodation"
+  ) {
+    return `/accommodation/${slug}`;
+  }
+  return `/business/${slug}`;
 }
 
 export function findBusinessBySlug(slug: string) {

@@ -20,13 +20,13 @@ import { MpumalangaMap } from "@/components/MpumalangaMap";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   categoryConfigs,
-  getBusinessSlug,
+  getCategoryListingPath,
   getCategoryListings,
   getPublishedListingsInLocation,
   isPublishedListing,
   type CategoryListing,
 } from "@/lib/category-discovery";
-import { locationSlug } from "@/lib/location-discovery";
+import { findDiscoveryLocation } from "@/lib/location-discovery";
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
@@ -133,7 +133,10 @@ export function AccommodationBusinessProfile({
     }
     return ideas.slice(0, 4);
   }, [listing.location, propertyFeatures]);
-  const profileUrl = getPublicUrl(canonicalPath ?? `/business/${getBusinessSlug(listing)}`);
+  const profileUrl = getPublicUrl(
+    canonicalPath ?? getCategoryListingPath("accommodation", listing),
+  );
+  const locationPage = listing.location ? findDiscoveryLocation(listing.location) : undefined;
   const directionsQuery =
     listing.latitude != null && listing.longitude != null
       ? `${listing.latitude},${listing.longitude}`
@@ -230,6 +233,25 @@ export function AccommodationBusinessProfile({
         }
       : {}),
   };
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { name: "Home", url: getPublicUrl("/") },
+      ...(locationPage
+        ? [
+            {
+              name: locationPage.name,
+              url: getPublicUrl(`/locations/${locationPage.slug}`),
+            },
+          ]
+        : []),
+      { name: config.label, url: getPublicUrl("/categories/stay") },
+      { name: listing.name, url: profileUrl },
+    ].flatMap(({ name, url }, index) =>
+      url ? [{ "@type": "ListItem", position: index + 1, name, item: url }] : [],
+    ),
+  };
 
   return (
     <div className="min-h-screen bg-white text-[#172a31]">
@@ -268,7 +290,7 @@ export function AccommodationBusinessProfile({
 
       <main className="container-x py-5 pb-24 md:py-8 md:pb-8">
         <a
-          href="/categories/accommodation"
+          href="/categories/stay"
           className="mb-3 inline-flex min-h-9 items-center gap-1.5 text-xs font-medium text-[#68767a] transition-colors hover:text-[#172a31] sm:hidden"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Accommodation
@@ -277,11 +299,21 @@ export function AccommodationBusinessProfile({
           aria-label="Breadcrumb"
           className="mb-4 hidden flex-wrap items-center gap-2 text-xs text-[#788589] sm:flex"
         >
-          <a href="/categories/accommodation" className="hover:text-[#172a31]">
-            Accommodation
+          <a href="/" className="hover:text-[#172a31]">
+            Home
           </a>
           <span aria-hidden="true">/</span>
-          <span>{[listing.location, listing.province].filter(Boolean).join(", ")}</span>
+          {locationPage ? (
+            <a href={`/locations/${locationPage.slug}`} className="hover:text-[#172a31]">
+              {locationPage.name}
+            </a>
+          ) : (
+            <span>{[listing.location, listing.province].filter(Boolean).join(", ")}</span>
+          )}
+          <span aria-hidden="true">/</span>
+          <a href="/categories/stay" className="hover:text-[#172a31]">
+            Accommodation
+          </a>
           <span aria-hidden="true">/</span>
           <span aria-current="page" className="font-medium text-[#34474d]">
             {listing.name}
@@ -427,13 +459,20 @@ export function AccommodationBusinessProfile({
             {listing.name}
           </h1>
           {listing.location ? (
-            <a
-              href={`/locations/${locationSlug(listing.location)}`}
-              className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#172a31]"
-            >
-              <MapPin className="h-4 w-4 shrink-0" />
-              {[propertyType, listing.location, listing.province].filter(isString).join(" · ")}
-            </a>
+            locationPage ? (
+              <a
+                href={`/locations/${locationPage.slug}`}
+                className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-[#536267] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#172a31]"
+              >
+                <MapPin className="h-4 w-4 shrink-0" />
+                {[propertyType, listing.location, listing.province].filter(isString).join(" · ")}
+              </a>
+            ) : (
+              <p className="mt-1.5 inline-flex items-center gap-1.5 text-sm text-[#536267]">
+                <MapPin className="h-4 w-4 shrink-0" />
+                {[propertyType, listing.location, listing.province].filter(isString).join(" · ")}
+              </p>
+            )
           ) : (
             <p className="mt-1.5 text-sm text-[#536267]">{propertyType}</p>
           )}
@@ -638,7 +677,7 @@ export function AccommodationBusinessProfile({
                           latitude: Number(listing.latitude),
                           longitude: Number(listing.longitude),
                           description: listing.address ?? listing.location,
-                          href: `/business/${getBusinessSlug(listing)}`,
+                          href: getCategoryListingPath("accommodation", listing),
                           locationAccuracy: listing.locationAccuracy,
                         },
                       ]}
@@ -709,6 +748,10 @@ export function AccommodationBusinessProfile({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbStructuredData) }}
         />
       </main>
 
