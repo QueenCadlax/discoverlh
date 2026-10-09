@@ -5,6 +5,7 @@ const links = [
   ["Home", "/"],
   ["Categories", "/#categories"],
   ["Business Network", "/business-network"],
+  ["Business Packages", "/business-packages"],
   ["List Your Business", "/list-your-business"],
 ];
 

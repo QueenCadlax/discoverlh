@@ -496,6 +496,9 @@ function Nav() {
           <a href="/business-network" className="site-nav-link hover:text-[#17242b]">
             Business Network
           </a>
+          <a href="/business-packages" className="site-nav-link hover:text-[#17242b]">
+            Business Packages
+          </a>
         </nav>
         <div className="flex items-center gap-2">
           <a
@@ -1372,13 +1375,21 @@ function ForBusiness() {
             Create a professional presence on Discover and connect with customers across Mpumalanga.
           </p>
         </div>
-        <a
-          href={listingContactHref}
-          className="group inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-semibold text-[#17242b] shadow-sm transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#edf0f0] hover:shadow-md active:scale-[0.98]"
-        >
-          List Your Business{" "}
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </a>
+        <div className="flex flex-wrap items-center gap-3">
+          <a
+            href="/business-packages"
+            className="group inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-sm border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/10"
+          >
+            Explore Packages
+          </a>
+          <a
+            href={listingContactHref}
+            className="group inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-semibold text-[#17242b] shadow-sm transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-[#edf0f0] hover:shadow-md active:scale-[0.98]"
+          >
+            List Your Business{" "}
+            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+          </a>
+        </div>
       </div>
     </section>
   );

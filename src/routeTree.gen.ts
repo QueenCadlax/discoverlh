@@ -14,6 +14,7 @@ import { Route as CategoryRouteImport } from './routes/$category'
 import { Route as BookRouteImport } from './routes/book'
 import { Route as BusinessListingTermsRouteImport } from './routes/business-listing-terms'
 import { Route as BusinessNetworkRouteImport } from './routes/business-network'
+import { Route as BusinessPackagesRouteImport } from './routes/business-packages'
 import { Route as ListYourBusinessRouteImport } from './routes/list-your-business'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PropertyRouteImport } from './routes/property'
@@ -53,6 +54,11 @@ const BusinessListingTermsRoute = BusinessListingTermsRouteImport.update({
 const BusinessNetworkRoute = BusinessNetworkRouteImport.update({
   id: '/business-network',
   path: '/business-network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessPackagesRoute = BusinessPackagesRouteImport.update({
+  id: '/business-packages',
+  path: '/business-packages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ListYourBusinessRoute = ListYourBusinessRouteImport.update({
@@ -138,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/book': typeof BookRoute
   '/business-listing-terms': typeof BusinessListingTermsRoute
   '/business-network': typeof BusinessNetworkRoute
+  '/business-packages': typeof BusinessPackagesRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/property': typeof PropertyRouteWithChildren
@@ -160,6 +167,7 @@ export interface FileRoutesByTo {
   '/book': typeof BookRoute
   '/business-listing-terms': typeof BusinessListingTermsRoute
   '/business-network': typeof BusinessNetworkRoute
+  '/business-packages': typeof BusinessPackagesRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/property': typeof PropertyRouteWithChildren
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/book': typeof BookRoute
   '/business-listing-terms': typeof BusinessListingTermsRoute
   '/business-network': typeof BusinessNetworkRoute
+  '/business-packages': typeof BusinessPackagesRoute
   '/list-your-business': typeof ListYourBusinessRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/property': typeof PropertyRouteWithChildren
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/business-listing-terms'
     | '/business-network'
+    | '/business-packages'
     | '/list-your-business'
     | '/privacy-policy'
     | '/property'
@@ -229,6 +239,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/business-listing-terms'
     | '/business-network'
+    | '/business-packages'
     | '/list-your-business'
     | '/privacy-policy'
     | '/property'
@@ -251,6 +262,7 @@ export interface FileRouteTypes {
     | '/book'
     | '/business-listing-terms'
     | '/business-network'
+    | '/business-packages'
     | '/list-your-business'
     | '/privacy-policy'
     | '/property'
@@ -274,6 +286,7 @@ export interface RootRouteChildren {
   BookRoute: typeof BookRoute
   BusinessListingTermsRoute: typeof BusinessListingTermsRoute
   BusinessNetworkRoute: typeof BusinessNetworkRoute
+  BusinessPackagesRoute: typeof BusinessPackagesRoute
   ListYourBusinessRoute: typeof ListYourBusinessRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   PropertyRoute: typeof PropertyRouteWithChildren
@@ -324,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/business-network'
       fullPath: '/business-network'
       preLoaderRoute: typeof BusinessNetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-packages': {
+      id: '/business-packages'
+      path: '/business-packages'
+      fullPath: '/business-packages'
+      preLoaderRoute: typeof BusinessPackagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/list-your-business': {
@@ -454,6 +474,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookRoute: BookRoute,
   BusinessListingTermsRoute: BusinessListingTermsRoute,
   BusinessNetworkRoute: BusinessNetworkRoute,
+  BusinessPackagesRoute: BusinessPackagesRoute,
   ListYourBusinessRoute: ListYourBusinessRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   PropertyRoute: PropertyRouteWithChildren,

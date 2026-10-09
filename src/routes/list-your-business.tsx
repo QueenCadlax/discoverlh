@@ -165,6 +165,9 @@ function ListingRequestPage() {
             Submit your details securely to the Lowveld Hub team for review. They will confirm any
             missing information before a listing is published.
           </p>
+          <div className="mt-5 rounded-sm border border-[#e5ebeb] bg-[#f7faf8] p-3 text-sm text-[#34474d]">
+            Explore the available visibility options in our <a href="/business-packages" className="font-semibold text-[#172a31] underline underline-offset-2">Business Packages</a>.
+          </div>
         </div>
 
         <form
