@@ -298,7 +298,7 @@ function BusinessPackagesPage() {
               </div>
 
               <a
-                href="/list-your-business"
+                href="/list-your-business?package=Discover+Plus"
                 className="mt-8 inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-[#173b32] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#285448]"
               >
                 Choose Discover Plus <ArrowRight className="h-4 w-4" />
@@ -346,7 +346,7 @@ function BusinessPackagesPage() {
               </div>
 
               <a
-                href="/list-your-business"
+                href="/list-your-business?package=Discover+Premium"
                 className="mt-8 inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-white px-5 py-3 text-sm font-semibold text-[#17242b] transition-transform hover:-translate-y-0.5"
               >
                 Choose Discover Premium <ArrowRight className="h-4 w-4" />

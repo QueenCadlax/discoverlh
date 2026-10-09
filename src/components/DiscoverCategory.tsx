@@ -79,26 +79,26 @@ export function CategoryCard({
     <a
       href={href}
       aria-label={`Browse ${label}`}
-      className="group flex h-full min-h-[92px] w-full min-w-0 items-center gap-2 rounded-md border border-[#e3e8e7] bg-white p-2 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[100px] sm:gap-2 sm:p-2"
+      className="group flex h-full min-h-[84px] w-full min-w-0 items-center gap-2 rounded-md border border-[#e3e8e7] bg-white p-2.5 text-left transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-[#c7d4d1] hover:shadow-[0_10px_22px_-18px_rgba(36,87,82,.32)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a] motion-reduce:transition-none sm:min-h-[88px] sm:gap-2 sm:p-2.5 lg:min-h-[72px] lg:gap-2 lg:p-2"
     >
-      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#142b4a] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] sm:h-10 sm:w-10">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-[#142b4a] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] sm:h-9 sm:w-9 lg:h-8 lg:w-8">
         <CategoryIcon
           src={icon}
           alt=""
-          className="h-4 w-4 transition-colors group-hover:text-[#d8c49e] sm:h-[19px] sm:w-[19px]"
+          className="h-4 w-4 transition-colors group-hover:text-[#d8c49e] sm:h-[18px] sm:w-[18px]"
         />
       </span>
       <span className="flex min-h-0 min-w-0 flex-1 flex-col justify-center overflow-hidden">
         <span
           className={`block line-clamp-2 break-words font-semibold leading-[1.2] text-[#17242b] ${
             label === "Accommodation"
-              ? "whitespace-nowrap text-[10px] sm:text-sm"
-              : "text-[11px] sm:text-sm"
+              ? "whitespace-nowrap text-[10px] sm:text-xs"
+              : "text-[11px] sm:text-xs"
           }`}
         >
           {label}
         </span>
-        <span className="mt-1 block line-clamp-2 break-words text-[10px] leading-[14px] text-[#687378] sm:text-xs sm:leading-4">
+        <span className="mt-1 block line-clamp-2 break-words text-[10px] leading-[14px] text-[#687378] sm:text-[11px] sm:leading-4 lg:text-[10px] lg:leading-[13px]">
           {description}
         </span>
       </span>

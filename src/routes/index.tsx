@@ -160,7 +160,17 @@ const categorySearchTerms: Record<
   (typeof primaryDiscoveryCategorySlugs)[number] | "property",
   string[]
 > = {
-  stay: ["hotel", "lodge", "guesthouse", "guest house", "resort", "b&b", "camp", "accommodation"],
+  stay: [
+    "hotel",
+    "lodge",
+    "guesthouse",
+    "guest house",
+    "resort",
+    "b&b",
+    "camp",
+    "accommodation",
+    "spa",
+  ],
   eat: ["restaurant", "cafe", "café", "food", "dining", "takeaway", "brewery"],
   shop: ["mall", "market", "boutique", "store", "shopping"],
   health: ["doctor", "dentist", "clinic", "pharmacy", "health", "wellness"],
@@ -180,7 +190,7 @@ const categorySearchTerms: Record<
   ],
   property: ["property", "real estate", "estate agent", "house for sale", "home for sale"],
   automotive: ["mechanic", "car", "tyres", "towing", "automotive", "auto electrical"],
-  "personal-beauty": ["beauty", "salon", "barber", "spa", "massage", "fitness"],
+  "personal-beauty": ["beauty", "salon", "barber", "massage", "fitness"],
   "travel-transport": ["airport transfer", "shuttle", "car hire", "tour operator", "travel"],
   "leisure-entertainment": [
     "leisure",
@@ -193,7 +203,11 @@ const categorySearchTerms: Record<
   ],
 };
 
-const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
+const visiblePrimaryDiscoveryCategorySlugs = primaryDiscoveryCategorySlugs.filter(
+  (slug) => slug !== "personal-beauty",
+);
+
+const shortcuts: Shortcut[] = visiblePrimaryDiscoveryCategorySlugs.map((slug) => ({
   slug,
   terms: categorySearchTerms[slug],
 }));
@@ -219,7 +233,6 @@ const searchSuggestions = [
     terms: ["property", "house for sale", "home for sale", "property for rent"],
   },
   { label: "Mechanics and tyres", category: "Automotive", terms: ["mechanic", "tyres"] },
-  { label: "Salons and beauty", category: "Personal & Beauty", terms: ["salon", "beauty"] },
   {
     label: "Leisure and entertainment",
     category: "Leisure & Entertainment",
@@ -233,7 +246,7 @@ const searchSuggestions = [
   },
 ] as const;
 
-const discoveryCategorySlugs = new Set<CategorySlug>(primaryDiscoveryCategorySlugs);
+const discoveryCategorySlugs = new Set<CategorySlug>(visiblePrimaryDiscoveryCategorySlugs);
 
 const configuredSearchSuggestions = Object.values(categoryConfigs)
   .filter((config) => discoveryCategorySlugs.has(config.slug))
@@ -864,8 +877,8 @@ function WeatherWidget() {
 function CategoryShortcuts() {
   return (
     <section id="categories" className="category-rail-surface relative z-10">
-      <div className="container-x py-6 md:py-7">
-        <ScrollReveal className="mb-3">
+      <div className="container-x py-5 md:py-6">
+        <ScrollReveal className="mb-3 md:mb-4">
           <h2 className="font-display text-2xl font-medium text-[#17242b] md:text-3xl">
             Explore by category
           </h2>
@@ -873,13 +886,13 @@ function CategoryShortcuts() {
             Find the right business, service or place for what you need.
           </p>
         </ScrollReveal>
-        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-3">
+        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-6">
           {shortcuts.map((shortcut, index) => {
             const category = categoryConfigs[shortcut.slug];
             return (
               <ScrollReveal
                 key={shortcut.slug}
-                className="h-full min-w-0 w-full max-w-[270px]"
+                className="h-full min-w-0 w-full"
                 delay={Math.min(index * 40, 280)}
               >
                 <CategoryCard

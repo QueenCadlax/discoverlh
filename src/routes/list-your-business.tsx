@@ -19,6 +19,11 @@ export const Route = createFileRoute("/list-your-business")({
     business: typeof search.business === "string" ? search.business : undefined,
     category: typeof search.category === "string" ? search.category : undefined,
     location: typeof search.location === "string" ? search.location : undefined,
+    package: 
+      typeof search.package === "string" &&
+      ["Discover Plus", "Discover Premium", "Not sure yet"].includes(search.package)
+        ? search.package
+        : undefined,
   }),
   head: () => ({
     meta: [
@@ -66,6 +71,9 @@ function ListingRequestPage() {
   const [requestType, setRequestType] = useState(
     search.request === "claim" ? "Claim an existing listing" : "New listing",
   );
+  const [selectedPackage, setSelectedPackage] = useState(
+    search.package ?? "Not sure yet",
+  );
   const [submissionStatus, setSubmissionStatus] = useState<
     { kind: "success" | "error"; message: string } | undefined
   >();
@@ -91,6 +99,7 @@ function ListingRequestPage() {
       await submitRequestToServer({
         data: {
           requestType,
+          package: selectedPackage,
           businessName: getValue("businessName"),
           category: getValue("category"),
           location: getValue("location"),
@@ -190,6 +199,23 @@ function ListingRequestPage() {
                   </button>
                 ),
               )}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend className="text-sm font-semibold text-[#172a31]">Preferred package</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {["Discover Plus", "Discover Premium", "Not sure yet"].map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  aria-pressed={selectedPackage === option}
+                  onClick={() => setSelectedPackage(option)}
+                  className={`min-h-10 rounded-sm border px-3 text-sm font-medium ${selectedPackage === option ? "border-[#173b32] bg-[#eef2ef] text-[#172a31]" : "border-[#dce4e5] text-[#536267] hover:bg-[#f7f9f9]"}`}
+                >
+                  {option}
+                </button>
+              ))}
             </div>
           </fieldset>
 

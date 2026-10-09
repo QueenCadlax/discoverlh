@@ -23,6 +23,7 @@ const requiredSingleLineText = (max: number) =>
 const SubmissionSchema = z
   .object({
     requestType: z.enum(["New listing", "Update an existing listing", "Claim an existing listing"]),
+    package: z.enum(["Discover Plus", "Discover Premium", "Not sure yet"]).default("Not sure yet"),
     businessName: requiredSingleLineText(120),
     category: requiredSingleLineText(100).refine(
       (value) =>
@@ -77,6 +78,7 @@ function formatSubmissionEmail(data: z.infer<typeof SubmissionSchema>) {
     "New Discover by Lowveld Hub business listing submission",
     "",
     `Request type: ${data.requestType}`,
+    `Preferred package: ${data.package}`,
     `Business name: ${data.businessName}`,
     `Category: ${data.category}`,
     `Subcategory: ${data.subcategory || "Not provided"}`,
@@ -123,7 +125,7 @@ export const submitBusinessListingRequest = createServerFn({ method: "POST" })
           from,
           to: [recipient],
           reply_to: data.email,
-          subject: `New Business Listing Submission — ${data.businessName}`,
+          subject: `New Business Listing Submission — ${data.businessName} (${data.package})`,
           text: formatSubmissionEmail(data),
         }),
       });

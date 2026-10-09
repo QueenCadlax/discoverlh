@@ -56,6 +56,7 @@ export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readon
     "Campsites",
     "Farm Stays",
     "Unique Stays",
+    "Spas",
   ],
   eat: [
     "Restaurant",
@@ -142,7 +143,6 @@ export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readon
     "Barbers",
     "Beauty",
     "Nail Salons",
-    "Spas",
     "Massage",
     "Wellness",
     "Fitness",
