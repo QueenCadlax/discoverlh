@@ -493,15 +493,6 @@ function Nav() {
           <a href="#categories" className="site-nav-link hover:text-[#17242b]">
             Categories
           </a>
-          <a href="/property" className="site-nav-link hover:text-[#17242b]">
-            Property
-          </a>
-          <a
-            href="/categories/automotive?mode=vehicles"
-            className="site-nav-link hover:text-[#17242b]"
-          >
-            Auto
-          </a>
           <a href="/business-network" className="site-nav-link hover:text-[#17242b]">
             Business Network
           </a>

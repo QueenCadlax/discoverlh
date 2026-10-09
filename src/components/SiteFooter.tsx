@@ -1,8 +1,6 @@
 const links = [
   ["Home", "/#top"],
   ["Categories", "/#categories"],
-  ["Property", "/property"],
-  ["Auto", "/categories/automotive?mode=vehicles"],
   ["Business Network", "/business-network"],
   ["List Your Business", "/list-your-business"],
 ];
