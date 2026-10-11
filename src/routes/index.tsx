@@ -14,6 +14,7 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Boxes,
+  ChevronDown,
   Cloud,
   CloudRain,
   CloudSun,
@@ -35,8 +36,9 @@ import { MpumalangaMap } from "@/components/MpumalangaMap";
 import {
   categoryConfigs,
   getCategoryListings,
-  getBusinessSlug,
+  getCategoryListingPath,
   isPublishedListing,
+  newDiscoveryCategorySlugs,
   primaryDiscoveryCategorySlugs,
   searchTextMatches,
   type CategorySlug,
@@ -200,13 +202,34 @@ const categorySearchTerms: Record<
     "things to do",
     "activities",
   ],
+  "beauty-wellness-fitness": [
+    "beauty",
+    "salon",
+    "barber",
+    "spa",
+    "massage",
+    "gym",
+    "fitness",
+    "personal trainer",
+  ],
+  events: ["wedding", "event planner", "catering", "photographer", "celebration"],
+  "education-training": ["school", "preschool", "tutor", "training", "driving school"],
+  agriculture: ["agriculture", "farming", "irrigation", "farm equipment", "animal feed"],
+  security: ["security", "guarding", "armed response", "CCTV", "alarm", "access control"],
 };
 
-const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
+const categoryShortcut = (slug: Shortcut["slug"]): Shortcut => ({
   slug,
   terms: categorySearchTerms[slug],
-}));
-shortcuts.push({ slug: "property", terms: categorySearchTerms.property });
+});
+const originalCategorySlugs = primaryDiscoveryCategorySlugs.filter(
+  (slug) => !newDiscoveryCategorySlugs.includes(slug as (typeof newDiscoveryCategorySlugs)[number]),
+);
+const shortcuts: Shortcut[] = [
+  ...originalCategorySlugs.map(categoryShortcut),
+  categoryShortcut("property"),
+  ...newDiscoveryCategorySlugs.map(categoryShortcut),
+];
 
 const searchSuggestions = [
   {
@@ -870,6 +893,28 @@ function WeatherWidget() {
 }
 
 function CategoryShortcuts() {
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const originalShortcuts = shortcuts.slice(0, 10);
+  const additionalShortcuts = shortcuts.slice(10);
+
+  const renderShortcut = (shortcut: Shortcut, index: number) => {
+    const category = categoryConfigs[shortcut.slug];
+    return (
+      <ScrollReveal
+        key={shortcut.slug}
+        className="h-full min-w-0 w-full"
+        delay={Math.min(index * 40, 280)}
+      >
+        <CategoryCard
+          href={shortcut.slug === "property" ? "/property" : `/categories/${shortcut.slug}`}
+          label={category.label}
+          description={category.shortDescription ?? category.description}
+          icon={category.icon}
+        />
+      </ScrollReveal>
+    );
+  };
+
   return (
     <section id="categories" className="category-rail-surface relative z-10">
       <div className="container-x py-5 md:py-6">
@@ -881,24 +926,41 @@ function CategoryShortcuts() {
             Find the right business, service or place for what you need.
           </p>
         </ScrollReveal>
-        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-6">
-          {shortcuts.map((shortcut, index) => {
-            const category = categoryConfigs[shortcut.slug];
-            return (
-              <ScrollReveal
-                key={shortcut.slug}
-                className="h-full min-w-0 w-full"
-                delay={Math.min(index * 40, 280)}
-              >
-                <CategoryCard
-                  href={shortcut.slug === "property" ? "/property" : `/categories/${shortcut.slug}`}
-                  label={category.label}
-                  description={category.shortDescription ?? category.description}
-                  icon={category.icon}
-                />
-              </ScrollReveal>
-            );
-          })}
+        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
+          {originalShortcuts.map(renderShortcut)}
+        </div>
+        <div
+          id="additional-category-cards"
+          aria-hidden={!showAllCategories}
+          inert={!showAllCategories}
+          className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
+            showAllCategories ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className="min-h-0 overflow-hidden">
+            <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
+              {additionalShortcuts.map((shortcut, index) =>
+                renderShortcut(shortcut, index + originalShortcuts.length),
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="mt-1 flex justify-center">
+          <button
+            type="button"
+            aria-expanded={showAllCategories}
+            aria-controls="additional-category-cards"
+            onClick={() => setShowAllCategories((expanded) => !expanded)}
+            className="inline-flex min-h-10 items-center gap-2 rounded-sm px-3 py-1.5 text-xs font-medium tracking-[0.02em] text-[#536267] transition-colors hover:text-[#17242b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a58c61]"
+          >
+            {showAllCategories ? "Show less" : "Explore all categories"}
+            <ChevronDown
+              aria-hidden="true"
+              className={`h-3.5 w-3.5 transition-transform duration-300 motion-reduce:transition-none ${
+                showAllCategories ? "rotate-180" : ""
+              }`}
+            />
+          </button>
         </div>
       </div>
     </section>
@@ -909,10 +971,12 @@ function FeaturedPartnerImage({
   name,
   image,
   fit,
+  imageAlt,
 }: {
   name: string;
   image: string;
   fit: "cover" | "contain";
+  imageAlt?: string;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const initials = name
@@ -928,7 +992,7 @@ function FeaturedPartnerImage({
       {image && !imageFailed ? (
         <img
           src={image}
-          alt={name}
+          alt={imageAlt || name}
           loading="lazy"
           decoding="async"
           onError={() => setImageFailed(true)}
@@ -951,95 +1015,47 @@ function FeaturedPartnerImage({
 }
 
 function FeaturedPartnersSection() {
-  const featuredItems = [
-    (() => {
-      const stay = getCategoryListings("accommodation").find(
-        (listing) => listing.name === "The Capital Mbombela",
-      );
-      if (!stay) return null;
-      return {
-        name: stay.name,
-        category: "Accommodation",
-        location: stay.location ?? "Mbombela",
-        image: stay.image ?? "",
-        imageFit: "cover" as const,
-        href: `/accommodation/${getBusinessSlug(stay)}`,
-        summary: "A refined stay in the heart of Mbombela, ideal for exploring the Lowveld.",
-        cta: "Explore The Capital",
-        secondary: stay.bookingUrl
+  const featuredSelections = [
+    { category: "food-dining", id: "mixolog-mbombela", label: "Restaurants" },
+    { category: "food-dining", id: "turn-n-tender-mbombela", label: "Restaurants" },
+    { category: "accommodation", id: "the-capital-mbombela", label: "Accommodation" },
+    { category: "accommodation", id: "muluwa-lodge", label: "Accommodation" },
+    { category: "professional", id: "vzlr-attorneys", label: "Legal Services" },
+    { category: "shop", id: "riverside-mall", label: "Shopping" },
+    { category: "health", id: "mediclinic-nelspruit", label: "Health" },
+  ] as const;
+  const featuredItems = featuredSelections.flatMap(({ category, id, label }) => {
+    const listing = getCategoryListings(category).find(
+      (candidate) => candidate.id === id && isPublishedListing(candidate),
+    );
+    if (!listing) return [];
+    const bookingUrl = "bookingUrl" in listing ? listing.bookingUrl : undefined;
+    const website = "website" in listing ? listing.website : undefined;
+    const secondaryUrl = bookingUrl || website;
+    return [
+      {
+        name: listing.name,
+        category: label,
+        location: listing.location ?? "Mbombela",
+        image: listing.image ?? "",
+        imageAlt: listing.imageAlt,
+        imageFit: listing.imageFit === "contain" ? ("contain" as const) : ("cover" as const),
+        href: getCategoryListingPath(category, listing),
+        summary: listing.description ?? "",
+        cta: `Explore ${listing.name}`,
+        secondary: secondaryUrl
           ? {
-              label: "Check availability",
-              href: stay.bookingUrl,
+              label: bookingUrl ? "Check availability" : "Visit website",
+              href: secondaryUrl,
             }
           : undefined,
-      };
-    })(),
-    (() => {
-      const dining = getCategoryListings("food-dining").find(
-        (listing) => listing.name === "Pappas Kitchen",
-      );
-      if (!dining) return null;
-      return {
-        name: dining.name,
-        category: "Restaurants",
-        location: dining.location ?? "Mbombela",
-        image: dining.image ?? "",
-        imageFit: "cover" as const,
-        href: `/business/${getBusinessSlug(dining)}`,
-        summary:
-          "Wood-fired pizza, Italian comfort food and a local favourite serving Mbombela since 1989.",
-        cta: "Explore Pappas Kitchen",
-        secondary: dining.menuUrl
-          ? {
-              label: "View Menu",
-              href: dining.menuUrl,
-            }
-          : undefined,
-      };
-    })(),
-    (() => {
-      const mall = getCategoryListings("shop").find((listing) => listing.id === "riverside-mall");
-      if (!mall) return null;
-      return {
-        name: mall.name,
-        category: "Shop",
-        location: mall.location ?? "Mbombela",
-        image: mall.image ?? "",
-        imageFit: "cover" as const,
-        href: `/business/${getBusinessSlug(mall)}`,
-        summary: mall.description ?? "Discover Riverside Mall in Mbombela.",
-        cta: "Explore Riverside Mall",
-        secondary: mall.website ? { label: "Mall website", href: mall.website } : undefined,
-      };
-    })(),
-    (() => {
-      const mall = getCategoryListings("shop").find((listing) => listing.id === "ilanga-mall");
-      if (!mall) return null;
-      return {
-        name: mall.name,
-        category: "Shop",
-        location: mall.location ?? "Mbombela",
-        image: mall.image ?? "",
-        imageFit: "contain" as const,
-        href: `/business/${getBusinessSlug(mall)}`,
-        summary: mall.description ?? "Discover I’Langa Mall in Mbombela.",
-        cta: "Explore I’Langa Mall",
-        secondary: mall.website ? { label: "Mall website", href: mall.website } : undefined,
-      };
-    })(),
-  ].filter((item): item is NonNullable<typeof item> => Boolean(item));
-  const pappasFeaturedImage = featuredItems.find((item) => item.name === "Pappas Kitchen")?.image;
+      },
+    ];
+  });
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!pappasFeaturedImage) return;
-    const image = new Image();
-    image.decoding = "async";
-    image.src = pappasFeaturedImage;
-  }, [pappasFeaturedImage]);
 
   useEffect(() => {
     if (featuredItems.length < 2) return;
@@ -1051,7 +1067,10 @@ function FeaturedPartnersSection() {
     return () => window.clearInterval(intervalId);
   }, [featuredItems.length, isPaused]);
 
-  if (!featuredItems.length) return null;
+  if (featuredItems.length !== featuredSelections.length) {
+    console.error("Featured Partners requires all seven configured seeded listings.");
+    return null;
+  }
 
   const activeItem = featuredItems[activeIndex];
 
@@ -1094,6 +1113,7 @@ function FeaturedPartnersSection() {
                 key={activeItem.name}
                 name={activeItem.name}
                 image={activeItem.image}
+                imageAlt={activeItem.imageAlt}
                 fit={activeItem.imageFit}
               />
 
@@ -1164,6 +1184,7 @@ function FeaturedPartnersSection() {
                     key={item.name}
                     type="button"
                     aria-label={`Show slide ${index + 1} for ${item.name}`}
+                    aria-current={index === activeIndex ? "true" : undefined}
                     onClick={() => setActiveIndex(index)}
                     className={`h-2.5 rounded-full transition-all ${
                       index === activeIndex ? "w-7 bg-[#17242b]" : "w-2.5 bg-[#c7d1d4]"

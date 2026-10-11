@@ -18,7 +18,11 @@ export type CategorySlug =
   | "food-dining"
   | "health-wellness"
   | "property"
-  | "education-training";
+  | "education-training"
+  | "beauty-wellness-fitness"
+  | "events"
+  | "agriculture"
+  | "security";
 
 export const primaryDiscoveryCategorySlugs = [
   "stay",
@@ -30,7 +34,20 @@ export const primaryDiscoveryCategorySlugs = [
   "automotive",
   "travel-transport",
   "leisure-entertainment",
+  "beauty-wellness-fitness",
+  "events",
+  "education-training",
+  "agriculture",
+  "security",
 ] as const satisfies readonly CategorySlug[];
+
+export const newDiscoveryCategorySlugs = [
+  "beauty-wellness-fitness",
+  "events",
+  "education-training",
+  "agriculture",
+  "security",
+] as const satisfies readonly PrimaryDiscoveryCategorySlug[];
 
 export type PrimaryDiscoveryCategorySlug = (typeof primaryDiscoveryCategorySlugs)[number];
 
@@ -159,6 +176,56 @@ export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readon
     "Amusement Parks",
     "Activity Centres",
     "Experiences",
+  ],
+  "beauty-wellness-fitness": [
+    "Hair & Barbers",
+    "Nails & Lashes",
+    "Spas & Wellness",
+    "Skincare & Aesthetics",
+    "Makeup Artists & Beauty Therapists",
+    "Gyms & Fitness",
+    "Personal Trainers",
+  ],
+  events: [
+    "Wedding Venues",
+    "Event Planners",
+    "Decor & Styling",
+    "Photography & Video",
+    "Catering",
+    "Florists",
+    "Bridal Boutiques",
+    "Conference & Function Venues",
+    "DJs & Entertainment",
+    "Equipment Hire",
+  ],
+  "education-training": [
+    "Schools & Preschools",
+    "Creches",
+    "Tutors",
+    "Driving Schools",
+    "Vocational Training",
+    "Computer Training",
+    "Skills Development",
+    "Music & Art Schools",
+    "Professional Training",
+  ],
+  agriculture: [
+    "Agricultural Suppliers",
+    "Farm Equipment",
+    "Irrigation",
+    "Seeds & Fertiliser",
+    "Animal Feed",
+    "Agricultural Services",
+    "Forestry",
+  ],
+  security: [
+    "Security Companies",
+    "Guarding Services",
+    "Armed Response",
+    "CCTV & Surveillance",
+    "Alarm Systems",
+    "Access Control",
+    "Electric Fencing",
   ],
 };
 
@@ -380,10 +447,11 @@ const categoryTypeFilter = (
   label: string,
   options: readonly string[],
   kind: "single" | "multi" = "single",
+  field = "type",
 ): CategoryFilterConfig => ({
   id: "category-type",
   label,
-  field: "type",
+  field,
   kind,
   options: [...options],
 });
@@ -496,6 +564,11 @@ export const categorySlugByLabel: Record<string, CategorySlug> = {
   Automotive: "automotive",
   "Travel & Transport": "travel-transport",
   "Leisure & Entertainment": "leisure-entertainment",
+  "Beauty, Wellness & Fitness": "beauty-wellness-fitness",
+  "Events, Weddings & Celebrations": "events",
+  "Education & Training": "education-training",
+  "Agriculture & Farming": "agriculture",
+  "Security Services": "security",
 };
 
 export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
@@ -1619,12 +1692,18 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     slug: "education-training",
     label: "Education & Training",
     eyebrow: "Education & Training",
-    headline: "Find the right place to learn.",
+    headline: "Education & Training in Mpumalanga",
     description:
-      "Discover schools, tutors, training providers and learning opportunities across Mpumalanga.",
+      "Explore schools, tutors, training providers and learning opportunities across Mpumalanga.",
+    shortDescription: "Schools, tutors and skills training.",
+    seoTitle: "Education & Training in Mpumalanga | Discover by Lowveld Hub",
+    seoDescription:
+      "Explore schools, tutors, driving schools and skills training providers across Mpumalanga.",
     searchPlaceholder: "Search schools, tutors, courses...",
     searchFields: [
       "name",
+      "type",
+      "subcategory",
       "educationType",
       "trainingType",
       "level",
@@ -1633,8 +1712,11 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       "course",
       "location",
       "description",
+      "services",
     ],
-    heroImage: "/EDUCATION.jpg",
+    heroImage: "",
+    icon: "education-training",
+    iconAlt: "Education and training category",
     cardVariant: "education",
     cardFields: [
       { label: "Type", field: "educationType" },
@@ -1642,26 +1724,12 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       { label: "Format", field: "learningFormat" },
     ],
     filters: [
-      {
-        id: "education-type",
-        label: "Education type",
-        field: "educationType",
-        kind: "multi",
-        options: [
-          "School",
-          "College",
-          "Training Provider",
-          "Tutor",
-          "Academy",
-          "Skills Centre",
-          "Early Childhood Development",
-          "Driving School",
-          "Professional Training",
-          "Computer Training",
-          "Childcare",
-          "Educational Services",
-        ],
-      },
+      categoryTypeFilter(
+        "Education type",
+        discoverySubcategories["education-training"],
+        "multi",
+        "educationType",
+      ),
       {
         id: "training-type",
         label: "Training Type",
@@ -1716,6 +1784,150 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     ownerHeading: "List your education business.",
     ownerDescription: "Help learners and families discover your courses and services.",
     ownerBenefits: businessOwnerBenefits,
+    indexability: "always",
+  },
+  "beauty-wellness-fitness": {
+    ...primaryCategoryConfig({
+      slug: "beauty-wellness-fitness",
+      label: "Beauty, Wellness & Fitness",
+      description:
+        "Discover beauty professionals, wellness spaces, salons and fitness services across Mpumalanga.",
+      shortDescription: "Beauty professionals, wellness spaces and fitness services.",
+      searchPlaceholder: "Search salons, spas, gyms or beauty services...",
+      typeLabel: "Service type",
+      subcategories: discoverySubcategories["beauty-wellness-fitness"],
+      heroImage: "",
+      icon: "beauty-wellness-fitness",
+    }),
+    headline: "Beauty, Wellness & Fitness in Mpumalanga",
+    seoTitle: "Beauty, Wellness & Fitness in Mpumalanga | Discover",
+    seoDescription:
+      "Find salons, spas, skincare professionals, gyms and fitness services across Mpumalanga.",
+    searchFields: [
+      "name",
+      "type",
+      "subcategory",
+      "serviceType",
+      "services",
+      "products",
+      "location",
+      "description",
+    ],
+    resultNoun: "providers",
+    indexability: "always",
+    emptyTitle: "Beauty and wellness listings are being added.",
+    emptyDescription:
+      "Explore this category again soon as salons, wellness practitioners and fitness providers join Discover.",
+    ownerHeading: "List your beauty, wellness or fitness business.",
+    ownerDescription:
+      "Help people find your salon, spa, studio or fitness services across Mpumalanga.",
+  },
+  events: {
+    ...primaryCategoryConfig({
+      slug: "events",
+      label: "Events, Weddings & Celebrations",
+      description: "Find wedding venues, event specialists and suppliers for memorable occasions.",
+      shortDescription: "Venues and suppliers for weddings and events.",
+      searchPlaceholder: "Search venues, planners or event services...",
+      typeLabel: "Event service",
+      subcategories: discoverySubcategories.events,
+      heroImage: "",
+      icon: "events",
+    }),
+    headline: "Events, Weddings & Celebrations in Mpumalanga",
+    seoTitle: "Events, Weddings & Celebrations in Mpumalanga | Discover",
+    seoDescription:
+      "Find wedding venues, event planners, caterers, photographers and celebration suppliers across Mpumalanga.",
+    searchFields: [
+      "name",
+      "type",
+      "subcategory",
+      "serviceType",
+      "services",
+      "products",
+      "location",
+      "description",
+    ],
+    resultNoun: "event providers",
+    indexability: "always",
+    emptyTitle: "Event listings are being added.",
+    emptyDescription:
+      "Wedding venues, event specialists and celebration suppliers will appear here as genuine listings are added.",
+    ownerHeading: "List your event or wedding business.",
+    ownerDescription:
+      "Help people planning weddings, celebrations and functions discover your services.",
+  },
+  agriculture: {
+    ...primaryCategoryConfig({
+      slug: "agriculture",
+      label: "Agriculture & Farming",
+      description:
+        "Discover agricultural suppliers, farming services and equipment providers across the region.",
+      shortDescription: "Farming supplies, equipment and agricultural support.",
+      searchPlaceholder: "Search farm supplies, equipment or services...",
+      typeLabel: "Agricultural service",
+      subcategories: discoverySubcategories.agriculture,
+      heroImage: "",
+      icon: "agriculture",
+    }),
+    headline: "Agriculture & Farming in Mpumalanga",
+    seoTitle: "Agriculture & Farming in Mpumalanga | Discover",
+    seoDescription:
+      "Explore agricultural suppliers, farm equipment, irrigation and farming support services across Mpumalanga.",
+    searchFields: [
+      "name",
+      "type",
+      "subcategory",
+      "serviceType",
+      "services",
+      "products",
+      "location",
+      "description",
+    ],
+    resultNoun: "agricultural providers",
+    indexability: "always",
+    emptyTitle: "Agriculture listings are being added.",
+    emptyDescription:
+      "Agricultural suppliers, equipment providers and farming support services will appear as genuine listings are added.",
+    ownerHeading: "List your agricultural business.",
+    ownerDescription:
+      "Help farmers and growers discover your products, equipment or support services.",
+  },
+  security: {
+    ...primaryCategoryConfig({
+      slug: "security",
+      label: "Security Services",
+      description:
+        "Find security companies and specialists offering protection, surveillance and access-control solutions.",
+      shortDescription: "Security, surveillance and access control.",
+      searchPlaceholder: "Search security, CCTV or alarm services...",
+      typeLabel: "Security service",
+      subcategories: discoverySubcategories.security,
+      heroImage: "",
+      icon: "security",
+    }),
+    headline: "Security Services in Mpumalanga",
+    seoTitle: "Security Services in Mpumalanga | Discover",
+    seoDescription:
+      "Find security companies, guarding, armed response, CCTV, alarms and access-control specialists in Mpumalanga.",
+    searchFields: [
+      "name",
+      "type",
+      "subcategory",
+      "serviceType",
+      "services",
+      "products",
+      "location",
+      "description",
+    ],
+    resultNoun: "security providers",
+    indexability: "always",
+    emptyTitle: "Security listings are being added.",
+    emptyDescription:
+      "Security companies and installation specialists will appear here as genuine listings are added.",
+    ownerHeading: "List your security business.",
+    ownerDescription:
+      "Help households and businesses discover your security services across Mpumalanga.",
   },
 };
 
@@ -1859,6 +2071,11 @@ const oceanBasketGalleryAlts = [
 export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   stay: [],
   eat: [],
+  "beauty-wellness-fitness": [],
+  events: [],
+  agriculture: [],
+  security: [],
+  "education-training": [],
   health: [
     {
       id: "mediclinic-nelspruit",
@@ -4353,7 +4570,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   ],
   "health-wellness": [],
   property: [],
-  "education-training": [],
 };
 
 export const vehicleListings: VehicleListing[] = [];

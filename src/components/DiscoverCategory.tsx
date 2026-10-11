@@ -1,6 +1,7 @@
 import {
   BedDouble,
   BriefcaseBusiness,
+  CalendarDays,
   CarFront,
   Compass,
   GraduationCap,
@@ -8,9 +9,11 @@ import {
   House,
   MapPin,
   Plane,
+  ShieldCheck,
   Scale,
   Scissors,
   ShoppingBag,
+  Sprout,
   Stethoscope,
   Utensils,
   type LucideIcon,
@@ -33,6 +36,10 @@ const categoryIcons: Record<string, LucideIcon> = {
   "health-wellness": HeartPulse,
   property: House,
   "education-training": GraduationCap,
+  "beauty-wellness-fitness": Scissors,
+  events: CalendarDays,
+  agriculture: Sprout,
+  security: ShieldCheck,
 };
 
 type CategoryIconProps = {

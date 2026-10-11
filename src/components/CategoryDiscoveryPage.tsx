@@ -39,6 +39,7 @@ import {
   getCanonicalCategorySlug,
   getCategoryListingPath,
   getCategoryListings,
+  newDiscoveryCategorySlugs,
   type AutomotiveMode,
   getListingOpenStatus,
   getBusinessSlug,
@@ -479,6 +480,19 @@ export function CategoryDiscoveryPage({
   const suggestionListId = useId();
 
   const searchTabs = config.filters.filter((filter) => filter.placement === "search");
+  const quickSubcategoryFilter = newDiscoveryCategorySlugs.includes(
+    config.slug as (typeof newDiscoveryCategorySlugs)[number],
+  )
+    ? config.filters.find((filter) => filter.id === "category-type")
+    : undefined;
+  const quickSubcategoryValue = quickSubcategoryFilter
+    ? filters[quickSubcategoryFilter.id]
+    : undefined;
+  const selectedSubcategories = isStringFilterValue(quickSubcategoryValue)
+    ? quickSubcategoryValue
+    : typeof quickSubcategoryValue === "string"
+      ? [quickSubcategoryValue]
+      : [];
   const searchTabOptions = searchTabs.flatMap((filter) =>
     [...new Set(filter.options ?? [])].map((option) => ({ filter, option })),
   );
@@ -553,12 +567,16 @@ export function CategoryDiscoveryPage({
 
     return config.filters.every((filter) => matchesFilter(listing, filter, filters[filter.id]));
   });
-  const sortedListings = [...matchingListings].sort((first, second) =>
+  const orderedListings = [...matchingListings].sort((first, second) =>
     nearbyCenter
       ? (distanceFromCenter(first, nearbyCenter) ?? Infinity) -
         (distanceFromCenter(second, nearbyCenter) ?? Infinity)
       : compareListings(first, second, activeSortBy, query, config),
   );
+  const sortedListings =
+    !nearbyCenter && (config.slug === "eat" || config.slug === "food-dining")
+      ? balanceOceanBasketListings(orderedListings)
+      : orderedListings;
   const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
   const hasDesktopFilterSidebar =
     primaryDiscoveryCategorySlugs.includes(
@@ -1052,7 +1070,11 @@ export function CategoryDiscoveryPage({
 
         <section
           className="accommodation-hero-surface category-image-hero border-b border-[#e4eaea]"
-          style={{ "--category-hero-image": `url("${config.heroImage}")` } as CSSProperties}
+          style={
+            {
+              "--category-hero-image": config.heroImage ? `url("${config.heroImage}")` : "none",
+            } as CSSProperties
+          }
         >
           <div className="container-x py-4 md:py-5">
             <div className="max-w-3xl">
@@ -1260,6 +1282,53 @@ export function CategoryDiscoveryPage({
                 </button>
               </div>
             </form>
+            {quickSubcategoryFilter?.options && (
+              <div className="mx-auto mt-3 flex max-w-5xl items-center gap-2">
+                <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#788589]">
+                  Browse
+                </span>
+                <nav
+                  aria-label={`${config.label} subcategories`}
+                  className="flex min-w-0 gap-2 overflow-x-auto py-1"
+                >
+                  <button
+                    type="button"
+                    aria-pressed={selectedSubcategories.length === 0}
+                    onClick={() => setFilter(quickSubcategoryFilter.id, undefined)}
+                    className={`min-h-8 shrink-0 rounded-full border px-3 text-xs font-medium transition-colors ${
+                      selectedSubcategories.length === 0
+                        ? "border-[#17242b] bg-[#17242b] text-white"
+                        : "border-[#dce4e5] bg-white text-[#536267] hover:border-[#aab9bc]"
+                    }`}
+                  >
+                    All
+                  </button>
+                  {quickSubcategoryFilter.options.map((option) => {
+                    const selected = selectedSubcategories.includes(option);
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() =>
+                          setFilter(
+                            quickSubcategoryFilter.id,
+                            toggleValue(selectedSubcategories, option),
+                          )
+                        }
+                        className={`min-h-8 shrink-0 rounded-full border px-3 text-xs font-medium transition-colors ${
+                          selected
+                            ? "border-[#17242b] bg-[#17242b] text-white"
+                            : "border-[#dce4e5] bg-white text-[#536267] hover:border-[#aab9bc]"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            )}
           </div>
         </section>
 
@@ -2109,7 +2178,10 @@ export function DiscoveryCardImage({
           className="h-full w-full object-cover transition-[transform,filter] duration-500 group-hover:scale-[1.04] group-hover:contrast-[1.02] motion-reduce:transform-none"
         />
       ) : (
-        <div aria-hidden="true" className="grid h-full place-items-center bg-[radial-gradient(circle_at_top,_#f7f4ec_0%,_#edf2f1_38%,_#dfe9e3_100%)]">
+        <div
+          aria-hidden="true"
+          className="grid h-full place-items-center bg-[radial-gradient(circle_at_top,_#f7f4ec_0%,_#edf2f1_38%,_#dfe9e3_100%)]"
+        >
           <span className="font-display text-3xl font-medium tracking-[0.25em] text-[#8a7655]">
             {initials || "LH"}
           </span>
@@ -2309,6 +2381,22 @@ function isOceanBasketListing(listing: CategoryListing): boolean {
   return /(^|\s)Ocean Basket(\s|$)/i.test(listing.name ?? "");
 }
 
+function balanceOceanBasketListings(listings: CategoryListing[]): CategoryListing[] {
+  const oceanBasketListings = listings.filter(isOceanBasketListing);
+  if (oceanBasketListings.length === 0) return listings;
+
+  const otherListings = listings.filter((listing) => !isOceanBasketListing(listing));
+  if (otherListings.length === 0) return listings;
+
+  const insertionIndex = Math.ceil(otherListings.length / 2);
+  return [
+    ...otherListings.slice(0, insertionIndex),
+    oceanBasketListings[0],
+    ...otherListings.slice(insertionIndex),
+    ...oceanBasketListings.slice(1),
+  ];
+}
+
 function compareListings(
   first: CategoryListing,
   second: CategoryListing,
@@ -2316,15 +2404,6 @@ function compareListings(
   query: string,
   config: CategoryConfig,
 ): number {
-  const isRestaurantMix =
-    config.slug === "eat" || config.slug === "food-dining";
-
-  if (isRestaurantMix) {
-    const firstOcean = isOceanBasketListing(first) ? 1 : 0;
-    const secondOcean = isOceanBasketListing(second) ? 1 : 0;
-    if (firstOcean !== secondOcean) return firstOcean - secondOcean;
-  }
-
   const option = config.sortOptions.find((candidate) => candidate.id === sortId);
   if (!option?.field) {
     if (sortId !== "relevance" || !query.trim()) return 0;

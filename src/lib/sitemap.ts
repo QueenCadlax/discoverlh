@@ -1,4 +1,5 @@
 import {
+  categoryConfigs,
   getCategoryListings,
   getCanonicalCategorySlug,
   getCategoryListingPath,
@@ -42,6 +43,13 @@ export function generateSitemapXml() {
     const url = getPublicUrl(`/categories/${category}`);
     if (url) paths.add(url);
   });
+  Object.values(categoryConfigs)
+    .filter((config) => config.indexability === "always")
+    .forEach((config) => {
+      const category = getCanonicalCategorySlug(config.slug);
+      const url = getPublicUrl(`/categories/${category}`);
+      if (url) paths.add(url);
+    });
 
   ["/privacy-policy", "/terms-of-use", "/business-listing-terms"].forEach((path) => {
     const url = getPublicUrl(path);

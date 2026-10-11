@@ -75,14 +75,13 @@ export const Route = createFileRoute("/categories/$category")({
       });
     }
     const redirects: Record<string, string> = {
-      events: "leisure-entertainment",
-      "weddings-events": "leisure-entertainment",
+      "weddings-events": "events",
       education: "education-training",
       travel: "travel-transport",
       "professional-services": "professional",
       "home-construction": "home-property",
       "health-wellness": "health",
-      beauty: "stay",
+      beauty: "beauty-wellness-fitness",
       "personal-beauty": "stay",
       "events-entertainment": "leisure-entertainment",
     };
@@ -161,11 +160,14 @@ export const Route = createFileRoute("/categories/$category")({
         ? config.heroImage
         : getPublicUrl(config.heroImage)
       : undefined;
-    const isEmpty = isProperty
-      ? propertyMode === "listings"
-        ? propertyListings.filter(isPublishedListing).length === 0
-        : getCategoryListings("property").filter(isPublishedListing).length === 0
-      : getCategoryListings(config.slug).filter(isPublishedListing).length === 0;
+    const isEmpty =
+      config.indexability === "always"
+        ? false
+        : isProperty
+          ? propertyMode === "listings"
+            ? propertyListings.filter(isPublishedListing).length === 0
+            : getCategoryListings("property").filter(isPublishedListing).length === 0
+          : getCategoryListings(config.slug).filter(isPublishedListing).length === 0;
     const hasSearch = Boolean(
       match.search.q?.trim() ||
       match.search.location ||
