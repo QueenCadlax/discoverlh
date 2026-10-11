@@ -190,7 +190,6 @@ const categorySearchTerms: Record<
   ],
   property: ["property", "real estate", "estate agent", "house for sale", "home for sale"],
   automotive: ["mechanic", "car", "tyres", "towing", "automotive", "auto electrical"],
-  "personal-beauty": ["beauty", "salon", "barber", "massage", "fitness"],
   "travel-transport": ["airport transfer", "shuttle", "car hire", "tour operator", "travel"],
   "leisure-entertainment": [
     "leisure",
@@ -203,11 +202,7 @@ const categorySearchTerms: Record<
   ],
 };
 
-const visiblePrimaryDiscoveryCategorySlugs = primaryDiscoveryCategorySlugs.filter(
-  (slug) => slug !== "personal-beauty",
-);
-
-const shortcuts: Shortcut[] = visiblePrimaryDiscoveryCategorySlugs.map((slug) => ({
+const shortcuts: Shortcut[] = primaryDiscoveryCategorySlugs.map((slug) => ({
   slug,
   terms: categorySearchTerms[slug],
 }));
@@ -246,7 +241,7 @@ const searchSuggestions = [
   },
 ] as const;
 
-const discoveryCategorySlugs = new Set<CategorySlug>(visiblePrimaryDiscoveryCategorySlugs);
+const discoveryCategorySlugs = new Set<CategorySlug>(primaryDiscoveryCategorySlugs);
 
 const configuredSearchSuggestions = Object.values(categoryConfigs)
   .filter((config) => discoveryCategorySlugs.has(config.slug))

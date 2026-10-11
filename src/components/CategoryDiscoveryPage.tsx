@@ -1916,7 +1916,6 @@ export function CategoryListingCard({
       "professional-services",
       "home-construction",
       "health-wellness",
-      "beauty",
       "property",
       "events-entertainment",
       "education-training",
@@ -1964,20 +1963,23 @@ function PremiumListingCard({
   const showListingImage = config.slug !== "automotive";
 
   return (
-    <article className="group relative h-full min-w-0 transition-transform duration-200 hover:-translate-y-0.5 motion-reduce:transition-none">
+    <article className="group relative h-full min-w-0">
       <a
         href={href}
-        className={`block h-full min-w-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] ${showListingImage ? "" : "border border-[#e5ebeb] bg-white p-3 transition-colors hover:border-[#c7d4d1]"}`}
+        className={`block h-full min-w-0 overflow-hidden rounded-xl border border-[#e7eceb] bg-white shadow-[0_12px_28px_-24px_rgba(20,31,35,0.7)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d5dfde] hover:shadow-[0_24px_42px_-26px_rgba(20,31,35,0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] motion-reduce:transition-none ${showListingImage ? "" : "p-3"}`}
       >
         {showListingImage && (
-          <DiscoveryCardImage
-            image={listing.image}
-            alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
-            name={listing.name}
-          />
+          <div className="relative overflow-hidden rounded-t-xl">
+            <DiscoveryCardImage
+              image={listing.image}
+              alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
+              name={listing.name}
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0f1f22]/20 to-transparent" />
+          </div>
         )}
-        <div className={showListingImage ? "pt-3" : ""}>
-          <h3 className="line-clamp-1 text-[15px] font-semibold leading-5 text-[#172a31] transition-colors group-hover:text-[#28718a]">
+        <div className={showListingImage ? "px-3 pb-3 pt-3" : ""}>
+          <h3 className="line-clamp-1 text-[15px] font-semibold leading-5 text-[#172a31] transition-colors duration-200 group-hover:text-[#28718a]">
             {listing.listingKind === "vehicle" && listing.listingType === "Vehicles for Sale"
               ? [listing.year, listing.make, listing.model].filter(hasValue).join(" ") ||
                 listing.name
@@ -2094,21 +2096,21 @@ export function DiscoveryCardImage({
     .toUpperCase();
 
   return (
-    <div className="relative block aspect-[4/3] overflow-hidden rounded-md bg-[#eef2f1]">
+    <div className="relative block aspect-[4/3] overflow-hidden rounded-t-xl bg-[#eef2f1]">
       {image && !imageFailed ? (
         <img
           src={image}
           alt={alt}
           loading="lazy"
           decoding="async"
-          onError={(event) => {
+          onError={() => {
             setImageFailed(true);
           }}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.025] motion-reduce:transform-none"
+          className="h-full w-full object-cover transition-[transform,filter] duration-500 group-hover:scale-[1.04] group-hover:contrast-[1.02] motion-reduce:transform-none"
         />
       ) : (
-        <div aria-hidden="true" className="grid h-full place-items-center bg-[#eef2f1]">
-          <span className="font-display text-3xl font-medium tracking-wide text-[#8a7655]">
+        <div aria-hidden="true" className="grid h-full place-items-center bg-[radial-gradient(circle_at_top,_#f7f4ec_0%,_#edf2f1_38%,_#dfe9e3_100%)]">
+          <span className="font-display text-3xl font-medium tracking-[0.25em] text-[#8a7655]">
             {initials || "LH"}
           </span>
         </div>
@@ -2303,6 +2305,10 @@ function canonicalAmenityLabel(value: string) {
   return value.trim();
 }
 
+function isOceanBasketListing(listing: CategoryListing): boolean {
+  return /(^|\s)Ocean Basket(\s|$)/i.test(listing.name ?? "");
+}
+
 function compareListings(
   first: CategoryListing,
   second: CategoryListing,
@@ -2310,6 +2316,15 @@ function compareListings(
   query: string,
   config: CategoryConfig,
 ): number {
+  const isRestaurantMix =
+    config.slug === "eat" || config.slug === "food-dining";
+
+  if (isRestaurantMix) {
+    const firstOcean = isOceanBasketListing(first) ? 1 : 0;
+    const secondOcean = isOceanBasketListing(second) ? 1 : 0;
+    if (firstOcean !== secondOcean) return firstOcean - secondOcean;
+  }
+
   const option = config.sortOptions.find((candidate) => candidate.id === sortId);
   if (!option?.field) {
     if (sortId !== "relevance" || !query.trim()) return 0;

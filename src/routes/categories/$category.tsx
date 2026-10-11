@@ -82,7 +82,8 @@ export const Route = createFileRoute("/categories/$category")({
       "professional-services": "professional",
       "home-construction": "home-property",
       "health-wellness": "health",
-      beauty: "personal-beauty",
+      beauty: "stay",
+      "personal-beauty": "stay",
       "events-entertainment": "leisure-entertainment",
     };
     const category = redirects[params.category];

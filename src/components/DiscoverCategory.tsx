@@ -31,8 +31,6 @@ const categoryIcons: Record<string, LucideIcon> = {
   automotive: CarFront,
   health: Stethoscope,
   "health-wellness": HeartPulse,
-  "personal-beauty": Scissors,
-  beauty: Scissors,
   property: House,
   "education-training": GraduationCap,
 };
