@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useId,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -930,7 +931,10 @@ function CategoryShortcuts() {
           {initialShortcuts.map(renderShortcut)}
         </div>
         {additionalShortcuts.length > 0 && showAllCategories && (
-          <div id="additional-category-cards" className="grid auto-rows-fr grid-cols-2 gap-2 sm:hidden">
+          <div
+            id="additional-category-cards"
+            className="grid auto-rows-fr grid-cols-2 gap-2 sm:hidden"
+          >
             {additionalShortcuts.map((shortcut, index) =>
               renderShortcut(shortcut, index + initialShortcuts.length),
             )}
@@ -989,7 +993,8 @@ function FeaturedPartnerImage({
         <img
           src={image}
           alt={imageAlt || name}
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
           onError={() => setImageFailed(true)}
           className={`absolute inset-0 h-full w-full ${
@@ -1010,44 +1015,49 @@ function FeaturedPartnerImage({
   );
 }
 
+const featuredSelections = [
+  { category: "food-dining", id: "mixolog-mbombela", label: "Restaurants" },
+  { category: "food-dining", id: "turn-n-tender-mbombela", label: "Restaurants" },
+  { category: "accommodation", id: "the-capital-mbombela", label: "Accommodation" },
+  { category: "accommodation", id: "muluwa-lodge", label: "Accommodation" },
+  { category: "professional", id: "vzlr-attorneys", label: "Legal Services" },
+  { category: "shop", id: "riverside-mall", label: "Shopping" },
+  { category: "health", id: "mediclinic-nelspruit", label: "Health" },
+] as const;
+
 function FeaturedPartnersSection() {
-  const featuredSelections = [
-    { category: "food-dining", id: "mixolog-mbombela", label: "Restaurants" },
-    { category: "food-dining", id: "turn-n-tender-mbombela", label: "Restaurants" },
-    { category: "accommodation", id: "the-capital-mbombela", label: "Accommodation" },
-    { category: "accommodation", id: "muluwa-lodge", label: "Accommodation" },
-    { category: "professional", id: "vzlr-attorneys", label: "Legal Services" },
-    { category: "shop", id: "riverside-mall", label: "Shopping" },
-    { category: "health", id: "mediclinic-nelspruit", label: "Health" },
-  ] as const;
-  const featuredItems = featuredSelections.flatMap(({ category, id, label }) => {
-    const listing = getCategoryListings(category).find(
-      (candidate) => candidate.id === id && isPublishedListing(candidate),
-    );
-    if (!listing) return [];
-    const bookingUrl = "bookingUrl" in listing ? listing.bookingUrl : undefined;
-    const website = "website" in listing ? listing.website : undefined;
-    const secondaryUrl = bookingUrl || website;
-    return [
-      {
-        name: listing.name,
-        category: label,
-        location: listing.location ?? "Mbombela",
-        image: listing.image ?? "",
-        imageAlt: listing.imageAlt,
-        imageFit: listing.imageFit === "contain" ? ("contain" as const) : ("cover" as const),
-        href: getCategoryListingPath(category, listing),
-        summary: listing.description ?? "",
-        cta: `Explore ${listing.name}`,
-        secondary: secondaryUrl
-          ? {
-              label: bookingUrl ? "Check availability" : "Visit website",
-              href: secondaryUrl,
-            }
-          : undefined,
-      },
-    ];
-  });
+  const featuredItems = useMemo(
+    () =>
+      featuredSelections.flatMap(({ category, id, label }) => {
+        const listing = getCategoryListings(category).find(
+          (candidate) => candidate.id === id && isPublishedListing(candidate),
+        );
+        if (!listing) return [];
+        const bookingUrl = "bookingUrl" in listing ? listing.bookingUrl : undefined;
+        const website = "website" in listing ? listing.website : undefined;
+        const secondaryUrl = bookingUrl || website;
+        return [
+          {
+            name: listing.name,
+            category: label,
+            location: listing.location ?? "Mbombela",
+            image: listing.image ?? "",
+            imageAlt: listing.imageAlt,
+            imageFit: listing.imageFit === "contain" ? ("contain" as const) : ("cover" as const),
+            href: getCategoryListingPath(category, listing),
+            summary: listing.description ?? "",
+            cta: `Explore ${listing.name}`,
+            secondary: secondaryUrl
+              ? {
+                  label: bookingUrl ? "Check availability" : "Visit website",
+                  href: secondaryUrl,
+                }
+              : undefined,
+          },
+        ];
+      }),
+    [],
+  );
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -1062,6 +1072,16 @@ function FeaturedPartnersSection() {
     }, 6000);
     return () => window.clearInterval(intervalId);
   }, [featuredItems.length, isPaused]);
+
+  useEffect(() => {
+    if (featuredItems.length < 2) return;
+    const nextItem = featuredItems[(activeIndex + 1) % featuredItems.length];
+    if (!nextItem?.image) return;
+    const image = new window.Image();
+    image.decoding = "async";
+    image.fetchPriority = "low";
+    image.src = nextItem.image;
+  }, [activeIndex, featuredItems]);
 
   if (featuredItems.length !== featuredSelections.length) {
     console.error("Featured Partners requires all seven configured seeded listings.");
