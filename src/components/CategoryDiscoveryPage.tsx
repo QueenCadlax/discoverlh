@@ -9,6 +9,7 @@ import {
   type MouseEvent,
 } from "react";
 import {
+  ArrowRight,
   Bookmark,
   ChevronDown,
   Heart,
@@ -24,6 +25,7 @@ import {
 
 import { Slider } from "@/components/ui/slider";
 import { CategoryIcon } from "@/components/DiscoverCategory";
+import { DiscoveryCardImage } from "@/components/DiscoveryCardImage";
 import { MpumalangaMap, type MpumalangaMapPlace } from "@/components/MpumalangaMap";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
@@ -49,9 +51,9 @@ import {
   type CategoryConfig,
   type CategoryFilterConfig,
   type CategoryListing,
-  type EventListing,
   type PropertyListing,
   type PropertyMode,
+  type WellnessBusinessProfile,
   propertyListings,
   vehicleListings,
   type CategorySlug,
@@ -101,6 +103,92 @@ type DiscoverySearchState = {
   status?: string;
 };
 const listingContactHref = "/list-your-business";
+
+export function WellnessProfileDetails({ profile }: { profile: WellnessBusinessProfile }) {
+  return (
+    <section className="border-b border-[#e5ebeb] py-5">
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
+          {profile.providerType}
+        </p>
+        <h2 className="mt-1 text-lg font-semibold text-[#172a31]">Treatments &amp; facilities</h2>
+        <p className="mt-2 text-sm leading-7 text-[#5f6d72]">
+          {profile.description ?? profile.summary}
+        </p>
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {profile.treatmentSections.map((section) => (
+          <div key={section.title} className="rounded-sm border border-[#e5ebeb] bg-[#fafcfc] p-4">
+            <h3 className="text-sm font-semibold text-[#34474d]">{section.title}</h3>
+            <ul className="mt-2 space-y-2 text-sm leading-6 text-[#5f6d72]">
+              {section.items.map((item) => (
+                <li key={item} className="flex items-start gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a7655]"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            {section.note && (
+              <p className="mt-3 text-xs leading-5 text-[#68767a]">{section.note}</p>
+            )}
+          </div>
+        ))}
+      </div>
+      {profile.facilities && profile.facilities.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold text-[#34474d]">Setting &amp; facilities</h3>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {profile.facilities.map((facility) => (
+              <li
+                key={facility}
+                className="border border-[#e2e8e9] bg-[#f8faf9] px-3 py-2 text-xs font-medium text-[#536267]"
+              >
+                {facility}
+              </li>
+            ))}
+          </ul>
+          {profile.facilitiesNote && (
+            <p className="mt-2 text-xs leading-5 text-[#68767a]">{profile.facilitiesNote}</p>
+          )}
+        </div>
+      )}
+      {profile.visitNotes && profile.visitNotes.length > 0 && (
+        <ul className="mt-4 space-y-2 border-l-2 border-[#d8e2e0] pl-4 text-xs leading-5 text-[#68767a]">
+          {profile.visitNotes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
+      )}
+      {(profile.bookingUrl || profile.website) && (
+        <div className="mt-4 flex flex-wrap gap-3 text-xs">
+          {profile.bookingUrl && (
+            <a
+              href={profile.bookingUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
+            >
+              {profile.bookingLabel ?? "Enquire or book"}
+            </a>
+          )}
+          {profile.website && profile.bookingUrl !== profile.website && (
+            <a
+              href={profile.website}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
+            >
+              Visit official website
+            </a>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
 const savedSearchesStorageKey = "discover:saved-searches:v1";
 
 function readSavedSearches(): SavedDirectorySearch[] {
@@ -351,7 +439,7 @@ function getPropertyModeHref(propertyMode: PropertyMode, query: string, location
   const search = new URLSearchParams();
   if (query.trim()) search.set("q", query.trim());
   if (location) search.set("location", location);
-  if (propertyMode === "businesses") search.set("view", "professionals");
+  search.set("view", propertyMode === "businesses" ? "professionals" : "listings");
   const queryString = search.toString();
   return `/property${queryString ? `?${queryString}` : ""}`;
 }
@@ -361,7 +449,7 @@ export function CategoryDiscoveryPage({
   initialQuery = "",
   initialLocation,
   initialAutomotiveMode = "vehicles",
-  initialPropertyMode = "listings",
+  initialPropertyMode = "businesses",
   initialAccommodationType,
   initialCategoryType,
   initialDiscoveryFilters = {},
@@ -465,7 +553,13 @@ export function CategoryDiscoveryPage({
   const [savedSearches, setSavedSearches] = useState<SavedDirectorySearch[]>([]);
   const [savedSearchAlert, setSavedSearchAlert] = useState<SavedSearchAlert | null>(null);
   const [saveSearchMessage, setSaveSearchMessage] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+  const [sortBy, setSortBy] = useState(
+    config.slug === "events" ||
+      config.slug === "security" ||
+      config.slug === "beauty-wellness-fitness"
+      ? "featured"
+      : "name",
+  );
   const [nearbyCenter, setNearbyCenter] = useState<{ latitude: number; longitude: number } | null>(
     null,
   );
@@ -1631,7 +1725,13 @@ export function CategoryDiscoveryPage({
                   </p>
                 )
               ) : sortedListings.length > 0 ? (
-                <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 xl:grid-cols-4 xl:gap-x-5">
+                <div
+                  className={`mt-5 grid gap-x-4 gap-y-6 md:grid-cols-3 xl:grid-cols-4 xl:gap-x-5 ${
+                    config.slug === "security"
+                      ? "grid-cols-1 min-[480px]:grid-cols-2"
+                      : "grid-cols-2"
+                  }`}
+                >
                   {sortedListings.map((listing) => (
                     <CategoryListingCard key={listing.id} listing={listing} config={config} />
                   ))}
@@ -1970,30 +2070,13 @@ export function CategoryListingCard({
   if (config.slug === "property" && isPropertyListing(listing)) {
     return <PropertyListingCard listing={listing} config={config} />;
   }
-  if (config.slug === "leisure-entertainment" && isEventListing(listing)) {
-    return <EventListingCard listing={listing} config={config} />;
-  }
-  if (config.slug === "food-dining" || config.slug === "eat") {
-    return <FoodDiningListingCard listing={listing} config={config} />;
-  }
-  if (config.slug === "accommodation" || config.slug === "stay") {
-    return <AccommodationListingCard listing={listing} config={config} />;
-  }
-  if (
-    listing.seeded &&
-    [
-      "professional-services",
-      "home-construction",
-      "health-wellness",
-      "property",
-      "events-entertainment",
-      "education-training",
-      "property",
-    ].includes(config.slug)
-  ) {
-    return <SeededCategoryBusinessCard listing={listing} config={config} />;
-  }
-  return <PremiumListingCard listing={listing} config={config} />;
+  return (
+    <PremiumListingCard
+      listing={listing}
+      config={config}
+      href={getCategoryListingPath(config.slug, listing)}
+    />
+  );
 }
 
 function PremiumListingCard({
@@ -2007,6 +2090,7 @@ function PremiumListingCard({
 }) {
   const isDining = config.slug === "food-dining" || config.slug === "eat";
   const cuisine = listing.cuisineTypes?.[0] ?? listing.cuisine;
+  const wellnessProfile = listing.wellnessProfile;
   const extraDescriptor = isDining
     ? cuisine
     : listing.listingKind === "property"
@@ -2015,7 +2099,9 @@ function PremiumListingCard({
         ? listing.eventStartDate
         : listing.subcategory;
   const descriptor = [
-    listing.accommodationType ??
+    wellnessProfile?.providerType ??
+      listing.eventProfile?.displayType ??
+      listing.accommodationType ??
       listing.type ??
       listing.listingType ??
       listing.propertyType ??
@@ -2029,30 +2115,53 @@ function PremiumListingCard({
     .join(" · ");
   const location =
     listing.location ?? (typeof listing.area === "string" ? listing.area : undefined);
-  const showListingImage = config.slug !== "automotive";
+  const displayName = wellnessProfile?.displayName ?? listing.name;
+  const description = wellnessProfile?.summary ?? listing.description;
+  const highlights = [
+    ...(config.slug === "security" ? (listing.serviceAreas ?? []) : []),
+    ...(listing.services ?? []),
+    ...(listing.eventProfile?.serviceSections.map(({ title }) => title) ?? []),
+    ...(listing.educationProfile?.educationLevels ?? []),
+    ...(config.slug === "security" ? [] : (listing.serviceAreas ?? [])),
+  ]
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .slice(0, 2);
+  const image = wellnessProfile?.image ?? listing.image ?? listing.logo;
+  const showListingImage = config.slug !== "automotive" || listing.listingKind === "business";
 
   return (
     <article className="group relative h-full min-w-0">
       <a
         href={href}
-        className={`block h-full min-w-0 overflow-hidden rounded-xl border border-[#e7eceb] bg-white shadow-[0_12px_28px_-24px_rgba(20,31,35,0.7)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d5dfde] hover:shadow-[0_24px_42px_-26px_rgba(20,31,35,0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] motion-reduce:transition-none ${showListingImage ? "" : "p-3"}`}
+        className={`flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-[#e7eceb] bg-white shadow-[0_12px_28px_-24px_rgba(20,31,35,0.7)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d5dfde] hover:shadow-[0_24px_42px_-26px_rgba(20,31,35,0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] motion-reduce:transition-none ${showListingImage ? "" : "p-3"}`}
       >
         {showListingImage && (
           <div className="relative overflow-hidden rounded-t-xl">
             <DiscoveryCardImage
-              image={listing.image}
-              alt={listing.imageAlt ?? `${listing.name}${location ? ` in ${location}` : ""}`}
-              name={listing.name}
+              image={image}
+              alt={
+                wellnessProfile?.imageAlt ??
+                listing.imageAlt ??
+                listing.logoAlt ??
+                `${displayName}${location ? ` in ${location}` : ""}`
+              }
+              name={displayName}
+              fit={
+                config.slug === "security"
+                  ? "contain"
+                  : (listing.imageFit ??
+                    (wellnessProfile?.image ? "cover" : listing.logo ? "contain" : "cover"))
+              }
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0f1f22]/20 to-transparent" />
           </div>
         )}
-        <div className={showListingImage ? "px-3 pb-3 pt-3" : ""}>
+        <div className={`flex flex-1 flex-col ${showListingImage ? "px-3.5 pb-4 pt-3.5" : ""}`}>
           <h3 className="line-clamp-1 text-[15px] font-semibold leading-5 text-[#172a31] transition-colors duration-200 group-hover:text-[#28718a]">
             {listing.listingKind === "vehicle" && listing.listingType === "Vehicles for Sale"
               ? [listing.year, listing.make, listing.model].filter(hasValue).join(" ") ||
                 listing.name
-              : listing.name}
+              : displayName}
           </h3>
           {descriptor && (
             <p className="mt-1 line-clamp-1 text-xs leading-4 text-[#68767a]">{descriptor}</p>
@@ -2060,15 +2169,34 @@ function PremiumListingCard({
           {location && (
             <p className="mt-1 line-clamp-1 text-xs leading-4 text-[#68767a]">{location}</p>
           )}
-          {listing.description && (
-            <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-[#536267]">
-              {listing.description}
+          {listing.imageNote && (
+            <p className="mt-1 line-clamp-1 text-[10px] leading-4 text-[#788589]">
+              {listing.imageNote}
             </p>
           )}
+          {description && (
+            <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-[#536267]">
+              {description}
+            </p>
+          )}
+          <div className="mt-3 flex h-6 gap-1.5 overflow-hidden">
+            {highlights.map((highlight) => (
+              <span
+                key={highlight}
+                className="max-w-[50%] truncate rounded-sm border border-[#e2e8e9] bg-[#f8faf9] px-2 py-1 text-[10px] leading-4 text-[#536267]"
+              >
+                {highlight}
+              </span>
+            ))}
+          </div>
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-semibold text-[#172a31]">
+            View details
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
         </div>
       </a>
-      <ShareListingButton name={listing.name} href={href} />
-      <SavedListingButton name={listing.name} />
+      <ShareListingButton name={displayName} href={href} />
+      <SavedListingButton name={displayName} />
     </article>
   );
 }
@@ -2146,51 +2274,6 @@ function ShareListingButton({ name, href }: { name: string; href: string }) {
   );
 }
 
-export function DiscoveryCardImage({
-  image,
-  alt,
-  name,
-}: {
-  image?: string;
-  alt: string;
-  name: string;
-}) {
-  const [imageFailed, setImageFailed] = useState(false);
-  const initials = name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
-
-  return (
-    <div className="relative block aspect-[4/3] overflow-hidden rounded-t-xl bg-[#eef2f1]">
-      {image && !imageFailed ? (
-        <img
-          src={image}
-          alt={alt}
-          loading="lazy"
-          decoding="async"
-          onError={() => {
-            setImageFailed(true);
-          }}
-          className="h-full w-full object-cover transition-[transform,filter] duration-500 group-hover:scale-[1.04] group-hover:contrast-[1.02] motion-reduce:transform-none"
-        />
-      ) : (
-        <div
-          aria-hidden="true"
-          className="grid h-full place-items-center bg-[radial-gradient(circle_at_top,_#f7f4ec_0%,_#edf2f1_38%,_#dfe9e3_100%)]"
-        >
-          <span className="font-display text-3xl font-medium tracking-[0.25em] text-[#8a7655]">
-            {initials || "LH"}
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function isPropertyListing(listing: CategoryListing): listing is PropertyListing {
   return listing.listingKind === "property";
 }
@@ -2209,48 +2292,6 @@ function PropertyListingCard({
       href={`/property/${getBusinessSlug(listing)}`}
     />
   );
-}
-
-function isEventListing(listing: CategoryListing): listing is EventListing {
-  return (
-    listing.listingKind === "event" &&
-    typeof listing.eventStartDate === "string" &&
-    typeof listing.venue === "string"
-  );
-}
-
-function EventListingCard({ listing, config }: { listing: EventListing; config: CategoryConfig }) {
-  return <PremiumListingCard listing={listing} config={config} />;
-}
-
-function SeededCategoryBusinessCard({
-  listing,
-  config,
-}: {
-  listing: CategoryListing;
-  config: CategoryConfig;
-}) {
-  return <PremiumListingCard listing={listing} config={config} />;
-}
-
-function FoodDiningListingCard({
-  listing,
-  config,
-}: {
-  listing: CategoryListing;
-  config: CategoryConfig;
-}) {
-  return <PremiumListingCard listing={listing} config={config} />;
-}
-
-function AccommodationListingCard({
-  listing,
-  config,
-}: {
-  listing: CategoryListing;
-  config: CategoryConfig;
-}) {
-  return <PremiumListingCard listing={listing} config={config} />;
 }
 
 function CategoryFooter() {

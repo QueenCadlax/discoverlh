@@ -15,9 +15,11 @@ import {
 } from "lucide-react";
 
 import { SiteFooter } from "@/components/SiteFooter";
+import { WellnessProfileDetails } from "@/components/CategoryDiscoveryPage";
 import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { RestaurantBusinessProfile } from "@/components/RestaurantBusinessProfile";
 import {
+  getCategoryListings,
   getCanonicalCategorySlug,
   getCategoryListingPath,
   type CategoryConfig,
@@ -44,8 +46,14 @@ export function BusinessProfilePage({
   const website = getSafeExternalUrl(listing.website);
   const bookingUrl = getSafeExternalUrl(listing.bookingUrl);
   const isAutomotive = config.slug === "automotive";
+  const isSecurity = config.slug === "security";
   const isProfessionalServices =
     config.slug === "professional" || config.slug === "professional-services";
+  const isEventsProfile = config.slug === "events" && Boolean(listing.eventProfile);
+  const canShowAutomotiveBusinessMedia = isAutomotive && listing.listingKind === "business";
+  const canShowBusinessMedia = !isAutomotive || canShowAutomotiveBusinessMedia;
+  const wellnessProfile =
+    config.slug === "beauty-wellness-fitness" ? listing.wellnessProfile : undefined;
   if (config.slug === "food-dining") {
     return <RestaurantBusinessProfile listing={listing} config={config} />;
   }
@@ -59,38 +67,54 @@ export function BusinessProfilePage({
       : [listing.address, listing.location, listing.province, listing.postalCode, listing.country]
           .filter(Boolean)
           .join(", ");
-  const gallery = isAutomotive
-    ? []
-    : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
+  const gallery = canShowBusinessMedia
+    ? [
+        ...new Set(
+          (wellnessProfile
+            ? [wellnessProfile.image, ...(wellnessProfile.images ?? [])]
+            : [listing.image, ...(listing.images ?? [])]
+          ).filter(isString),
+        ),
+      ]
+    : [];
   const services = toDisplayValues(listing.services ?? listing.serviceType);
   const profileUrl = getPublicUrl(getCategoryListingPath(config.slug, listing));
-  const profileImages = (
-    isAutomotive ? [] : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))]
-  )
+  const profileImages = gallery
     .map(
       (image) =>
         getSafeExternalUrl(image) ?? (image.startsWith("/") ? getPublicUrl(image) : undefined),
     )
     .filter((image): image is string => Boolean(image));
+  const logo = listing.logo ?? wellnessProfile?.logo;
   const logoUrl =
-    listing.logo && !isAutomotive
-      ? (getSafeExternalUrl(listing.logo) ??
-        (listing.logo.startsWith("/") ? getPublicUrl(listing.logo) : undefined))
+    logo && (!isAutomotive || canShowAutomotiveBusinessMedia)
+      ? (getSafeExternalUrl(logo) ?? (logo.startsWith("/") ? getPublicUrl(logo) : undefined))
       : undefined;
   const locationPage = listing.location ? findDiscoveryLocation(listing.location) : undefined;
+  const relatedEventListings = isEventsProfile
+    ? getCategoryListings("events")
+        .filter((candidate) => candidate.id !== listing.id && candidate.eventProfile)
+        .slice(0, 3)
+    : [];
   const openingHoursSpecification = getOpeningHoursSpecification(listing.openingHours);
   const structuredData = {
     "@context": "https://schema.org",
-    "@type":
-      listing.type === "Law Firm"
+    "@type": wellnessProfile
+      ? "HealthAndBeautyBusiness"
+      : listing.type === "Law Firm"
         ? "LegalService"
         : config.slug === "accommodation"
           ? "LodgingBusiness"
           : listing.diningType === "Restaurant"
             ? "Restaurant"
             : "LocalBusiness",
-    name: listing.name,
-    ...(listing.description ? { description: listing.description } : {}),
+    name: wellnessProfile?.displayName ?? listing.name,
+    ...((wellnessProfile?.description ?? wellnessProfile?.summary ?? listing.description)
+      ? {
+          description:
+            wellnessProfile?.description ?? wellnessProfile?.summary ?? listing.description,
+        }
+      : {}),
     ...(profileUrl ? { url: profileUrl } : {}),
     ...(listing.menuUrl ? { hasMenu: listing.menuUrl } : {}),
     ...(listing.roomCount ? { numberOfRooms: listing.roomCount } : {}),
@@ -118,7 +142,7 @@ export function BusinessProfilePage({
             "@type": "PostalAddress",
             ...(listing.address ? { streetAddress: listing.address } : {}),
             ...(listing.location ? { addressLocality: listing.location } : {}),
-            addressRegion: "Mpumalanga",
+            addressRegion: listing.province ?? "Mpumalanga",
             ...(listing.postalCode ? { postalCode: listing.postalCode } : {}),
             addressCountry: "ZA",
           },
@@ -264,8 +288,15 @@ export function BusinessProfilePage({
 
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.5fr)_minmax(260px,0.7fr)] lg:gap-10">
           <div className="min-w-0">
-            {config.slug === "leisure-entertainment" ? (
-              <LeisurePhotoGallery listing={listing} images={gallery} />
+            {config.slug === "leisure-entertainment" ||
+            config.slug === "events" ||
+            wellnessProfile ? (
+              <LeisurePhotoGallery
+                listing={listing}
+                images={gallery}
+                imageAlt={wellnessProfile?.imageAlt}
+                imageAlts={wellnessProfile?.imageAlts}
+              />
             ) : gallery.length > 0 ? (
               <div className="grid gap-2 sm:grid-cols-2">
                 {gallery.slice(0, 4).map((image, index) => (
@@ -278,7 +309,7 @@ export function BusinessProfilePage({
                     }
                     fetchPriority={index === 0 ? "high" : undefined}
                     loading={index === 0 ? "eager" : "lazy"}
-                    className={`w-full rounded-sm bg-[#edf0f0] object-cover ${index === 0 ? "aspect-[16/10] sm:row-span-2 sm:h-full" : "aspect-[16/9]"}`}
+                    className={`w-full rounded-sm bg-[#edf0f0] ${isSecurity || listing.imageFit === "contain" ? "object-contain" : "object-cover"} ${index === 0 ? "aspect-[16/10] sm:row-span-2 sm:h-full" : "aspect-[16/9]"}`}
                   />
                 ))}
               </div>
@@ -301,10 +332,10 @@ export function BusinessProfilePage({
 
             <div className="mt-6 flex flex-wrap items-start justify-between gap-4 border-b border-[#e5ebeb] pb-5">
               <div className="flex min-w-0 items-center gap-3">
-                {listing.logo && !isAutomotive && (
+                {logoUrl && (
                   <img
-                    src={listing.logo}
-                    alt={`${listing.name} logo`}
+                    src={logoUrl}
+                    alt={listing.logoAlt ?? wellnessProfile?.logoAlt ?? `${listing.name} logo`}
                     className="h-12 w-12 shrink-0 rounded-sm border border-[#e5ebeb] object-contain"
                   />
                 )}
@@ -320,13 +351,22 @@ export function BusinessProfilePage({
                     )}
                   </div>
                   <h1 className="mt-1 font-display text-3xl font-medium leading-tight text-[#172a31] sm:text-4xl">
-                    {listing.name}
+                    {wellnessProfile?.displayName ?? listing.name}
                   </h1>
                   {(listing.address || listing.location) && (
                     <div className="mt-2 flex items-start gap-1.5 text-sm text-[#68767a]">
                       <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
                       <div>
-                        {listing.address && <p>{listing.address}</p>}
+                        {listing.address && (
+                          <p>
+                            {listing.addressLabel && (
+                              <span className="font-medium text-[#536267]">
+                                {listing.addressLabel}:{" "}
+                              </span>
+                            )}
+                            {listing.address}
+                          </p>
+                        )}
                         {listing.location && (
                           <p>
                             {locationPage ? (
@@ -370,7 +410,9 @@ export function BusinessProfilePage({
                     rel="noreferrer"
                     className="inline-flex min-h-10 items-center gap-2 rounded-sm bg-[#142b4a] px-3 text-sm font-semibold text-white transition-colors hover:bg-[#244568]"
                   >
-                    <Globe className="h-4 w-4" /> View booking options
+                    <Globe className="h-4 w-4" />{" "}
+                    {wellnessProfile?.bookingLabel ??
+                      (isEventsProfile ? "Enquire" : "View booking options")}
                   </a>
                 )}
                 {shareStatus && (
@@ -380,6 +422,11 @@ export function BusinessProfilePage({
                 )}
               </div>
             </div>
+            {listing.imageNote && (
+              <p className="border-b border-[#e5ebeb] py-2 text-xs leading-5 text-[#68767a]">
+                {listing.imageNote}
+              </p>
+            )}
             {listing.description && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-base font-semibold">About</h2>
@@ -388,6 +435,41 @@ export function BusinessProfilePage({
                 </p>
               </section>
             )}
+
+            {config.slug === "security" && listing.serviceAreas?.length ? (
+              <section className="border-b border-[#e5ebeb] py-5">
+                <h2 className="text-base font-semibold">Areas served</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {listing.serviceAreas.map((area) => (
+                    <li
+                      key={area}
+                      className="border border-[#e2e8e9] bg-[#f8faf9] px-3 py-2 text-xs font-medium text-[#536267]"
+                    >
+                      {area}
+                    </li>
+                  ))}
+                </ul>
+                {listing.serviceAreaNote && (
+                  <p className="mt-3 text-xs leading-5 text-[#68767a]">{listing.serviceAreaNote}</p>
+                )}
+              </section>
+            ) : null}
+
+            {config.slug === "security" && listing.specialties?.length ? (
+              <section className="border-b border-[#e5ebeb] py-5">
+                <h2 className="text-base font-semibold">Sectors and settings</h2>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {listing.specialties.map((specialty) => (
+                    <li
+                      key={specialty}
+                      className="border border-[#e2e8e9] bg-[#f8faf9] px-3 py-2 text-xs font-medium text-[#536267]"
+                    >
+                      {specialty}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
 
             {config.slug === "accommodation" &&
               (listing.accommodationType || listing.roomCount || listing.roomTypes?.length) && (
@@ -471,6 +553,8 @@ export function BusinessProfilePage({
               </section>
             )}
 
+            {wellnessProfile && <WellnessProfileDetails profile={wellnessProfile} />}
+
             {listing.openingHours && Object.keys(listing.openingHours).length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-base font-semibold">Opening hours</h2>
@@ -484,6 +568,117 @@ export function BusinessProfilePage({
                 </dl>
               </section>
             )}
+
+            {isEventsProfile && listing.eventProfile && (
+              <div className="divide-y divide-[#e5ebeb]">
+                <section className="py-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
+                    Services & occasions
+                  </p>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {listing.eventProfile.serviceSections.map((section) => (
+                      <article
+                        key={section.title}
+                        className="rounded-sm border border-[#e5ebeb] bg-[#fbfcfb] p-4"
+                      >
+                        <h2 className="text-sm font-semibold text-[#172a31]">{section.title}</h2>
+                        <p className="mt-2 text-sm leading-6 text-[#5f6d72]">
+                          {section.description}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                {listing.eventProfile.venueSpaces &&
+                  listing.eventProfile.venueSpaces.length > 0 && (
+                    <section className="py-6">
+                      <h2 className="text-base font-semibold">Spaces & facilities</h2>
+                      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                        {listing.eventProfile.venueSpaces.map((space) => (
+                          <div key={space.name}>
+                            <h3 className="text-sm font-semibold text-[#34474d]">{space.name}</h3>
+                            <p className="mt-1.5 text-sm leading-6 text-[#5f6d72]">
+                              {space.description}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                {listing.eventProfile.facts && listing.eventProfile.facts.length > 0 && (
+                  <section className="py-6">
+                    <h2 className="text-base font-semibold">Capacity & practical details</h2>
+                    <dl className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {listing.eventProfile.facts.map((fact) => (
+                        <div key={fact.label} className="rounded-sm border border-[#e5ebeb] p-4">
+                          <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#788589]">
+                            {fact.label}
+                          </dt>
+                          <dd className="mt-1 text-sm font-semibold text-[#34474d]">
+                            {fact.value}
+                          </dd>
+                          {fact.note && (
+                            <p className="mt-1.5 text-xs leading-5 text-[#68767a]">{fact.note}</p>
+                          )}
+                        </div>
+                      ))}
+                    </dl>
+                  </section>
+                )}
+
+                {(listing.eventProfile.accommodation || listing.eventProfile.dining) && (
+                  <section className="grid gap-5 py-6 sm:grid-cols-2">
+                    {listing.eventProfile.accommodation && (
+                      <div>
+                        <h2 className="text-base font-semibold">Accommodation</h2>
+                        <p className="mt-2 text-sm leading-6 text-[#5f6d72]">
+                          {listing.eventProfile.accommodation}
+                        </p>
+                      </div>
+                    )}
+                    {listing.eventProfile.dining && (
+                      <div>
+                        <h2 className="text-base font-semibold">Food & drink</h2>
+                        <p className="mt-2 text-sm leading-6 text-[#5f6d72]">
+                          {listing.eventProfile.dining}
+                        </p>
+                      </div>
+                    )}
+                  </section>
+                )}
+
+                {listing.eventProfile.enquiryNote && (
+                  <section className="py-6">
+                    <h2 className="text-base font-semibold">Enquiries</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#5f6d72]">
+                      {listing.eventProfile.enquiryNote}
+                    </p>
+                  </section>
+                )}
+
+                {listing.eventProfile.officialLinks.length > 0 && (
+                  <section className="py-6">
+                    <h2 className="text-base font-semibold">Official information</h2>
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                      {listing.eventProfile.officialLinks.map((link) => (
+                        <li key={link.href}>
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex min-h-10 items-center rounded-sm border border-[#dce4e5] px-3 text-xs font-semibold text-[#34474d] transition-colors hover:bg-[#f7f9f9]"
+                          >
+                            {link.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+              </div>
+            )}
           </div>
 
           <aside className="h-fit border-t border-[#e5ebeb] pt-5 lg:sticky lg:top-24 lg:border lg:p-5">
@@ -496,7 +691,7 @@ export function BusinessProfilePage({
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-[#142b4a] px-4 text-sm font-semibold text-white hover:bg-[#244568]"
                 >
-                  View booking options
+                  {isEventsProfile ? "Enquire" : "View booking options"}
                 </a>
               )}
               {whatsapp && (
@@ -556,6 +751,52 @@ export function BusinessProfilePage({
             )}
           </aside>
         </div>
+        {relatedEventListings.length > 0 && (
+          <section className="mt-12 border-t border-[#e5ebeb] pt-8">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
+                  Keep exploring
+                </p>
+                <h2 className="mt-1 font-display text-2xl font-medium text-[#172a31]">
+                  More event discoveries
+                </h2>
+              </div>
+              <a
+                href="/categories/events"
+                className="text-xs font-semibold text-[#34474d] underline decoration-[#c7d0d2] underline-offset-4 hover:text-[#39703b]"
+              >
+                Browse all event listings
+              </a>
+            </div>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {relatedEventListings.map((related) => (
+                <a
+                  key={related.id}
+                  href={getCategoryListingPath("events", related)}
+                  className="group overflow-hidden rounded-sm border border-[#e5ebeb] bg-white transition-colors hover:border-[#cdd8d9]"
+                >
+                  <img
+                    src={related.image}
+                    alt={related.imageAlt ?? related.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="aspect-[16/9] w-full bg-[#edf0f0] object-cover"
+                  />
+                  <span className="block px-3.5 py-3">
+                    <span className="block text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7655]">
+                      {related.eventProfile?.displayType}
+                    </span>
+                    <span className="mt-1 block text-sm font-semibold text-[#172a31] group-hover:text-[#28718a]">
+                      {related.name}
+                    </span>
+                    <span className="mt-1 block text-xs text-[#68767a]">{related.location}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
@@ -570,7 +811,7 @@ export function BusinessProfilePage({
         </a>
       </div>
       <SiteFooter />
-      {isProfessionalServices && (
+      {(isProfessionalServices || isEventsProfile) && (
         <>
           <nav
             aria-label={`Contact ${listing.name}`}
@@ -612,7 +853,17 @@ export function BusinessProfilePage({
   );
 }
 
-function LeisurePhotoGallery({ listing, images }: { listing: CategoryListing; images: string[] }) {
+function LeisurePhotoGallery({
+  listing,
+  images,
+  imageAlt,
+  imageAlts,
+}: {
+  listing: CategoryListing;
+  images: string[];
+  imageAlt?: string;
+  imageAlts?: string[];
+}) {
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [activeImage, setActiveImage] = useState<number | null>(null);
   const visibleImages = images.filter((image) => !failedImages.includes(image));
@@ -662,7 +913,8 @@ function LeisurePhotoGallery({ listing, images }: { listing: CategoryListing; im
   const getAlt = (image: string, index: number) => {
     const sourceIndex = images.indexOf(image);
     return (
-      (sourceIndex === 0 ? listing.imageAlt : listing.imageAlts?.[sourceIndex - 1]) ??
+      imageAlts?.[sourceIndex] ??
+      (sourceIndex === 0 ? (imageAlt ?? listing.imageAlt) : listing.imageAlts?.[sourceIndex - 1]) ??
       `${listing.name}${index ? `, photo ${index + 1}` : ""}`
     );
   };

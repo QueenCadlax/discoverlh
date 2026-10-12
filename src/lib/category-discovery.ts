@@ -199,6 +199,10 @@ export const discoverySubcategories: Record<PrimaryDiscoveryCategorySlug, readon
     "Equipment Hire",
   ],
   "education-training": [
+    "University",
+    "TVET College",
+    "Private School",
+    "Private College",
     "Schools & Preschools",
     "Creches",
     "Tutors",
@@ -267,6 +271,63 @@ export type CategoryCardField = {
 
 export type BusinessNetworkConnectionType = "supplier" | "business-services" | "partnerships";
 
+export type EducationInstitutionProfile = {
+  campusName?: string;
+  educationLevels: string[];
+  programmeGroups?: {
+    title: string;
+    description: string;
+    programmes?: string[];
+    href?: string;
+  }[];
+  admissions?: {
+    summary: string;
+    applicationUrl?: string;
+    currentDates?: string[];
+    requirements?: string[];
+  };
+  facilities?: string[];
+  studentExperience?: string[];
+  officialLinks?: { label: string; href: string }[];
+  sourceNotes: { label: string; href: string }[];
+  verificationNote?: string;
+};
+
+export type EventBusinessProfile = {
+  displayType: string;
+  serviceSections: { title: string; description: string }[];
+  venueSpaces?: { name: string; description: string }[];
+  facts?: { label: string; value: string; note?: string }[];
+  accommodation?: string;
+  dining?: string;
+  enquiryNote?: string;
+  officialLinks: { label: string; href: string }[];
+};
+
+export type WellnessBusinessProfile = {
+  displayName: string;
+  providerType: string;
+  summary: string;
+  description?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  website?: string;
+  bookingUrl?: string;
+  bookingLabel?: string;
+  email?: string;
+  logo?: string;
+  logoAlt?: string;
+  image?: string;
+  imageAlt?: string;
+  images?: string[];
+  imageAlts?: string[];
+  imageSourceUrls?: string[];
+  treatmentSections: { title: string; items: string[]; note?: string }[];
+  facilities?: string[];
+  facilitiesNote?: string;
+  visitNotes?: string[];
+};
+
 export type CategoryListing = {
   id: string;
   slug?: string;
@@ -286,6 +347,14 @@ export type CategoryListing = {
   sourceUrl?: string;
   additionalCategorySlugs?: CategorySlug[];
   locationAccuracy?: "address" | "approximate";
+  educationType?: string;
+  educationLevels?: string[];
+  subjects?: string[];
+  educationProfile?: EducationInstitutionProfile;
+  eventBusinessTypes?: string[];
+  eventProfile?: EventBusinessProfile;
+  wellnessProfile?: WellnessBusinessProfile;
+  featuredOrder?: number;
   restaurantProfile?: {
     story: string[];
     experienceHighlights: { title: string; description: string }[];
@@ -302,6 +371,7 @@ export type CategoryListing = {
   name: string;
   location?: string;
   address?: string;
+  addressLabel?: string;
   province?: string;
   postalCode?: string;
   country?: string;
@@ -318,11 +388,17 @@ export type CategoryListing = {
   description?: string;
   image?: string;
   imageAlt?: string;
+  imageFit?: "cover" | "contain";
+  imageNote?: string;
   logo?: string;
+  logoAlt?: string;
   images?: string[];
   imageAlts?: string[];
   imageSourceUrls?: string[];
   services?: string[];
+  specialties?: string[];
+  serviceAreas?: string[];
+  serviceAreaNote?: string;
   products?: string[];
   menuUrl?: string;
   deliveryAvailable?: boolean;
@@ -1694,95 +1770,65 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     eyebrow: "Education & Training",
     headline: "Education & Training in Mpumalanga",
     description:
-      "Explore schools, tutors, training providers and learning opportunities across Mpumalanga.",
+      "Compare universities, colleges and schools across Mpumalanga, then follow each institution's official links for current programmes and admissions.",
     shortDescription: "Schools, tutors and skills training.",
     seoTitle: "Education & Training in Mpumalanga | Discover by Lowveld Hub",
     seoDescription:
-      "Explore schools, tutors, driving schools and skills training providers across Mpumalanga.",
-    searchPlaceholder: "Search schools, tutors, courses...",
+      "Explore universities, TVET colleges, private schools and colleges across Mpumalanga, with official programme and admissions links.",
+    searchPlaceholder: "Search institutions, programmes or locations...",
     searchFields: [
       "name",
       "type",
       "subcategory",
-      "educationType",
-      "trainingType",
-      "level",
-      "subject",
+      "educationLevels",
       "subjects",
-      "course",
       "location",
       "description",
       "services",
     ],
-    heroImage: "",
+    heroImage: "https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp",
     icon: "education-training",
     iconAlt: "Education and training category",
     cardVariant: "education",
     cardFields: [
-      { label: "Type", field: "educationType" },
-      { label: "Courses", field: "courses" },
-      { label: "Format", field: "learningFormat" },
+      { label: "Institution", field: "type" },
+      { label: "Levels", field: "educationLevels" },
+      { label: "Location", field: "location" },
     ],
     filters: [
-      categoryTypeFilter(
-        "Education type",
-        discoverySubcategories["education-training"],
-        "multi",
-        "educationType",
-      ),
       {
-        id: "training-type",
-        label: "Training Type",
-        field: "trainingType",
+        id: "category-type",
+        label: "Institution type",
+        field: "type",
         kind: "multi",
-        options: [
-          "Skills Training",
-          "Computer Training",
-          "Professional Training",
-          "Driving School",
-          "Childcare",
-          "Tutoring",
-        ],
+        optionsFromData: true,
       },
       {
-        id: "subject",
-        label: "Subject / Service",
-        field: "subjects",
-        kind: "multi",
-        options: [
-          "Mathematics",
-          "Languages",
-          "Science",
-          "Business Studies",
-          "Computer Literacy",
-          "Driving",
-          "Skills Training",
-        ],
-      },
-      {
-        id: "format",
-        label: "Learning format",
-        field: "learningFormat",
-        kind: "multi",
-        options: ["In Person", "Online", "Hybrid"],
-      },
-      {
-        id: "age-group",
-        label: "Age group",
-        field: "ageGroup",
+        id: "education-level",
+        label: "Education level",
+        field: "educationLevels",
         kind: "multi",
         optionsFromData: true,
         optional: true,
       },
-      locationFilter,
-      { id: "price", label: "Price", field: "price", kind: "range", optional: true, unit: "ZAR" },
+      {
+        id: "programme-area",
+        label: "Programme area",
+        field: "subjects",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+      discoveryLocationFilter,
     ],
-    sortOptions: [nameSort, relevanceSort, newestSort, lowPriceSort],
-    resultNoun: "providers",
-    emptyTitle: "No education and training listings yet.",
-    emptyDescription: "We're growing the education and training network across Mpumalanga.",
-    ownerHeading: "List your education business.",
-    ownerDescription: "Help learners and families discover your courses and services.",
+    sortOptions: [nameSort, relevanceSort],
+    resultNoun: "institutions",
+    emptyTitle: "No institutions match those choices.",
+    emptyDescription:
+      "Try adjusting your search or filters, or clear them to see every listed institution.",
+    ownerHeading: "Represent an education institution?",
+    ownerDescription:
+      "Help learners and families find accurate information about your campus, programmes and admissions.",
     ownerBenefits: businessOwnerBenefits,
     indexability: "always",
   },
@@ -1791,18 +1837,19 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       slug: "beauty-wellness-fitness",
       label: "Beauty, Wellness & Fitness",
       description:
-        "Discover beauty professionals, wellness spaces, salons and fitness services across Mpumalanga.",
-      shortDescription: "Beauty professionals, wellness spaces and fitness services.",
-      searchPlaceholder: "Search salons, spas, gyms or beauty services...",
-      typeLabel: "Service type",
+        "Find considered spa, beauty and wellness experiences across Mpumalanga, from mobile treatments in Mbombela to riverside retreats and country-estate spas.",
+      shortDescription: "Spa, beauty and wellness experiences across Mpumalanga.",
+      searchPlaceholder: "Search spas, treatments or locations...",
+      typeLabel: "Wellness service",
       subcategories: discoverySubcategories["beauty-wellness-fitness"],
-      heroImage: "",
+      heroImage:
+        "https://beautyonwheelsgroup.com/wp-content/uploads/2026/08/bow-wellness-picture.jpg",
       icon: "beauty-wellness-fitness",
     }),
-    headline: "Beauty, Wellness & Fitness in Mpumalanga",
-    seoTitle: "Beauty, Wellness & Fitness in Mpumalanga | Discover",
+    headline: "Discover Your Moment of Wellbeing",
+    seoTitle: "Spas, Beauty & Wellness in Mpumalanga | Discover",
     seoDescription:
-      "Find salons, spas, skincare professionals, gyms and fitness services across Mpumalanga.",
+      "Explore official spa, beauty and wellness providers in Mpumalanga, with clear treatment details, locations, galleries and direct enquiry links.",
     searchFields: [
       "name",
       "type",
@@ -1813,12 +1860,33 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       "location",
       "description",
     ],
+    filters: [
+      discoveryLocationFilter,
+      {
+        id: "wellness-services",
+        label: "Treatments & services",
+        field: "services",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+    ],
+    sortOptions: [
+      {
+        id: "featured",
+        label: "Curated order",
+        field: "featuredOrder",
+        direction: "asc",
+        requiresData: true,
+      },
+      nameSort,
+    ],
     resultNoun: "providers",
     indexability: "always",
-    emptyTitle: "Beauty and wellness listings are being added.",
+    emptyTitle: "No wellness providers match those choices.",
     emptyDescription:
-      "Explore this category again soon as salons, wellness practitioners and fitness providers join Discover.",
-    ownerHeading: "List your beauty, wellness or fitness business.",
+      "Try another treatment or location, or clear the filters to browse every spa and wellness provider.",
+    ownerHeading: "List your beauty, spa or wellness business.",
     ownerDescription:
       "Help people find your salon, spa, studio or fitness services across Mpumalanga.",
   },
@@ -1826,36 +1894,67 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     ...primaryCategoryConfig({
       slug: "events",
       label: "Events, Weddings & Celebrations",
-      description: "Find wedding venues, event specialists and suppliers for memorable occasions.",
-      shortDescription: "Venues and suppliers for weddings and events.",
+      description:
+        "Explore distinctive wedding venues, event estates and experienced celebration professionals across Mpumalanga.",
+      shortDescription: "Wedding venues, event estates and planners across the Lowveld.",
       searchPlaceholder: "Search venues, planners or event services...",
       typeLabel: "Event service",
       subcategories: discoverySubcategories.events,
-      heroImage: "",
+      heroImage: "https://www.umbali.co.za/wp-content/uploads/2021/11/troue_627.png",
       icon: "events",
     }),
-    headline: "Events, Weddings & Celebrations in Mpumalanga",
-    seoTitle: "Events, Weddings & Celebrations in Mpumalanga | Discover",
+    headline: "Weddings, Events & Celebrations",
+    seoTitle: "Wedding Venues & Event Planners in Mpumalanga | Discover",
     seoDescription:
-      "Find wedding venues, event planners, caterers, photographers and celebration suppliers across Mpumalanga.",
+      "Discover wedding venues, event estates and experienced planners for celebrations, conferences and functions across Mpumalanga.",
     searchFields: [
       "name",
       "type",
       "subcategory",
+      "eventBusinessTypes",
       "serviceType",
       "services",
       "products",
       "location",
       "description",
     ],
-    resultNoun: "event providers",
+    filters: [
+      {
+        id: "event-business-type",
+        label: "Business type",
+        field: "eventBusinessTypes",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+      {
+        id: "event-services",
+        label: "Services & occasions",
+        field: "services",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+      discoveryLocationFilter,
+    ],
+    sortOptions: [
+      {
+        id: "featured",
+        label: "Curated order",
+        field: "featuredOrder",
+        direction: "asc",
+        requiresData: true,
+      },
+      nameSort,
+    ],
+    resultNoun: "venues and event professionals",
     indexability: "always",
-    emptyTitle: "Event listings are being added.",
+    emptyTitle: "No event businesses match those choices.",
     emptyDescription:
-      "Wedding venues, event specialists and celebration suppliers will appear here as genuine listings are added.",
-    ownerHeading: "List your event or wedding business.",
+      "Try changing your filters, or explore the full collection of wedding venues and event professionals.",
+    ownerHeading: "Bring your event business to Discover.",
     ownerDescription:
-      "Help people planning weddings, celebrations and functions discover your services.",
+      "Showcase your venue or event services to people planning weddings and celebrations across Mpumalanga.",
   },
   agriculture: {
     ...primaryCategoryConfig({
@@ -1898,8 +1997,8 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       slug: "security",
       label: "Security Services",
       description:
-        "Find security companies and specialists offering protection, surveillance and access-control solutions.",
-      shortDescription: "Security, surveillance and access control.",
+        "Compare security providers serving Mpumalanga, from guarding and armed response to CCTV, monitoring and access control.",
+      shortDescription: "Guarding, response, monitoring and access control.",
       searchPlaceholder: "Search security, CCTV or alarm services...",
       typeLabel: "Security service",
       subcategories: discoverySubcategories.security,
@@ -1907,24 +2006,54 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       icon: "security",
     }),
     headline: "Security Services in Mpumalanga",
-    seoTitle: "Security Services in Mpumalanga | Discover",
+    seoTitle: "Security Companies & Services in Mpumalanga | Discover",
     seoDescription:
-      "Find security companies, guarding, armed response, CCTV, alarms and access-control specialists in Mpumalanga.",
+      "Explore security companies serving Mpumalanga, with published services, service areas and direct contact details.",
     searchFields: [
       "name",
       "type",
       "subcategory",
       "serviceType",
       "services",
+      "specialties",
+      "serviceAreas",
       "products",
       "location",
       "description",
     ],
+    filters: [
+      {
+        id: "security-service",
+        label: "Service type",
+        field: "services",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+      {
+        id: "security-area",
+        label: "Area served",
+        field: "serviceAreas",
+        kind: "multi",
+        optionsFromData: true,
+        optional: true,
+      },
+    ],
+    sortOptions: [
+      {
+        id: "featured",
+        label: "Curated order",
+        field: "featuredOrder",
+        direction: "asc",
+        requiresData: true,
+      },
+      nameSort,
+    ],
     resultNoun: "security providers",
     indexability: "always",
-    emptyTitle: "Security listings are being added.",
+    emptyTitle: "No security providers match those filters.",
     emptyDescription:
-      "Security companies and installation specialists will appear here as genuine listings are added.",
+      "Try another service or area, or clear the filters to browse all security providers.",
     ownerHeading: "List your security business.",
     ownerDescription:
       "Help households and businesses discover your security services across Mpumalanga.",
@@ -2068,14 +2197,1666 @@ const oceanBasketGalleryAlts = [
   "Ocean Basket menu selection",
 ];
 
+const wellnessListings: CategoryListing[] = [
+  {
+    id: "beauty-on-wheels-health-spa",
+    slug: "beauty-on-wheels-health-spa",
+    listingKind: "business",
+    featuredOrder: 1,
+    type: "Mobile Spa",
+    subcategory: "Spas & Wellness",
+    name: "Beauty On Wheels Health Spa",
+    location: "Mbombela",
+    town: "Mbombela",
+    address: "41 Protea Crescent, West Acres, Mbombela",
+    province: "Mpumalanga",
+    country: "South Africa",
+    description:
+      "Beauty On Wheels Health Spa offers massage, skin-care, hands-and-feet and body treatments from its Mbombela base, as well as mobile spa experiences for homes, workplaces, events and private groups.",
+    image: "https://beautyonwheelsgroup.com/wp-content/uploads/2026/08/bow-wellness-picture.jpg",
+    imageAlt: "Wellness experience offered by Beauty On Wheels Health Spa",
+    images: [
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/05/5Q1A5392_1-scaled.jpg",
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/09/spa-pic-3.jpg",
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/10/wellness-retreat-5.jpeg",
+    ],
+    imageAlts: [
+      "Wellness experience offered by Beauty On Wheels Health Spa",
+      "Beauty On Wheels Health Spa treatment experience",
+      "Spa treatment at Beauty On Wheels Health Spa",
+      "Wellness retreat experience by Beauty On Wheels Health Spa",
+    ],
+    imageSourceUrls: [
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/08/bow-wellness-picture.jpg",
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/05/5Q1A5392_1-scaled.jpg",
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/09/spa-pic-3.jpg",
+      "https://beautyonwheelsgroup.com/wp-content/uploads/2026/10/wellness-retreat-5.jpeg",
+    ],
+    services: [
+      "Massage therapy",
+      "Facials & skin care",
+      "Hands & feet",
+      "Body & beauty treatments",
+      "Mobile group & corporate wellness",
+    ],
+    serviceAreaNote:
+      "Mobile appointments can be arranged at homes, workplaces and events; share the venue and preferred treatments when enquiring.",
+    phone: "+27 72 857 1904",
+    email: "bowhealthspa19@gmail.com",
+    website: "https://beautyonwheelsgroup.com/",
+    bookingUrl:
+      "https://www.fresha.com/book-now/beauty-on-wheels-health-spa-hx1infif/all-offer?share=true&pId=1338762",
+    source: "https://beautyonwheelsgroup.com/",
+    sourceUrl: "https://beautyonwheelsgroup.com/spa-treatments/",
+    locationAccuracy: "address",
+    wellnessProfile: {
+      displayName: "Beauty On Wheels Health Spa",
+      providerType: "Mobile spa & health spa",
+      summary:
+        "Mbombela-based spa treatments, with mobile experiences for homes, workplaces, events and groups.",
+      website: "https://beautyonwheelsgroup.com/spa-treatments/",
+      bookingUrl:
+        "https://www.fresha.com/book-now/beauty-on-wheels-health-spa-hx1infif/all-offer?share=true&pId=1338762",
+      bookingLabel: "View treatments & book",
+      treatmentSections: [
+        {
+          title: "Massage therapy",
+          items: [
+            "Swedish massage",
+            "Deep-tissue massage",
+            "Hot-stone massage",
+            "Back, neck and shoulder massage",
+            "Couples massage",
+          ],
+        },
+        {
+          title: "Facials & skin care",
+          items: ["Deep-cleansing facials", "Dermaplaning", "Targeted facial treatments"],
+        },
+        {
+          title: "Hands, feet & beauty",
+          items: [
+            "Manicures and pedicures",
+            "Gel nails",
+            "Foot scrubs, massage, peels and paraffin treatments",
+            "Waxing, eyelash extensions and makeup",
+          ],
+        },
+        {
+          title: "Body & group wellness",
+          items: [
+            "Lymphatic drainage",
+            "G5 body treatments",
+            "Mobile spa packages for groups and corporate wellness",
+          ],
+        },
+      ],
+      visitNotes: [
+        "Mobile enquiries can include the date, venue, group size and preferred treatments.",
+      ],
+    },
+    seoTitle: "Beauty On Wheels Health Spa | Mbombela Spa | Discover",
+    seoDescription:
+      "Explore Beauty On Wheels Health Spa in Mbombela, with massages, facials, beauty treatments and mobile wellness experiences for homes, workplaces and events.",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    featured: false,
+    status: "published",
+  },
+  {
+    id: "body-bliss-day-spa-hazyview-cabanas",
+    slug: "body-bliss-day-spa-hazyview-cabanas",
+    listingKind: "business",
+    featuredOrder: 3,
+    type: "Day Spa",
+    subcategory: "Spas & Wellness",
+    name: "Body Bliss Day Spa at Hazyview Cabanas",
+    location: "Hazyview",
+    town: "Hazyview",
+    address: "R536, Hazyview, 1242, South Africa",
+    province: "Mpumalanga",
+    postalCode: "1242",
+    country: "South Africa",
+    latitude: -25.034583131606404,
+    longitude: 31.057292567715347,
+    description:
+      "Set beside the Sabie River at Hazyview Cabanas, Body Bliss Day Spa offers massage, facial and body treatments in a resort setting. The official spa page welcomes both resort guests and day visitors.",
+    image:
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/featured-image.webp",
+    imageAlt: "Body Bliss Day Spa at Hazyview Cabanas",
+    images: [
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/1_Hazyview_BodyBliss.webp",
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/4_Hazyview_BodyBliss.webp",
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/11_Hazyview_BodyBliss.webp",
+    ],
+    imageAlts: [
+      "Body Bliss Day Spa at Hazyview Cabanas",
+      "Body Bliss Day Spa gallery at Hazyview Cabanas",
+      "Spa experience at Body Bliss Day Spa, Hazyview",
+      "Treatment setting at Body Bliss Day Spa, Hazyview",
+    ],
+    imageSourceUrls: [
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/featured-image.webp",
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/1_Hazyview_BodyBliss.webp",
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/4_Hazyview_BodyBliss.webp",
+      "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/gallery/thumb/11_Hazyview_BodyBliss.webp",
+    ],
+    services: ["Massages", "Facials", "Body treatments"],
+    phone: "+27 13 737 8041",
+    email: "hazyviewspa@bodybliss.co.za",
+    website: "https://www.hazyviewcabanas.co.za/body-bliss-day-spa",
+    bookingUrl: "https://www.bodybliss.co.za/hazyview-cabanas#bookings-2",
+    openingHours: {
+      Monday: "8:00 AM - 5:00 PM",
+      Tuesday: "8:00 AM - 5:00 PM",
+      Wednesday: "8:00 AM - 5:00 PM",
+      Thursday: "8:00 AM - 5:00 PM",
+      Friday: "8:00 AM - 5:00 PM",
+      Saturday: "8:00 AM - 5:00 PM",
+      Sunday: "8:00 AM - 5:00 PM",
+    },
+    source: "https://www.hazyviewcabanas.co.za/body-bliss-day-spa",
+    sourceUrl: "https://www.bodybliss.co.za/hazyview-cabanas",
+    locationAccuracy: "address",
+    wellnessProfile: {
+      displayName: "Body Bliss Day Spa",
+      providerType: "Riverside day spa",
+      summary:
+        "A Sabie River-side spa at Hazyview Cabanas, open to resort guests and day visitors.",
+      website: "https://www.bodybliss.co.za/hazyview-cabanas",
+      bookingUrl: "https://www.bodybliss.co.za/hazyview-cabanas#bookings-2",
+      bookingLabel: "Book a treatment",
+      email: "hazyviewspa@bodybliss.co.za",
+      logo: "https://www.bodybliss.co.za/assets/img/svg/body-bliss-day-spa-logo.svg",
+      logoAlt: "Body Bliss Day Spa logo",
+      treatmentSections: [
+        {
+          title: "Spa treatments",
+          items: ["Massages", "Facials", "Body treatments"],
+          note: "Check the official treatment menu for current options.",
+        },
+      ],
+      facilities: ["Treatment rooms", "Riverfront setting"],
+      visitNotes: [
+        "The spa welcomes Hazyview Cabanas resort guests and day visitors.",
+        "Published opening times are daily, 08:00-17:00.",
+      ],
+    },
+    seoTitle: "Body Bliss Day Spa at Hazyview Cabanas | Discover",
+    seoDescription:
+      "Visit Body Bliss Day Spa at Hazyview Cabanas in Hazyview for massages, facials and body treatments beside the Sabie River. Day visitors are welcome.",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    featured: false,
+    status: "published",
+  },
+  {
+    id: "pause-spa-anew-resort-hazyview",
+    slug: "pause-spa-anew-resort-hazyview",
+    listingKind: "business",
+    featuredOrder: 5,
+    type: "Resort Spa",
+    subcategory: "Spas & Wellness",
+    name: "Pause Spa at ANEW Resort Hazyview",
+    location: "Hazyview",
+    town: "Hazyview",
+    province: "Mpumalanga",
+    country: "South Africa",
+    description:
+      "Pause Spa is located at ANEW Resort Hazyview. Its published menu includes massage, facial, manicure and pedicure, tinting and waxing services; appointments are arranged directly with the spa.",
+    image: "https://anewhotels.com/wp-content/uploads/2025/11/Spa-9.jpg",
+    imageAlt: "Spa treatment setting at Pause Spa, ANEW Resort Hazyview",
+    images: [
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa-6.jpg",
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa.jpg",
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa-11.jpg",
+    ],
+    imageAlts: [
+      "Spa treatment setting at Pause Spa, ANEW Resort Hazyview",
+      "Spa experience at ANEW Resort Hazyview",
+      "Treatment setting at Pause Spa, ANEW Resort Hazyview",
+      "Pause Spa treatment room at ANEW Resort Hazyview",
+    ],
+    imageSourceUrls: [
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa-9.jpg",
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa-6.jpg",
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa.jpg",
+      "https://anewhotels.com/wp-content/uploads/2025/11/Spa-11.jpg",
+    ],
+    services: ["Massages", "Facials", "Manicures & pedicures", "Tinting & waxing"],
+    phone: "+27 72 309 9585",
+    email: "pause@sanbonani.com",
+    website: "https://anewhotels.com/hotels/hazyview/spa/",
+    source: "https://anewhotels.com/hotels/hazyview/spa/",
+    sourceUrl: "https://anewhotels.com/hotels/hazyview/",
+    locationAccuracy: "approximate",
+    wellnessProfile: {
+      displayName: "Pause Spa",
+      providerType: "Resort spa",
+      summary:
+        "A treatment spa at ANEW Resort Hazyview, with appointments made directly with the spa team.",
+      website: "https://anewhotels.com/hotels/hazyview/spa/",
+      email: "pause@sanbonani.com",
+      treatmentSections: [
+        {
+          title: "Massages",
+          items: [
+            "Tension Release Body Vigour Massage",
+            "Full Body Massage",
+            "TheraNaka CBD-Infused Heated Balm Massage",
+          ],
+        },
+        {
+          title: "Facials",
+          items: ["TheraNaka Essential Care Facial", "TheraNaka Essential Phyto-Boost Facial"],
+        },
+        {
+          title: "Hands, feet & finishing treatments",
+          items: [
+            "TheraNaka Manicure and Hands & Feet Collection",
+            "Tinting and waxing for eyebrows and lashes",
+          ],
+        },
+      ],
+      visitNotes: [
+        "The official spa page says bookings are by appointment; after-hours appointments may be arranged with prior notice.",
+      ],
+    },
+    seoTitle: "Pause Spa at ANEW Resort Hazyview | Discover",
+    seoDescription:
+      "Explore Pause Spa at ANEW Resort Hazyview, with published massage, facial, manicure, pedicure, tinting and waxing treatments and direct spa contacts.",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    featured: false,
+    status: "published",
+  },
+  {
+    id: "amani-spa-and-wellness-sabi-sabi",
+    slug: "amani-spa-and-wellness-sabi-sabi",
+    listingKind: "business",
+    featuredOrder: 6,
+    type: "Safari Spa & Wellness",
+    subcategory: "Spas & Wellness",
+    name: "Amani Spa & Wellness at Sabi Sabi",
+    location: "Sabi Sabi Private Game Reserve",
+    province: "Mpumalanga",
+    country: "South Africa",
+    description:
+      "Amani Spa & Wellness is Sabi Sabi's spa offering within its safari setting. The official spa page describes indigenous healing treatments, natural products, rejuvenating massages and soothing rituals.",
+    image:
+      "https://www.sabisabi.com/application/files/thumbnails/image_1910x796/8716/5685/7723/luxurious-treatments-sabi-sabi.jpg?fID=1883&ftid=9&d=0",
+    imageAlt: "Amani Spa treatments at Sabi Sabi",
+    images: [
+      "https://www.sabisabi.com/application/files/thumbnails/image_836x676/5616/5685/7783/create-memories-amani-spa.jpg?fID=1908&ftid=5&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_955x624/5416/6738/3368/outdoor-massage.jpg?fID=29778&ftid=136&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_962x540/4816/6738/3295/couples-treatment-spa.jpg?fID=29776&ftid=141&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_643x540/7816/5685/7759/healing-rituals-earth-spa.jpg?fID=1898&ftid=142&d=0",
+    ],
+    imageAlts: [
+      "Amani Spa treatments at Sabi Sabi",
+      "Amani Spa experience at Sabi Sabi",
+      "Outdoor spa massage at Sabi Sabi",
+      "Spa treatment setting at Sabi Sabi",
+      "Healing ritual at the Sabi Sabi Earth Lodge spa",
+    ],
+    imageSourceUrls: [
+      "https://www.sabisabi.com/application/files/thumbnails/image_1910x796/8716/5685/7723/luxurious-treatments-sabi-sabi.jpg?fID=1883&ftid=9&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_836x676/5616/5685/7783/create-memories-amani-spa.jpg?fID=1908&ftid=5&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_955x624/5416/6738/3368/outdoor-massage.jpg?fID=29778&ftid=136&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_962x540/4816/6738/3295/couples-treatment-spa.jpg?fID=29776&ftid=141&d=0",
+      "https://www.sabisabi.com/application/files/thumbnails/image_643x540/7816/5685/7759/healing-rituals-earth-spa.jpg?fID=1898&ftid=142&d=0",
+    ],
+    services: ["Rejuvenating massages", "Soothing rituals", "Indigenous healing treatments"],
+    website: "https://www.sabisabi.com/experience/amani-spa",
+    source: "https://www.sabisabi.com/experience/amani-spa",
+    sourceUrl: "https://www.sabisabi.com/experience/amani-spa",
+    locationAccuracy: "approximate",
+    wellnessProfile: {
+      displayName: "Amani Spa & Wellness",
+      providerType: "Safari lodge spa",
+      summary:
+        "Sabi Sabi's spa experience pairs restorative treatments with the setting of its private game reserve.",
+      website: "https://www.sabisabi.com/experience/amani-spa",
+      treatmentSections: [
+        {
+          title: "Holistic treatments",
+          items: ["Rejuvenating massages", "Soothing rituals", "Indigenous healing treatments"],
+          note: "Sabi Sabi describes its spa treatments as a complement to the safari experience.",
+        },
+      ],
+      visitNotes: [
+        "Contact Sabi Sabi directly to confirm lodge access and treatment arrangements.",
+      ],
+    },
+    seoTitle: "Amani Spa & Wellness at Sabi Sabi | Discover",
+    seoDescription:
+      "Discover Amani Spa & Wellness at Sabi Sabi in Mpumalanga, with indigenous healing treatments, massages and restorative spa rituals in a safari setting.",
+    seeded: true,
+    sourceType: "seeded_public_data",
+    claimed: false,
+    verified: false,
+    featured: false,
+    status: "published",
+  },
+];
+
 export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   stay: [],
   eat: [],
-  "beauty-wellness-fitness": [],
-  events: [],
+  "beauty-wellness-fitness": wellnessListings,
+  events: [
+    {
+      id: "umbali",
+      slug: "umbali",
+      listingKind: "business",
+      featuredOrder: 1,
+      type: "Wedding & Events Venue",
+      subcategory: "Wedding & Events Venue",
+      eventBusinessTypes: ["Wedding venue", "Event venue", "Conference venue"],
+      name: "Umbali",
+      location: "Mbombela",
+      address: "Cromdale Road, Mbombela, 1200",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Set on a bushveld hillside overlooking Mbombela, Umbali hosts weddings, conferences and functions in its multi-purpose venue. The official site describes a reception venue for 450+ guests and a separate conference facility for 500+ delegates; ask the team to confirm the right layout and capacity for your event.",
+      image:
+        "https://www.umbali.co.za/wp-content/uploads/elementor/thumbs/130928544_1567564683436672_2985487094220209599_n-phg83rr78h5dc9z99ho7h538jljcnjjv43i2g0unj4.jpg",
+      imageAlt: "Wedding reception tables at Umbali overlooking the Lowveld hills",
+      images: [
+        "https://www.umbali.co.za/wp-content/uploads/elementor/thumbs/18198660_629922387200911_7146792381489541966_n-phg83rr7yseen0qa4j3udhfqlxb8i242vmab72o9xq.jpg",
+        "https://www.umbali.co.za/wp-content/uploads/2021/11/HomePage-Hero-img_1-1.jpg",
+        "https://www.umbali.co.za/wp-content/uploads/2021/11/troue_627.png",
+      ],
+      imageAlts: [
+        "Outdoor ceremony seating and tent at Umbali",
+        "Bride at the Umbali wedding venue",
+        "Wedding ceremony at Umbali",
+      ],
+      imageSourceUrls: [
+        "https://www.umbali.co.za/wp-content/uploads/elementor/thumbs/130928544_1567564683436672_2985487094220209599_n-phg83rr78h5dc9z99ho7h538jljcnjjv43i2g0unj4.jpg",
+        "https://www.umbali.co.za/wp-content/uploads/elementor/thumbs/18198660_629922387200911_7146792381489541966_n-phg83rr7yseen0qa4j3udhfqlxb8i242vmab72o9xq.jpg",
+        "https://www.umbali.co.za/wp-content/uploads/2021/11/HomePage-Hero-img_1-1.jpg",
+        "https://www.umbali.co.za/wp-content/uploads/2021/11/troue_627.png",
+      ],
+      services: [
+        "Weddings",
+        "Receptions",
+        "Conferences",
+        "Corporate functions",
+        "Catering",
+        "Function rentals",
+        "Tent hire",
+      ],
+      phone: "+27 72 838 5985",
+      email: "Melandri@umbaliprestige.co.za",
+      website: "https://www.umbali.co.za/",
+      bookingUrl: "https://www.umbali.co.za/contact-us/",
+      source: "Umbali",
+      sourceUrl: "https://www.umbali.co.za/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Weddings, conferences & functions",
+        serviceSections: [
+          {
+            title: "Weddings & receptions",
+            description:
+              "A bushveld setting, dedicated reception venue and on-site chapel are listed among Umbali's wedding facilities. Confirm ceremony arrangements and the reception plan with the venue.",
+          },
+          {
+            title: "Conferences & corporate functions",
+            description:
+              "Umbali's modern conference facilities are promoted for groups of 500+ delegates. The conference figure is separate from wedding reception capacity.",
+          },
+          {
+            title: "Catering, rentals & tent hire",
+            description:
+              "Umbali lists catering, function rentals and tent hire among its services. Ask which items are supplied directly and what is included in a specific event arrangement.",
+          },
+        ],
+        venueSpaces: [
+          {
+            name: "Wedding and reception venue",
+            description:
+              "An upmarket reception space with views across Mbombela and the Kaapschehoop Escarpment.",
+          },
+          {
+            name: "The Chapel",
+            description:
+              "An on-site chapel is listed on Umbali's official site; ceremony seating capacity is not stated there.",
+          },
+          {
+            name: "Conference facilities",
+            description:
+              "Modern conference facilities for business meetings and larger corporate gatherings.",
+          },
+        ],
+        facts: [
+          {
+            label: "Reception capacity",
+            value: "450+ guests",
+            note: "As described on Umbali's official homepage; confirm the setup for your date.",
+          },
+          {
+            label: "Conference capacity",
+            value: "500+ delegates",
+            note: "Conference figure only; it is not a wedding seating estimate.",
+          },
+        ],
+        enquiryNote:
+          "Use the venue contact page to discuss dates, event layouts, catering, rentals and which services are included.",
+        officialLinks: [
+          { label: "Wedding venues", href: "https://www.umbali.co.za/our-wedding-venues/" },
+          {
+            label: "Conference facilities",
+            href: "https://www.umbali.co.za/conference-facilities/",
+          },
+          { label: "Catering and rentals", href: "https://www.umbali.co.za/rentals/" },
+          { label: "Contact Umbali", href: "https://www.umbali.co.za/contact-us/" },
+        ],
+      },
+    },
+    {
+      id: "mabalel-lodge",
+      slug: "mabalel-lodge",
+      listingKind: "business",
+      featuredOrder: 2,
+      type: "Wedding & Events Lodge",
+      subcategory: "Wedding & Events Venue",
+      eventBusinessTypes: ["Wedding venue", "Event venue", "Lodge & accommodation"],
+      name: "Mabalel Lodge",
+      location: "Mbombela",
+      address: "Farm 134, Uitkyk Road, Karino, Mpumalanga, South Africa",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Mabalel Lodge pairs an open-air wedding setting with on-site accommodation in Karino, near Mbombela. The lodge also lists private celebrations and corporate functions, with dining through its spit-braai facilities or restaurant and bar. Wedding capacity and event-specific inclusions are not published; confirm them directly.",
+      image: "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3263-e1759469251284.jpeg",
+      imageAlt: "Open-air wedding ceremony setting at Mabalel Lodge",
+      images: [
+        "https://www.mabalel.co.za/wp-content/uploads/2025/09/IMG-20240605-WA0032.webp",
+        "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3262.jpeg",
+        "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3264.jpeg",
+      ],
+      imageAlts: [
+        "Tented reception setup at Mabalel Lodge",
+        "Outdoor ceremony area at Mabalel Lodge",
+        "Wedding table styling at Mabalel Lodge",
+      ],
+      imageSourceUrls: [
+        "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3263-e1759469251284.jpeg",
+        "https://www.mabalel.co.za/wp-content/uploads/2025/09/IMG-20240605-WA0032.webp",
+        "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3262.jpeg",
+        "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3264.jpeg",
+      ],
+      services: [
+        "Weddings",
+        "Private functions",
+        "Corporate events",
+        "Spit-braai dining",
+        "Restaurant and bar",
+        "On-site accommodation",
+      ],
+      phone: "+27 79 510 2445",
+      email: "info@mabalel.co.za",
+      website: "https://www.mabalel.co.za/",
+      bookingUrl: "https://www.mabalel.co.za/contact/",
+      source: "Mabalel Lodge",
+      sourceUrl: "https://www.mabalel.co.za/weddings/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Wedding venue, functions & lodge",
+        serviceSections: [
+          {
+            title: "Open-air weddings",
+            description:
+              "The lodge's wedding page describes an open-air ceremony venue framed by a natural landscape. Ask about the available ceremony and reception layouts.",
+          },
+          {
+            title: "Private & corporate functions",
+            description:
+              "Published event uses include workshops and training, product launches, team days, strategy meetings, year-end functions, birthdays, anniversaries and reunions.",
+          },
+        ],
+        venueSpaces: [
+          {
+            name: "Open-air wedding setting",
+            description:
+              "A natural outdoor backdrop for ceremonies and wedding photography; specific guest limits are not published.",
+          },
+          {
+            name: "Restaurant, bar & spit-braai facilities",
+            description:
+              "Mabalel lists these dining options for events. Confirm availability, menus and inclusions for the date you are considering.",
+          },
+        ],
+        facts: [
+          {
+            label: "Wedding guest capacity",
+            value: "Confirm with the lodge",
+            note: "No wedding capacity is published on the official wedding or events pages.",
+          },
+          {
+            label: "Address",
+            value: "Farm 134, Uitkyk Road, Karino",
+            note: "Mabalel Lodge's official contact page lists this address.",
+          },
+        ],
+        accommodation:
+          "On-site accommodation is available at the lodge. Room configurations and availability for event groups should be confirmed directly.",
+        dining:
+          "The official events page lists spit-braai facilities or the restaurant and bar; it does not specify which catering items are included in wedding packages.",
+        enquiryNote:
+          "Contact the lodge to confirm wedding capacity, room configurations, menus and which event services are included.",
+        officialLinks: [
+          { label: "Weddings", href: "https://www.mabalel.co.za/weddings/" },
+          { label: "Events", href: "https://www.mabalel.co.za/events/" },
+          { label: "Contact Mabalel Lodge", href: "https://www.mabalel.co.za/contact/" },
+        ],
+      },
+    },
+    {
+      id: "whispering-thorns",
+      slug: "whispering-thorns",
+      listingKind: "business",
+      featuredOrder: 3,
+      type: "Wedding Venue & Event Estate",
+      subcategory: "Wedding Venue",
+      eventBusinessTypes: ["Wedding venue", "Event venue", "Lodge & accommodation"],
+      name: "Whispering Thorns",
+      location: "White River",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Whispering Thorns is an exclusive-use, all-inclusive wedding estate in White River, centred on a light-filled glass venue and chapel. Its official site describes destination wedding coordination, private viewings and an on-site farmhouse with 11 suites sleeping up to 22 guests. The chapel seats up to 200; ask about reception layouts and current package details.",
+      image: "https://whisperingthorns.com/wp-content/uploads/2026/07/13.jpg",
+      imageAlt: "Wedding reception setting at Whispering Thorns",
+      images: [
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/IMG_6118.jpeg",
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/2.jpg",
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/10.jpg",
+      ],
+      imageAlts: [
+        "Wedding couple outside the glass venue at Whispering Thorns",
+        "Glass wedding venue at Whispering Thorns",
+        "Reception details at Whispering Thorns",
+      ],
+      imageSourceUrls: [
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/13.jpg",
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/IMG_6118.jpeg",
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/2.jpg",
+        "https://whisperingthorns.com/wp-content/uploads/2026/07/10.jpg",
+      ],
+      services: [
+        "Destination weddings",
+        "Exclusive-use estate",
+        "All-inclusive wedding planning",
+        "Corporate events",
+        "Private viewings",
+        "On-site accommodation",
+      ],
+      phone: "+27 83 276 1206",
+      whatsapp: "+27 83 276 1206",
+      email: "info@whisperingthorns.com",
+      website: "https://whisperingthorns.com/",
+      bookingUrl: "https://whisperingthorns.com/contact/",
+      source: "Whispering Thorns",
+      sourceUrl: "https://whisperingthorns.com/venue/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Exclusive-use glass wedding venue",
+        serviceSections: [
+          {
+            title: "All-inclusive destination weddings",
+            description:
+              "The estate describes an in-house planning team and coordinator who manage wedding details through one coordinated process.",
+          },
+          {
+            title: "Ceremonies & celebrations",
+            description:
+              "The glass chapel is a ceremony space, while the wider estate is promoted for wedding celebrations. The official enquiry form also accepts reception, engagement, corporate and other function enquiries.",
+          },
+          {
+            title: "Private viewings & packages",
+            description:
+              "Viewings are arranged through the venue's official contact form. Package details are available directly from the venue; confirm current inclusions and pricing when enquiring.",
+          },
+        ],
+        venueSpaces: [
+          {
+            name: "Glass chapel",
+            description:
+              "A glass-walled ceremony space with views of the surrounding acacia trees and landscape.",
+          },
+          {
+            name: "Glass wedding venue",
+            description:
+              "An exclusive-use, all-inclusive venue for destination weddings in the Lowveld.",
+          },
+        ],
+        facts: [
+          {
+            label: "Chapel seating",
+            value: "Up to 200 guests",
+            note: "This is the chapel's published ceremony seating capacity, not necessarily a reception layout.",
+          },
+          {
+            label: "On-site farmhouse",
+            value: "11 suites · up to 22 guests",
+            note: "The official accommodation page describes the farmhouse as on-site.",
+          },
+        ],
+        accommodation:
+          "The on-site farmhouse has 11 individually styled suites and sleeps up to 22 guests. The venue also lists self-catering apartments near White River separately as off-site accommodation.",
+        enquiryNote:
+          "Request a private viewing and current wedding package directly from the venue; dates and availability are not checked here.",
+        officialLinks: [
+          { label: "Weddings & packages", href: "https://whisperingthorns.com/weddings/" },
+          { label: "The venue", href: "https://whisperingthorns.com/venue/" },
+          { label: "Official gallery", href: "https://whisperingthorns.com/gallery/" },
+          { label: "Accommodation", href: "https://whisperingthorns.com/accommodation/" },
+          { label: "Book a private viewing", href: "https://whisperingthorns.com/contact/" },
+        ],
+      },
+    },
+    {
+      id: "trudaisy-celebrations",
+      slug: "trudaisy-celebrations",
+      listingKind: "business",
+      featuredOrder: 4,
+      type: "Wedding & Event Planner",
+      subcategory: "Event Planner",
+      eventBusinessTypes: [
+        "Event planner",
+        "Wedding planner",
+        "Event styling",
+        "Destination wedding planner",
+      ],
+      name: "Trudaisy Celebrations",
+      location: "Mbombela",
+      address: "37 Msila Street, Kamagugu, Mbombela, Mpumalanga 1201",
+      province: "Mpumalanga",
+      postalCode: "1201",
+      country: "South Africa",
+      description:
+        "Trudaisy Celebrations is an event-planning and styling service based in Mbombela, not a venue listing. Its official services include full-service wedding planning, event design and styling, on-the-day coordination, private celebrations, corporate events and destination wedding planning across Mbombela and surrounding areas.",
+      image: "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/28.png",
+      imageAlt: "Elegant event table setting by Trudaisy Celebrations",
+      images: [
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/27.png",
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/35.png",
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/34.png",
+      ],
+      imageAlts: [
+        "White celebration table styled by Trudaisy Celebrations",
+        "Black and gold milestone celebration styled by Trudaisy Celebrations",
+        "Formal event table styling by Trudaisy Celebrations",
+      ],
+      imageSourceUrls: [
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/28.png",
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/27.png",
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/35.png",
+        "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/34.png",
+      ],
+      services: [
+        "Full-service wedding planning",
+        "Event design and styling",
+        "On-the-day coordination",
+        "Private celebrations",
+        "Corporate events",
+        "Destination wedding planning",
+      ],
+      phone: "+27 72 216 1143",
+      whatsapp: "+27 72 216 1143",
+      email: "info@trudaisycelebrations.co.za",
+      website: "https://www.trudaisycelebrations.co.za/",
+      bookingUrl: "https://www.trudaisycelebrations.co.za/contact/",
+      source: "Trudaisy Celebrations",
+      sourceUrl: "https://www.trudaisycelebrations.co.za/services/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Wedding & event planner",
+        serviceSections: [
+          {
+            title: "Wedding planning & coordination",
+            description:
+              "Services include full-service wedding planning and on-the-day coordination, from organising the event to supporting its delivery.",
+          },
+          {
+            title: "Event design & styling",
+            description:
+              "Trudaisy develops an event concept with design, timeline and vendor recommendations, then styles the celebration around the client's brief.",
+          },
+          {
+            title: "Celebrations & corporate events",
+            description:
+              "The official contact form accepts enquiries for private celebrations, corporate events and destination wedding planning.",
+          },
+        ],
+        facts: [
+          {
+            label: "Service area",
+            value: "Mbombela and surrounding areas",
+            note: "As stated on Trudaisy's official contact page.",
+          },
+          {
+            label: "Office",
+            value: "37 Msila Street, Kamagugu",
+            note: "Contact the planner to discuss a consultation or service fit.",
+          },
+        ],
+        enquiryNote:
+          "Request a quote by phone, WhatsApp or email. The official enquiry form asks for the event type, location, date, guest count and estimated budget.",
+        officialLinks: [
+          { label: "Services", href: "https://www.trudaisycelebrations.co.za/services/" },
+          { label: "Portfolio", href: "https://www.trudaisycelebrations.co.za/portfolio/" },
+          { label: "Request a quote", href: "https://www.trudaisycelebrations.co.za/contact/" },
+        ],
+      },
+    },
+    {
+      id: "arch-and-arrow",
+      slug: "arch-and-arrow",
+      listingKind: "business",
+      featuredOrder: 5,
+      type: "Wedding Venue & Event Spaces",
+      subcategory: "Wedding Venue",
+      eventBusinessTypes: ["Wedding venue", "Event venue"],
+      name: "Arch & Arrow",
+      location: "White River",
+      address: "34 Yaverland Road, White River",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Arch & Arrow is a wedding venue on Braemar Farm in White River, with three distinct spaces: The Big Hall, The Chapel and The Boma. The Big Hall opens onto a deck overlooking Braemar Dam, while the chapel and boma offer alternative settings. Guest capacities are not published on the official pages, so confirm layouts and numbers directly.",
+      image: "https://archandarrow.co.za/wp-content/uploads/2025/04/2O1A0658-scaled.jpg",
+      imageAlt: "Bride at an outdoor wedding setting at Arch & Arrow",
+      images: [
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-116-scaled.jpg",
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-39-scaled.jpg",
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-31-scaled.jpg",
+      ],
+      imageAlts: [
+        "Wedding ceremony styling at Arch & Arrow",
+        "Wedding reception styling at Arch & Arrow",
+        "Wedding venue details at Arch & Arrow",
+      ],
+      imageSourceUrls: [
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/2O1A0658-scaled.jpg",
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-116-scaled.jpg",
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-39-scaled.jpg",
+        "https://archandarrow.co.za/wp-content/uploads/2025/04/Arch-Arrow-Styled-Shoot-31-scaled.jpg",
+      ],
+      services: [
+        "Weddings",
+        "The Big Hall",
+        "Chapel ceremonies",
+        "The Boma",
+        "Wedding packages",
+        "Venue viewings",
+      ],
+      phone: "+27 79 305 1248",
+      email: "info@archandarrow.co.za",
+      website: "https://archandarrow.co.za/",
+      bookingUrl: "https://archandarrow.co.za/contact-us/",
+      source: "Arch & Arrow",
+      sourceUrl: "https://archandarrow.co.za/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Wedding venue with three event spaces",
+        serviceSections: [
+          {
+            title: "The Big Hall",
+            description:
+              "A reception space with floor-to-ceiling windows opening onto a deck overlooking Braemar Dam; the venue describes layouts for both grand and intimate gatherings.",
+          },
+          {
+            title: "The Chapel & The Boma",
+            description:
+              "The venue offers a dedicated chapel and a separate boma alongside The Big Hall. Contact the team to confirm which combinations suit your event.",
+          },
+          {
+            title: "Wedding packages & viewings",
+            description:
+              "Arch & Arrow publishes wedding packages and invites couples to arrange a viewing. Confirm current package details, guest capacity and inclusions directly.",
+          },
+        ],
+        venueSpaces: [
+          {
+            name: "The Big Hall",
+            description: "A flexible reception hall with a deck and views across Braemar Dam.",
+          },
+          {
+            name: "The Chapel",
+            description: "A dedicated ceremony space on the Braemar Farm venue.",
+          },
+          {
+            name: "The Boma",
+            description: "An additional outdoor space listed as part of the venue.",
+          },
+        ],
+        facts: [
+          {
+            label: "Guest capacity",
+            value: "Confirm with the venue",
+            note: "Capacity by space and layout is not published on the official venue pages.",
+          },
+          {
+            label: "Address",
+            value: "34 Yaverland Road, White River",
+            note: "Listed on Arch & Arrow's official contact page.",
+          },
+        ],
+        enquiryNote:
+          "Request a viewing or wedding quote directly; this directory does not check dates or availability.",
+        officialLinks: [
+          { label: "The Big Hall", href: "https://archandarrow.co.za/the-big-hall/" },
+          { label: "The Chapel", href: "https://archandarrow.co.za/the-chapel/" },
+          { label: "The Boma", href: "https://archandarrow.co.za/the-boma/" },
+          { label: "Wedding packages", href: "https://archandarrow.co.za/wedding-packages" },
+          { label: "Official gallery", href: "https://archandarrow.co.za/gallery/" },
+        ],
+      },
+    },
+    {
+      id: "olivers-lodge",
+      slug: "olivers-lodge",
+      listingKind: "business",
+      featuredOrder: 6,
+      type: "Wedding Venue & Lodge",
+      subcategory: "Wedding Venue",
+      eventBusinessTypes: ["Wedding venue", "Event venue", "Lodge & accommodation"],
+      name: "Oliver's Lodge & Restaurant",
+      location: "White River",
+      address: "White River Country Estate, White River, Mpumalanga",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Oliver's combines a garden and gazebo ceremony setting with an in-house wedding coordinator, chef-prepared menus and 14 on-site rooms. Its restaurant area seats up to 120 guests and can be configured for smaller groups; that figure applies to the restaurant area, not the full venue's wedding capacity.",
+      image: "https://olivers.co.za/wp-content/uploads/2023/05/Wedding-in-Whiteriver.jpg",
+      imageAlt: "Wedding celebration in the gardens at Oliver's Lodge",
+      images: [
+        "https://olivers.co.za/wp-content/uploads/2023/05/Wedding-middle-restaurant.jpg",
+        "https://olivers.co.za/wp-content/uploads/2023/05/Olivers-Veranda-7.jpg",
+        "https://olivers.co.za/wp-content/uploads/2023/05/Olivers-Restaurant-Garden-Veranda-3.jpg",
+      ],
+      imageAlts: [
+        "Wedding reception at Oliver's restaurant",
+        "Veranda at Oliver's Lodge",
+        "Garden and veranda at Oliver's Lodge",
+      ],
+      imageSourceUrls: [
+        "https://olivers.co.za/wp-content/uploads/2023/05/Wedding-in-Whiteriver.jpg",
+        "https://olivers.co.za/wp-content/uploads/2023/05/Wedding-middle-restaurant.jpg",
+        "https://olivers.co.za/wp-content/uploads/2023/05/Olivers-Veranda-7.jpg",
+        "https://olivers.co.za/wp-content/uploads/2023/05/Olivers-Restaurant-Garden-Veranda-3.jpg",
+      ],
+      services: [
+        "Weddings",
+        "Garden ceremonies",
+        "In-house wedding coordinator",
+        "Restaurant dining",
+        "On-site accommodation",
+        "Custom wedding packages",
+      ],
+      phone: "+27 13 750 0479",
+      email: "info@olivers.co.za",
+      website: "https://olivers.co.za/",
+      bookingUrl: "https://olivers.co.za/contact/",
+      source: "Oliver's Lodge & Restaurant",
+      sourceUrl: "https://olivers.co.za/weddings/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+      eventProfile: {
+        displayType: "Wedding venue, lodge & restaurant",
+        serviceSections: [
+          {
+            title: "Garden ceremonies & receptions",
+            description:
+              "The wedding page highlights gardens, a gazebo, a water feature and views over the golf course and surrounding farmland, with the restaurant, lounge, bar and verandas available for different parts of the celebration.",
+          },
+          {
+            title: "Food & wedding coordination",
+            description:
+              "Oliver's describes chef-prepared food, an in-house coordinator and wedding packages that can be tailored to the event.",
+          },
+        ],
+        venueSpaces: [
+          {
+            name: "Gardens & gazebo",
+            description:
+              "Outdoor ceremony areas with garden and golf-course views, as described on the official wedding page.",
+          },
+          {
+            name: "Restaurant, verandas, lounge & bar",
+            description:
+              "The restaurant area seats up to 120 and can be arranged for smaller gatherings; ask about event-specific layouts.",
+          },
+        ],
+        facts: [
+          {
+            label: "On-site rooms",
+            value: "14 rooms",
+            note: "Published on the official wedding page for the lodge.",
+          },
+          {
+            label: "Restaurant seating",
+            value: "Up to 120 guests",
+            note: "This figure applies to the restaurant area and is not a total wedding venue capacity.",
+          },
+        ],
+        accommodation:
+          "Fourteen rooms are available on-site. Confirm room types, rates and availability with Oliver's before making event plans.",
+        dining:
+          "The hotel describes chef-prepared food and customizable wedding packages. Restaurant seating is a separate detail from total venue capacity.",
+        enquiryNote:
+          "Contact Oliver's to discuss a tailored wedding package, restaurant layout, room options and current availability.",
+        officialLinks: [
+          { label: "Weddings", href: "https://olivers.co.za/weddings/" },
+          { label: "Functions", href: "https://olivers.co.za/functions/" },
+          { label: "Accommodation", href: "https://olivers.co.za/accommodation/" },
+          { label: "Official gallery", href: "https://olivers.co.za/gallery/" },
+        ],
+      },
+    },
+  ],
   agriculture: [],
-  security: [],
-  "education-training": [],
+  security: [
+    {
+      id: "divergent-ops",
+      slug: "divergent-ops",
+      listingKind: "business",
+      featuredOrder: 1,
+      type: "Security Company",
+      subcategory: "Security Company",
+      serviceType: "Security and guarding",
+      name: "Divergent Ops",
+      location: "Mbombela",
+      address: "Unit D, Murrayfield Place, 30 Waterfall Ave, Riverside Industrial",
+      addressLabel: "Office",
+      province: "Mpumalanga",
+      postalCode: "1200",
+      country: "South Africa",
+      description:
+        "Headquartered in Mbombela, Divergent Ops lists operations in Nelspruit, White River and Barberton. Its published services include armed response, professional guarding, event security, specialist security, and CCTV and AI camera monitoring, sales, installation and maintenance.",
+      seoTitle: "Divergent Ops | Security Services in Mbombela | Discover",
+      seoDescription:
+        "Explore Divergent Ops' published guarding, armed response, event-security and CCTV services in Mbombela, White River and Barberton.",
+      image:
+        "https://static.wixstatic.com/media/e453ee_d82bcc697de7414dbc24e2e355fe73a0~mv2.jpg/v1/fill/w_285,h_433,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/e453ee_d82bcc697de7414dbc24e2e355fe73a0~mv2.jpg",
+      imageAlt: "Divergent Ops security personnel in uniform",
+      imageSourceUrls: ["https://www.divergent-ops.co.za/services"],
+      services: [
+        "Armed response",
+        "Professional guarding",
+        "Specialist security",
+        "Event security",
+        "CCTV and AI camera monitoring",
+        "Camera sales, installation and maintenance",
+      ],
+      specialties: ["Business security", "Event security", "Property security"],
+      serviceAreas: ["Nelspruit", "White River", "Barberton"],
+      serviceAreaNote:
+        "The company lists outlying areas as part of its coverage but does not name additional towns.",
+      logo: "https://static.wixstatic.com/media/e453ee_1f6c7368bfe94805a9d4f1dfb263a3cf~mv2.png/v1/fill/w_450,h_80,al_c,q_85,enc_avif,quality_auto/e453ee_1f6c7368bfe94805a9d4f1dfb263a3cf~mv2.png",
+      phone: "0861 911 677",
+      email: "admin@divergent-ops.co.za",
+      website: "https://www.divergent-ops.co.za/",
+      source: "Divergent Ops",
+      sourceUrl: "https://www.divergent-ops.co.za/services",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+    },
+    {
+      id: "acs-security",
+      slug: "acs-security",
+      listingKind: "business",
+      featuredOrder: 2,
+      type: "Security Company",
+      subcategory: "Security Company",
+      serviceType: "Guarding and security technology",
+      name: "ACS Security",
+      location: "Nelspruit",
+      address:
+        "Ground Level, Niël Le Roux Building, 8 Bester Street North, Canary Walk Business Park",
+      addressLabel: "Office",
+      province: "Mpumalanga",
+      postalCode: "1200",
+      country: "South Africa",
+      description:
+        "ACS Security is based in Nelspruit and publishes services spanning access control, roaming guards, armed response and alarm monitoring, retail and car-park guarding, and security technology including CCTV and alarm systems.",
+      seoTitle: "ACS Security | Guarding & CCTV in Nelspruit | Discover",
+      seoDescription:
+        "Contact Nelspruit-based ACS Security for published access-control, roaming-guard, armed-response, alarm-monitoring, retail-guarding and CCTV services.",
+      image: "https://www.acssecurity.co.za/wp-content/uploads/2019/08/cctvkits.png",
+      imageAlt: "CCTV security equipment offered by ACS Security",
+      imageSourceUrls: [
+        "https://www.acssecurity.co.za/",
+        "https://www.acssecurity.co.za/contact-us/",
+      ],
+      services: [
+        "Access control",
+        "Roaming guards",
+        "Armed response",
+        "Alarm monitoring",
+        "Retail guarding",
+        "Car-park guarding",
+        "CCTV and security technology",
+        "Alarm systems",
+        "K9 services",
+      ],
+      specialties: ["Retail security", "Car-park security"],
+      serviceAreas: ["Nelspruit"],
+      logo: "https://www.acssecurity.co.za/wp-content/uploads/2019/08/logo-350x350-ws-1.png",
+      phone: "+27 13 752 4792",
+      email: "info@acssecurity.co.za",
+      website: "https://www.acssecurity.co.za/",
+      source: "ACS Security",
+      sourceUrl: "https://www.acssecurity.co.za/contact-us/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+    },
+    {
+      id: "ribos-national-security-force",
+      slug: "ribos-national-security-force",
+      listingKind: "business",
+      featuredOrder: 3,
+      type: "Security Company",
+      subcategory: "Security Company",
+      serviceType: "Security and guarding",
+      name: "Ribos National Security Force",
+      description:
+        "Ribos National Security Force describes guarding and patrolling for commercial, industrial and residential properties, alongside secure transport, personal protection, security consultation, response services and event security. Its site identifies Mbombela among the areas it serves.",
+      seoTitle: "Ribos National Security Force | Security in Mbombela | Discover",
+      seoDescription:
+        "Explore Ribos National Security Force's published guarding, secure-transport, personal-protection, consultation and event-security services in Mbombela.",
+      image:
+        "https://static.zarlacdn.com/website/ctjqd84gjf4ftdtwrft3/image/719043ac54034574abae25545889fbbb20b424d57eb6d76ed7d7091f8e54b35d/desktop-920@2x",
+      imageAlt: "Ribos National Security Force security vehicle",
+      images: [
+        "https://static.zarlacdn.com/website/ctjqd84gjf4ftdtwrft3/image/20b31c804ff74d471e845a10ec03e34ab11d5cf762ab477c93b8263b8c8d1fe7/desktop-920@2x",
+        "https://static.zarlacdn.com/image/07244af69d4ce28c67083132e06436a7f6f4c5846a5577e3bea3809881cd2d6d/desktop-920@2x",
+        "https://static.zarlacdn.com/image/8afd72035c85124928e3fa49bed10a2188a278692758e7c4657e2130b0c25771/desktop-920@2x",
+      ],
+      imageAlts: [
+        "Ribos National Security Force safety and security imagery",
+        "Ribos National Security Force response services imagery",
+        "Ribos National Security Force event-security imagery",
+      ],
+      imageSourceUrls: ["https://www.ribos.co.za/"],
+      services: [
+        "Guarding and patrolling",
+        "Secure transport",
+        "Personal protection",
+        "Security consultation",
+        "Response services",
+        "Event security",
+        "Risk assessment",
+      ],
+      specialties: [
+        "Residential security",
+        "Commercial security",
+        "Industrial security",
+        "Event security",
+      ],
+      serviceAreas: ["Mbombela"],
+      serviceAreaNote:
+        "The official site also references service beyond Mbombela; other named towns were not confirmed for this listing.",
+      logo: "https://static.zarlacdn.com/website/ctjqd84gjf4ftdtwrft3/image/6fcfcb871b96ceec62c43b4d2901e072c5385d6a7afc7d4f4adcc4ca50810d12/logo-132@2x",
+      phone: "073 190 4000",
+      website: "https://www.ribos.co.za/",
+      source: "Ribos National Security Force",
+      sourceUrl: "https://www.ribos.co.za/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+    },
+    {
+      id: "thorburn-security-solutions",
+      slug: "thorburn-security-solutions",
+      listingKind: "business",
+      featuredOrder: 4,
+      type: "Security Company",
+      subcategory: "Security Company",
+      serviceType: "Physical security and guarding",
+      name: "Thorburn Security Solutions",
+      location: "Midrand",
+      address: "4 Challenger Avenue, International Business Gateway, New Road, Midrand",
+      addressLabel: "Regional contact office",
+      province: "Gauteng",
+      country: "South Africa",
+      description:
+        "Thorburn Security Solutions is part of Tsebo Solutions Group. Its Midrand regional contact office covers Gauteng, Limpopo, Mpumalanga and North West. Published capabilities include physical guarding, off-site monitoring, consulting, integrated technology, specialist security and data analytics.",
+      seoTitle: "Thorburn Security Solutions | Serving Mpumalanga | Discover",
+      seoDescription:
+        "Thorburn Security Solutions lists Mpumalanga among the provinces covered by its Midrand regional office. View its guarding, monitoring and technology services.",
+      image: "https://www.thorburn.co.za/wp-content/uploads/1-Physical-and-guarding.webp",
+      imageAlt: "Physical security and guarding services from Thorburn",
+      images: [
+        "https://www.thorburn.co.za/wp-content/uploads/2-Advanced-off-site.webp",
+        "https://www.thorburn.co.za/wp-content/uploads/4-integrated-technnology.webp",
+        "https://www.thorburn.co.za/wp-content/uploads/5-Property-and-facilities.webp",
+      ],
+      imageAlts: [
+        "Off-site security monitoring from Thorburn",
+        "Integrated security technology from Thorburn",
+        "Property and facilities security from Thorburn",
+      ],
+      imageSourceUrls: ["https://www.thorburn.co.za/", "https://www.thorburn.co.za/contact-us/"],
+      services: [
+        "Physical security and guarding",
+        "Off-site monitoring",
+        "Consulting and advisory",
+        "Integrated technology",
+        "Specialised security services",
+        "Data analytics and insights",
+      ],
+      specialties: ["Physical and guarding", "Off-site monitoring", "Integrated technology"],
+      serviceAreas: ["Mpumalanga"],
+      serviceAreaNote:
+        "Thorburn's contact page assigns Mpumalanga to its Midrand regional office; it does not publish a separate Mpumalanga office address there.",
+      logo: "https://www.thorburn.co.za/wp-content/uploads/Thorburn-logoAsset-1.svg",
+      phone: "+27 12 803 5982",
+      email: "info@thorburn.co.za",
+      website: "https://www.thorburn.co.za/",
+      source: "Thorburn Security Solutions",
+      sourceUrl: "https://www.thorburn.co.za/contact-us/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+    },
+    {
+      id: "bolwa-security-services",
+      slug: "bolwa-security-services",
+      listingKind: "business",
+      featuredOrder: 5,
+      type: "Security Company",
+      subcategory: "Security Company",
+      serviceType: "Manned guarding",
+      name: "Bolwa Security Services",
+      location: "Rivonia",
+      address: "345 Rivonia Blvd, Rivonia, Johannesburg",
+      addressLabel: "Head office",
+      province: "Gauteng",
+      postalCode: "2499",
+      country: "South Africa",
+      description:
+        "Bolwa Security Services lists Mpumalanga among its service regions, naming Mbombela, Middelburg and eMalahleni. Its published solutions include manned guarding, estate and residential security, retail and industrial security, access control, event security, and CCTV and alarm monitoring.",
+      seoTitle: "Bolwa Security Services | Mpumalanga Security | Discover",
+      seoDescription:
+        "Bolwa Security Services lists Mbombela, Middelburg and eMalahleni among its Mpumalanga service areas, with guarding, access-control and site-security solutions.",
+      image:
+        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/06/estate-security-lonehill-1080x675.jpg",
+      imageAlt: "Residential estate entrance shown on Bolwa Security Services' website",
+      images: [
+        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/07/professional-commercial-security-guards.png",
+        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/06/shopping-centre-security-south-africa-1080x675.jpg",
+        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/07/open-pit-mine-security-cost-photo-1080x675.jpg",
+      ],
+      imageAlts: [
+        "Commercial security-guarding image published by Bolwa",
+        "Shopping-centre security image published by Bolwa",
+        "Mining-security image published by Bolwa",
+      ],
+      imageSourceUrls: [
+        "https://bolwasecurityservices.co.za/",
+        "https://bolwasecurityservices.co.za/security-solutions/",
+      ],
+      services: [
+        "Manned guarding",
+        "Estate and residential security",
+        "Retail security",
+        "Commercial and industrial security",
+        "Mining security",
+        "Access control and visitor management",
+        "Event security",
+        "Armed-response integration",
+        "CCTV and alarm monitoring",
+      ],
+      specialties: [
+        "Residential estates",
+        "Retail",
+        "Commercial and industrial",
+        "Mining",
+        "Education",
+        "Hospitality",
+        "Events",
+      ],
+      serviceAreas: ["Mbombela", "Middelburg", "eMalahleni"],
+      serviceAreaNote:
+        "These towns are listed by the company as Mpumalanga coverage; its published head-office address is in Rivonia, Johannesburg.",
+      logo: "https://bolwasecurityservices.co.za/wp-content/uploads/2024/08/Bolwa-Security_High-Res-Logo-Landscape_Full-ColourNew.png",
+      phone: "086 1112 231",
+      email: "info@bolwasecurityservices.co.za",
+      website: "https://bolwasecurityservices.co.za/",
+      source: "Bolwa Security Services",
+      sourceUrl: "https://bolwasecurityservices.co.za/security-solutions/",
+      sourceType: "seeded_public_data",
+      seeded: true,
+      status: "published",
+    },
+  ],
+  "education-training": [
+    {
+      id: "university-of-mpumalanga",
+      slug: "university-of-mpumalanga",
+      listingKind: "business",
+      type: "University",
+      subcategory: "University",
+      educationType: "University",
+      educationLevels: ["Undergraduate", "Postgraduate"],
+      name: "University of Mpumalanga",
+      seoTitle: "University of Mpumalanga | Discover by Lowveld Hub",
+      seoDescription:
+        "Explore the University of Mpumalanga's official programme and 2027 application information.",
+      location: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "The University of Mpumalanga is a public university focused on knowledge creation and dissemination in an African context. Prospective students should use the University's current programme catalogue to confirm qualifications, entry requirements and campus availability.",
+      image:
+        "https://www.sowetan.co.za/resizer/v2/47HTF3TX6BNBXJIKBXRBOJRROA.png?smart=true&auth=580cfa1b7b745ded0e1c646feb4f0dae18c8ef3fe57dffc0d0d2565c48a8a90d&width=1200&height=630",
+      imageAlt: "University of Mpumalanga image from its sponsored 10th-anniversary feature",
+      imageNote: "Feature image from Sowetan's 2024 sponsored UMP anniversary article.",
+      imageSourceUrls: [
+        "https://www.sowetan.co.za/news/south-africa/2024-03-14-native-university-of-mpumalanga-celebrates-10-years-of-academic-achievements/",
+      ],
+      website: "https://www.ump.ac.za/",
+      source: "https://www.ump.ac.za/",
+      sourceUrl: "https://www.ump.ac.za/",
+      services: ["Undergraduate study", "Postgraduate study"],
+      educationProfile: {
+        campusName: "Mbombela",
+        educationLevels: ["Undergraduate", "Postgraduate"],
+        programmeGroups: [
+          {
+            title: "Programme catalogue",
+            description:
+              "Explore the current programme catalogue and confirm the qualification, entry requirements and teaching campus directly with UMP.",
+            href: "https://www.ump.ac.za/Study-with-us/",
+          },
+        ],
+        admissions: {
+          summary:
+            "UMP's online process asks applicants to create a portal profile, enter personal and school-leaving details, upload supporting documents and select up to two academic programme choices. Residence applications are submitted separately in the portal.",
+          applicationUrl: "https://ienabler.ump.ac.za/pls/prodi41/w03pkg.call_dyn_val",
+          currentDates: [
+            "2027 applications opened 1 June 2026.",
+            "Undergraduate programmes and advanced diplomas close 30 November 2026.",
+            "Honours, postgraduate diplomas, master's and doctoral applications close 30 January 2027.",
+          ],
+          requirements: [
+            "Certified identity and school-leaving documents, plus other programme-specific supporting documents.",
+            "Check the official application page for current document and fee requirements.",
+          ],
+        },
+        officialLinks: [
+          { label: "2027 applications and process", href: "https://www.ump.ac.za/apply/" },
+          {
+            label: "Online application portal",
+            href: "https://ienabler.ump.ac.za/pls/prodi41/w03pkg.call_dyn_val",
+          },
+        ],
+        sourceNotes: [
+          {
+            label: "University of Mpumalanga",
+            href: "https://www.ump.ac.za/",
+          },
+          { label: "Applications and application steps", href: "https://www.ump.ac.za/apply/" },
+        ],
+        verificationNote:
+          "Confirm the current programme catalogue, entry criteria and campus-specific availability with UMP before applying.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+    {
+      id: "tshwane-university-of-technology-mbombela",
+      slug: "tshwane-university-of-technology-mbombela",
+      listingKind: "business",
+      type: "University",
+      subcategory: "University",
+      educationType: "University",
+      educationLevels: ["Undergraduate", "Postgraduate"],
+      name: "Tshwane University of Technology — Mbombela Campus",
+      seoTitle: "TUT Mbombela Campus | Discover by Lowveld Hub",
+      seoDescription:
+        "Explore Tshwane University of Technology's Mbombela Campus and verify current programme and admissions details.",
+      location: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Tshwane University of Technology is a university of technology with a campus in Mbombela. Programme choices and entry requirements vary, so prospective students should check the official catalogue for campus-specific availability before applying.",
+      logo: "https://veldfiremedia.com/wp-content/uploads/2022/12/TUT-logo-1200x620-1.png",
+      logoAlt: "Tshwane University of Technology logo",
+      imageSourceUrls: [
+        "https://veldfiremedia.com/wp-content/uploads/2022/12/TUT-logo-1200x620-1.png",
+      ],
+      website: "https://www.tut.ac.za/",
+      source: "https://www.tut.ac.za/study-at-tut/",
+      sourceUrl: "https://www.tut.ac.za/study-at-tut/",
+      services: ["Undergraduate study", "Postgraduate study"],
+      educationProfile: {
+        campusName: "Mbombela Campus",
+        educationLevels: ["Undergraduate", "Postgraduate"],
+        programmeGroups: [
+          {
+            title: "Study options",
+            description:
+              "TUT publishes more than 300 programme options across seven faculties institution-wide. Use its programme information to verify which qualifications are available at Mbombela Campus.",
+            href: "https://www.tut.ac.za/study-at-tut/",
+          },
+        ],
+        admissions: {
+          summary:
+            "TUT directs prospective students to its official application portal and publishes application steps and programme closing dates online. Check the selected programme's campus, requirements and current closing date before submitting.",
+          applicationUrl: "https://applications-prod.tut.ac.za/",
+        },
+        officialLinks: [
+          { label: "Study at TUT", href: "https://www.tut.ac.za/study-at-tut/" },
+          {
+            label: "Application steps and closing dates",
+            href: "https://www.tut.ac.za/programme-closing-dates/undergraduate-first-time-applicant/",
+          },
+          { label: "Apply online", href: "https://applications-prod.tut.ac.za/" },
+        ],
+        sourceNotes: [
+          {
+            label: "TUT undergraduate study and campuses",
+            href: "https://www.tut.ac.za/study-at-tut/undergraduate/",
+          },
+          { label: "TUT study options", href: "https://www.tut.ac.za/study-at-tut/" },
+        ],
+        verificationNote:
+          "TUT's programme count and faculty information is institution-wide; confirm availability at Mbombela Campus and current dates on the official site.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+    {
+      id: "ehlanzeni-tvet-college-nelspruit",
+      slug: "ehlanzeni-tvet-college-nelspruit",
+      listingKind: "business",
+      type: "TVET College",
+      subcategory: "TVET College",
+      educationType: "TVET College",
+      educationLevels: ["Technical and vocational education"],
+      name: "Ehlanzeni TVET College — Nelspruit Campus",
+      seoTitle: "Ehlanzeni TVET College, Nelspruit Campus | Discover",
+      seoDescription:
+        "Find official campus and programme information for Ehlanzeni TVET College's Nelspruit Campus.",
+      location: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Ehlanzeni TVET College serves the Ehlanzeni District through a network of seven campuses. Its official site identifies Nelspruit Campus among the campuses in the Mbombela Local Municipality. Confirm course availability at this campus before applying.",
+      image:
+        "https://www.ehlanzenicollege.co.za/_next/image?url=https%3A%2F%2Fdecisive-serenity-7fc9a48de1.media.strapiapp.com%2Fwelcome_3ed2ac41c2.jpg&w=640&q=75",
+      imageAlt: "Ehlanzeni TVET College welcome image from its official website",
+      imageSourceUrls: [
+        "https://www.ehlanzenicollege.co.za/_next/image?url=https%3A%2F%2Fdecisive-serenity-7fc9a48de1.media.strapiapp.com%2Fwelcome_3ed2ac41c2.jpg&w=640&q=75",
+      ],
+      website: "https://www.ehlanzenicollege.co.za/",
+      source: "https://www.ehlanzenicollege.co.za/",
+      sourceUrl: "https://www.ehlanzenicollege.co.za/",
+      services: ["Technical and vocational education"],
+      educationProfile: {
+        campusName: "Nelspruit Campus",
+        educationLevels: ["Technical and vocational education"],
+        admissions: {
+          summary:
+            "The College operates multiple campuses, and course availability can vary by campus. Check the College's current notices and confirm that a programme is offered at Nelspruit Campus before applying.",
+          applicationUrl: "https://www.ehlanzenicollege.co.za/",
+        },
+        officialLinks: [
+          {
+            label: "College website and current notices",
+            href: "https://www.ehlanzenicollege.co.za/",
+          },
+        ],
+        sourceNotes: [
+          {
+            label: "Ehlanzeni TVET College campuses",
+            href: "https://www.ehlanzenicollege.co.za/",
+          },
+        ],
+        verificationNote:
+          "The official site identifies Nelspruit Campus but the detailed programme and contact pages could not be confirmed during research. Verify current offerings and contact details on the College site.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+    {
+      id: "penryn-school",
+      slug: "penryn-school",
+      listingKind: "business",
+      type: "Private School",
+      subcategory: "Private School",
+      educationType: "Private School",
+      educationLevels: ["Preschool", "Preparatory school", "High school"],
+      name: "Penryn School",
+      seoTitle: "Penryn School | Education in Mpumalanga | Discover",
+      seoDescription:
+        "Explore Penryn School's preschool, preparatory and college phases, with links to official information.",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Penryn School describes an education journey spanning preschool, preparatory school and college. Its published approach highlights belonging, age-appropriate learning and preparing scholars to participate in a changing world.",
+      image: "https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp",
+      imageAlt: "Penryn College image published on the official Penryn School website",
+      logo: "https://www.penryn.co.za/wp-content/uploads/2025/01/Penryn-Emblem.svg",
+      imageSourceUrls: ["https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp"],
+      website: "https://www.penryn.co.za/",
+      source: "https://www.penryn.co.za/",
+      sourceUrl: "https://www.penryn.co.za/",
+      services: ["Preschool", "Preparatory school", "College"],
+      educationProfile: {
+        campusName: "Penryn School",
+        educationLevels: ["Preschool", "Preparatory school", "College"],
+        programmeGroups: [
+          {
+            title: "School phases",
+            description:
+              "The official site presents preschool, preparatory and college sections. Families can explore each phase and confirm age or grade placement directly with the school.",
+            programmes: ["Preschool", "Preparatory school", "College"],
+            href: "https://www.penryn.co.za/",
+          },
+        ],
+        studentExperience: [
+          "The College describes sport as part of school life, with activities and coaching across different skill levels.",
+          "The Preparatory section describes a weekly programme combining academics, sport and co-curricular activities.",
+        ],
+        officialLinks: [
+          { label: "About Penryn", href: "https://www.penryn.co.za/about/" },
+          { label: "Preparatory school", href: "https://www.penryn.co.za/preparatory/" },
+          { label: "College", href: "https://www.penryn.co.za/college/" },
+          { label: "Preschool", href: "https://www.penryn.co.za/preschool/" },
+        ],
+        sourceNotes: [
+          { label: "About Penryn", href: "https://www.penryn.co.za/about/" },
+          { label: "Penryn Preparatory", href: "https://www.penryn.co.za/preparatory/" },
+          { label: "Penryn College", href: "https://www.penryn.co.za/college/" },
+          { label: "Penryn Preschool", href: "https://www.penryn.co.za/preschool/" },
+        ],
+        verificationNote:
+          "The official site confirms the school phases and campus imagery. A current physical address and admissions dates should be confirmed directly with the school.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+    {
+      id: "curro-nelspruit",
+      slug: "curro-nelspruit",
+      listingKind: "business",
+      type: "Private School",
+      subcategory: "Private School",
+      educationType: "Private School",
+      educationLevels: ["Grades 8–12"],
+      subjects: ["Robotics", "Siswati", "Business and entrepreneurship"],
+      name: "Curro Nelspruit High School",
+      seoTitle: "Curro Nelspruit High School | Discover by Lowveld Hub",
+      seoDescription:
+        "Explore Curro Nelspruit High School's Grades 8–12, IEB pathway and official school information.",
+      location: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Curro Nelspruit High School is in Sonheuwel, within The Rest Nature Estate, and offers high school education from Grade 8 to Grade 12. The school teaches in English and Afrikaans and prepares learners for IEB examinations, with subjects including Robotics and Siswati.",
+      image:
+        "https://www.curro.co.za/media/urrfjvj5/curro-nelspruit-high-school-in-sonheuwel-ieb-school-curro-school-curro-fees-schools-in-nelspruit-ieb-school-private-schools-in-nelspruit-curro-near-me-08.jpg?rmode=max&width=807&height=442",
+      imageAlt: "Curro Nelspruit High School in Sonheuwel",
+      imageSourceUrls: ["https://www.curro.co.za/schools/curro-nelspruit-high-school/"],
+      website: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+      source: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+      sourceUrl: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+      services: ["High school", "Grades 8–12", "IEB"],
+      educationProfile: {
+        campusName: "Sonheuwel, The Rest Nature Estate",
+        educationLevels: ["Grades 8–12"],
+        programmeGroups: [
+          {
+            title: "High school",
+            description:
+              "The school offers Grade 8 to Grade 12 education, teaches in English and Afrikaans, and prepares learners for IEB examinations.",
+            programmes: ["Robotics", "Siswati", "Business and entrepreneurship"],
+            href: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+          },
+        ],
+        studentExperience: [
+          "Curro states that class sizes are limited to no more than 25 learners.",
+          "School activities include sports and cultural programmes; the official page highlights soccer and cheerleading.",
+          "Support programmes include a full-time school counsellor, subject-choice assessments and academic support.",
+        ],
+        officialLinks: [
+          {
+            label: "Curro Nelspruit High School",
+            href: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+          },
+          {
+            label: "School fact sheet and downloads",
+            href: "https://www.curro.co.za/schools/curro-nelspruit-high-school/downloads/",
+          },
+        ],
+        sourceNotes: [
+          {
+            label: "Curro Nelspruit High School",
+            href: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
+          },
+        ],
+        verificationNote:
+          "Confirm current admissions dates, fees, grade placement and subject availability with Curro before applying.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+    {
+      id: "unigrad-college",
+      slug: "unigrad-college",
+      listingKind: "business",
+      type: "Private College",
+      subcategory: "Private College",
+      educationType: "Private College",
+      educationLevels: ["Full-time study", "Part-time study", "Corporate training"],
+      name: "Unigrad College",
+      seoTitle: "Unigrad College | Discover by Lowveld Hub",
+      seoDescription:
+        "Explore Unigrad College's career-focused learning, career guidance and official registration information.",
+      country: "South Africa",
+      description:
+        "Unigrad College describes its learning as career-focused and practical. Its official information discusses industry exposure, field trips, career guidance and an adviser interview as part of the application and registration process.",
+      image:
+        "https://www.unigradcollege.co.za/wp-content/uploads/2026/01/about-image-copy-final.webp",
+      imageAlt: "Unigrad College image published on the official college website",
+      imageSourceUrls: [
+        "https://www.unigradcollege.co.za/wp-content/uploads/2026/01/about-image-copy-final.webp",
+      ],
+      website: "https://www.unigradcollege.co.za/",
+      source: "https://www.unigradcollege.co.za/why-unigrad/",
+      sourceUrl: "https://www.unigradcollege.co.za/why-unigrad/",
+      services: ["Full-time courses", "Part-time courses", "Corporate training", "Career guidance"],
+      subjects: ["Marketing and sales management", "Workplace skills", "Career guidance"],
+      educationProfile: {
+        educationLevels: ["Full-time study", "Part-time study", "Corporate training"],
+        programmeGroups: [
+          {
+            title: "Study formats",
+            description:
+              "Unigrad describes full-time courses lasting one or two years, as well as part-time study and corporate training. Confirm the current course list and qualification details with the College.",
+            programmes: ["Full-time courses", "Part-time courses", "Corporate training"],
+          },
+          {
+            title: "Marketing and sales management",
+            description:
+              "The College publishes a short-learning programme in marketing and sales management. Confirm the current intake and course information before enrolling.",
+            href: "https://www.unigradcollege.co.za/part-time-course/short-learning-in-marketing-and-sales-management-programmes/",
+          },
+        ],
+        admissions: {
+          summary:
+            "Unigrad says its application process includes an interview with a career and study adviser, who discusses course choice and assists with registration. The College asks prospective students to confirm current course and fee details directly.",
+          applicationUrl: "https://www.unigradcollege.co.za/registration/",
+        },
+        studentExperience: [
+          "The College describes practicals, field trips and industry visits as part of some courses.",
+          "It offers career guidance, including a career profile assessment, according to its official information.",
+        ],
+        officialLinks: [
+          { label: "Why Unigrad", href: "https://www.unigradcollege.co.za/why-unigrad/" },
+          { label: "Registration", href: "https://www.unigradcollege.co.za/registration/" },
+          {
+            label: "Marketing and sales management",
+            href: "https://www.unigradcollege.co.za/part-time-course/short-learning-in-marketing-and-sales-management-programmes/",
+          },
+        ],
+        sourceNotes: [
+          { label: "Why Unigrad", href: "https://www.unigradcollege.co.za/why-unigrad/" },
+          { label: "Registration", href: "https://www.unigradcollege.co.za/registration/" },
+          { label: "Unigrad College", href: "https://www.unigradcollege.co.za/" },
+        ],
+        verificationNote:
+          "A current campus location, physical address and direct contact details were not confirmed in the official pages accessed. Confirm location and course availability with Unigrad before visiting or applying.",
+      },
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      status: "published",
+    },
+  ],
   health: [
     {
       id: "mediclinic-nelspruit",
@@ -2338,7 +4119,8 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Citybug provides daily shuttle bus services between Durban and Nelspruit, with more than 10 destinations en route and scheduled airport connections to OR Tambo International Airport.",
       image:
         "https://images.caxton.co.za/wp-content/uploads/sites/44/2018/06/31634200_1726025474156729_4390059246322974720_n.jpg",
-      imageAlt: "Citybug Nelspruit shuttle service connecting Nelspruit and OR Tambo airport routes",
+      imageAlt:
+        "Citybug Nelspruit shuttle service connecting Nelspruit and OR Tambo airport routes",
       website: "https://citybug.co.za/",
       phone: "087 537 1444",
       source: "https://citybug.co.za/citybug-durban/",
@@ -2368,8 +4150,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       country: "South Africa",
       description:
         "LimeTime Shuttle operates scheduled passenger transport between Mpumalanga and Gauteng, with airport transfer services, university transfers, parcel services and regional routes including Nelspruit, Bloemfontein, Klerksdorp, Potchefstroom and OR Tambo.",
-      image:
-        "https://www.limetimeshuttle.co.za/wp-content/uploads/2024/02/new-bus-2.png",
+      image: "https://www.limetimeshuttle.co.za/wp-content/uploads/2024/02/new-bus-2.png",
       imageAlt: "LimeTime shuttle bus in service across Mpumalanga and Gauteng routes",
       website: "https://www.limetimeshuttle.co.za/",
       phone: "087 094 9444",
@@ -2404,7 +4185,8 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Kruger Transfers is based around 10 minutes from Kruger Mpumalanga International Airport in Nelspruit and focuses on transport for airport, lodge and Kruger-region travel.",
       image:
         "https://z-p3-scontent.fjnb12-1.fna.fbcdn.net/v/t39.30808-1/241454650_315404847044293_6448819179122271178_n.jpg?stp=dst-jpg_tt6&cstp=mx1000x667&ctp=s960x960&_nc_cat=108&_nc_sid=3ab345&_nc_ohc=nNlZXHyoGm8Q7kNvwFlJya_&_nc_oc=AdrCWVEqWUsQ54ypMhGzSe6nlOs1N-G6pNrjW17hWCndkGkWFCtrDwuHmgZ5i2SNY8s&_nc_zt=24&_nc_ht=z-p3-scontent.fjnb12-1.fna&_nc_gid=5EAaibDFEvk3dFFGqfV5Fw&_nc_ss=7c20f&oh=00_AQMswGfdppasr4KSipVFdjflffBXA71rfNAyfmOrchiJKw&oe=6AD24FBA",
-      imageAlt: "Kruger Transfers vehicle and transfer service image from the official Facebook page",
+      imageAlt:
+        "Kruger Transfers vehicle and transfer service image from the official Facebook page",
       website: "https://www.facebook.com/krugertransfers/",
       source: "https://www.facebook.com/krugertransfers/",
       sourceUrl: "https://www.facebook.com/krugertransfers/",
@@ -2577,7 +4359,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: true,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay"],
       source: "https://thecapital.co.za/destinations/mbombela/",
       sourceUrl: "https://thecapital.co.za/destinations/mbombela/",
       image: "https://thecapital.co.za/wp-content/uploads/2026/07/Mbombela_One-Bedroom-11.jpg.webp",
@@ -2646,7 +4427,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: true,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay"],
       source: "https://matumigolflodge.co.za/",
       sourceUrl: "https://matumigolflodge.co.za/accommodation/",
       image: "https://matumigolflodge.co.za/wp-content/uploads/2025/01/3.png",
@@ -2747,6 +4527,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       id: "summerfields-rose-retreat-and-spa",
       slug: "summerfields-rose-retreat-and-spa",
       listingKind: "accommodation",
+      featuredOrder: 2,
       name: "Summerfields Rose Retreat & Spa",
       type: "Retreat",
       accommodationType: "Retreat",
@@ -2811,9 +4592,58 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: true,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay"],
+      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
       source: "https://summerfields.co.za/",
       sourceUrl: "https://summerfields.co.za/retreat",
+      wellnessProfile: {
+        displayName: "Rose Spa at Summerfields",
+        providerType: "Riverside retreat spa",
+        summary:
+          "An open-air spa by the Sabie River, a short walk from Summerfields' tented suites and River Café.",
+        description:
+          "Rose Spa is Summerfields' riverside spa, set on the Sabie River within the retreat grounds. The resort publishes its treatment range in a downloadable spa brochure and asks guests to book in advance.",
+        seoTitle: "Rose Spa at Summerfields | Hazyview Spa | Discover",
+        seoDescription:
+          "Explore Rose Spa at Summerfields in Hazyview, a riverside spa with advance booking and an official treatment brochure.",
+        website: "https://summerfields.co.za/rose-spa",
+        bookingUrl:
+          "https://online.salonbridge.co.za/includes/widget/bookNowiFrame.php?businessID=3712&businessUID=f478bb0d-17bc-11ec-8fa7-0a919287fb63",
+        bookingLabel: "Book a spa treatment",
+        logo: "https://summerfields.co.za/images/logo2.png",
+        logoAlt: "Summerfields Rose Retreat & Spa logo",
+        image:
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00005.69cecccc100f974c4c3582b32f024c6e.jpg",
+        imageAlt: "Rose Spa treatment setting at Summerfields",
+        images: [
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00004.69cecccc100f974c4c3582b32f024c6e.jpg",
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00006.69cecccc100f974c4c3582b32f024c6e.jpg",
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/jan09344.69cecccc100f974c4c3582b32f024c6e.jpg",
+        ],
+        imageAlts: [
+          "Rose Spa treatment setting at Summerfields",
+          "Rose Spa at Summerfields beside the Sabie River",
+          "Spa experience at Summerfields Rose Spa",
+          "Summerfields Rose Spa",
+        ],
+        imageSourceUrls: [
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00005.69cecccc100f974c4c3582b32f024c6e.jpg",
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00004.69cecccc100f974c4c3582b32f024c6e.jpg",
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/image00006.69cecccc100f974c4c3582b32f024c6e.jpg",
+          "https://summerfields.co.za/assets/components/phpthumbof/cache/jan09344.69cecccc100f974c4c3582b32f024c6e.jpg",
+        ],
+        treatmentSections: [
+          {
+            title: "Spa treatments",
+            items: ["Treatments listed in Summerfields' official Rose Spa brochure"],
+            note: "Download the current spa brochure from Summerfields for treatment details.",
+          },
+        ],
+        facilities: ["Riverside spa setting"],
+        visitNotes: [
+          "Bookings are essential. Rose Spa is open daily.",
+          "The spa is beside the river, within walking distance of the tented suites and River Café.",
+        ],
+      },
       seoTitle: "Summerfields Rose Retreat & Spa | Hazyview Accommodation | Discover",
       seoDescription:
         "Discover Summerfields Rose Retreat & Spa in Hazyview. Explore luxury tented accommodation, spa experiences, dining and riverfront stays on Discover by Lowveld Hub.",
@@ -3158,6 +4988,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       id: "walkersons-hotel-spa",
       slug: "walkersons-hotel-spa",
       listingKind: "accommodation",
+      featuredOrder: 4,
       name: "Walkersons Hotel & Spa",
       type: "Hotel",
       accommodationType: "Hotel",
@@ -3183,6 +5014,59 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "https://www.google.com/maps/search/?api=1&query=Walkersons+Hotel+and+Spa+Dullstroom+Mpumalanga",
       source: "https://www.walkersons.co.za/",
       sourceUrl: "https://www.walkersons.co.za/",
+      wellnessProfile: {
+        displayName: "Walkersons Spa",
+        providerType: "Country-estate spa",
+        summary:
+          "A garden spa on the Walkersons Estate, offering massages, skin-care rituals and facials in Dullstroom.",
+        description:
+          "Walkersons Spa is a garden spa on the hotel's Dullstroom estate. Published treatments include massages, skin-care rituals and facials; sauna access is reserved for hotel guests and groups booking the Revive Package.",
+        seoTitle: "Walkersons Spa | Dullstroom Spa Treatments | Discover",
+        seoDescription:
+          "Explore Walkersons Spa in Dullstroom for massages, skin-care rituals, facials and a garden-estate setting. Sauna access is subject to the hotel's published restrictions.",
+        website: "https://www.walkersons.co.za/spa/",
+        email: "spa@walkersons.co.za",
+        logo: "https://www.walkersons.co.za/wp-content/uploads/2024/06/thumbnail_Walkersons-logo-transparent-updated-1.png",
+        logoAlt: "Walkersons Hotel logo",
+        image:
+          "https://www.walkersons.co.za/wp-content/uploads/2026/05/FOM-Shoot-Walkersons-Spa-2-667x1000.jpg",
+        imageAlt: "Walkersons Spa treatment room in Dullstroom",
+        images: [
+          "https://www.walkersons.co.za/wp-content/uploads/2025/03/1.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2024/07/Babor-Spa-Products-1-667x1000.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2026/08/FOM-Shoot-Walkersons-Spa-3-1280x853.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2026/08/FOM-Shoot-Walkersons-Spa-4-667x1000.jpg",
+        ],
+        imageAlts: [
+          "Walkersons Spa treatment room in Dullstroom",
+          "Walkersons Spa",
+          "BABOR products used at Walkersons Spa",
+          "Treatment setting at Walkersons Spa",
+          "Walkersons Spa experience",
+        ],
+        imageSourceUrls: [
+          "https://www.walkersons.co.za/wp-content/uploads/2026/05/FOM-Shoot-Walkersons-Spa-2-667x1000.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2025/03/1.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2024/07/Babor-Spa-Products-1-667x1000.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2026/08/FOM-Shoot-Walkersons-Spa-3-1280x853.jpg",
+          "https://www.walkersons.co.za/wp-content/uploads/2026/08/FOM-Shoot-Walkersons-Spa-4-667x1000.jpg",
+        ],
+        treatmentSections: [
+          {
+            title: "Spa treatments",
+            items: ["Massages", "Skin-care rituals", "Facials"],
+          },
+          {
+            title: "Spa facilities",
+            items: ["On-site sauna"],
+            note: "The official spa page says sauna access is exclusively for hotel guests and groups booking its Revive Package.",
+          },
+        ],
+        facilities: ["Garden spa", "On-site sauna"],
+        facilitiesNote:
+          "Sauna access is limited to hotel guests and groups booking the Revive Package.",
+        visitNotes: ["Contact the spa to enquire about treatments and bookings."],
+      },
       image:
         "https://www.walkersons.co.za/wp-content/uploads/2024/10/Walkersons-Kyle-Lewin-Lounge-33-1280x852.jpg",
       images: [
@@ -3234,7 +5118,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: false,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay"],
+      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
       status: "published",
     },
     {
@@ -3624,7 +5508,156 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
     },
   ],
   "home-construction": [],
-  automotive: [],
+  automotive: [
+    {
+      id: "bmw-mbombela",
+      slug: "bmw-mbombela",
+      listingKind: "business",
+      type: "Dealerships",
+      name: "BMW Mbombela",
+      subcategory: "BMW dealership",
+      location: "Mbombela / Nelspruit",
+      town: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      serviceType: "New and approved-used BMW vehicles",
+      services: [
+        "New BMW vehicles",
+        "BMW Approved Used vehicles",
+        "Vehicle servicing",
+        "Genuine BMW parts",
+      ],
+      description:
+        "BMW Mpumalanga lists a Mbombela/Nelspruit location and provides access to new BMW models, Approved Used vehicles, vehicle servicing and genuine parts. Contact the dealership to confirm current availability and service arrangements.",
+      image:
+        "https://bmw.scene7.com/is/image/BMW/BEV_Range_mobile:3to1?fmt=webp-alpha&wid=1919&fit=constrain%2C1",
+      imageAlt: "BMW model range imagery, not a photograph of the Mbombela dealership",
+      imageFit: "contain",
+      imageNote: "BMW range imagery; it does not depict the Mbombela dealership.",
+      logo: "https://www.bmwmpumalanga.co.za/wp-content/uploads/2025/11/cropped-Site-Icon.png",
+      logoAlt: "BMW logo",
+      website: "https://www.bmwmpumalanga.co.za/",
+      source: "https://www.bmwmpumalanga.co.za/",
+      sourceUrl: "https://www.bmwmpumalanga.co.za/",
+      seoTitle: "BMW Mbombela | BMW Dealership in Mpumalanga | Discover",
+      seoDescription:
+        "Contact BMW Mbombela for new and Approved Used BMW vehicles, servicing and genuine parts. Confirm current details directly with BMW Mpumalanga.",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "audi-centre-mbombela",
+      slug: "audi-centre-mbombela",
+      listingKind: "business",
+      type: "Dealerships",
+      name: "Audi Centre Mbombela",
+      subcategory: "Audi dealership",
+      location: "Mbombela / Nelspruit",
+      town: "Mbombela",
+      address: "C/o Government Boulevard and Madiba Drive, Mbombela/Nelspruit",
+      province: "Mpumalanga",
+      country: "South Africa",
+      serviceType: "Audi vehicle sales and test-drive enquiries",
+      services: ["Audi vehicle sales", "Test-drive enquiries"],
+      description:
+        "Audi Centre Mbombela is the Westvaal Audi branch serving Mbombela/Nelspruit. The official branch page publishes its location and contact number and accepts test-drive enquiries; confirm current models and appointment availability with the dealership.",
+      image: "https://image.blob.ix.co.za/modelInfo/657/1/657-1-file-1-1920x933.png",
+      imageAlt: "Audi model image, not a photograph of Audi Centre Mbombela",
+      imageFit: "contain",
+      imageNote: "Audi model imagery; it does not depict the Mbombela showroom.",
+      logo: "https://d2638j3z8ek976.cloudfront.net/6162db9520beba39059972d5701f03b46326924c/1788255413/images/edition/audi/franchise-badge.png",
+      logoAlt: "Audi logo",
+      phone: "+27137548800",
+      website: "https://www.westvaal.co.za/audi/contact-us/audi-centre-mbombela/",
+      source: "https://www.westvaal.co.za/audi/contact-us/audi-centre-mbombela/",
+      sourceUrl: "https://www.westvaal.co.za/audi/contact-us/audi-centre-mbombela/",
+      seoTitle: "Audi Centre Mbombela | Audi Dealership | Discover",
+      seoDescription:
+        "Find Audi Centre Mbombela at Government Boulevard and Madiba Drive in Mbombela/Nelspruit. Call the official branch for Audi sales and test-drive enquiries.",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "webuycars-mbombela",
+      slug: "webuycars-mbombela",
+      listingKind: "business",
+      type: "Dealerships",
+      name: "WeBuyCars Mbombela",
+      subcategory: "Used vehicle buying and selling",
+      location: "Mbombela",
+      town: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      serviceType: "Used vehicle buying and selling",
+      services: [
+        "Buy used cars, bakkies and motorcycles",
+        "Sell used cars, bakkies and motorcycles",
+      ],
+      description:
+        "WeBuyCars offers a route for customers to buy or sell used cars, bakkies and motorcycles. Its official Mbombela branch inventory page lists vehicles for this location; this is a used-vehicle marketplace, not a new-car franchise.",
+      image:
+        "https://images.openai.com/static-rsc-4/fvpvifBs1A878ejsdzYCTFDixeVK_RseUTlv9Ugon1e2Bbqm9Kl83mTXQugUcdweYW1WTsX4O4IR26mZL6rXQUeWJ-h5MtFV_znXKcOQ-WBKNeUfHfxqJyfVuuRwnzMtepsoxxirWghcGHOCqV50WmoIUuDZ_6i4iO0zzlsBf1Y?purpose=inline",
+      imageAlt: "WeBuyCars-branded building; this image is not confirmed as the Mbombela branch",
+      imageNote:
+        "WeBuyCars brand imagery; the pictured building is not confirmed as the Mbombela branch.",
+      phone: "+27870570000",
+      website: "https://www.webuycars.co.za/cars-for-sale/b/Mbombela%20(MP)",
+      source: "https://www.webuycars.co.za/",
+      sourceUrl: "https://www.webuycars.co.za/cars-for-sale/b/Mbombela%20(MP)",
+      seoTitle: "WeBuyCars Mbombela | Buy or Sell Used Vehicles | Discover",
+      seoDescription:
+        "Explore WeBuyCars' Mbombela vehicle inventory and its used-car, bakkie and motorcycle buying and selling services.",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "eastvaal-middelburg-gwm",
+      slug: "eastvaal-middelburg-gwm",
+      listingKind: "business",
+      type: "Dealerships",
+      name: "Eastvaal Middelburg GWM",
+      subcategory: "Eastvaal Motors GWM dealership",
+      location: "Middelburg",
+      town: "Middelburg",
+      province: "Mpumalanga",
+      country: "South Africa",
+      serviceType: "New, used and demo GWM vehicles",
+      services: ["New GWM vehicles", "Used GWM vehicles", "Demo GWM vehicles"],
+      description:
+        "Eastvaal Middelburg GWM is a confirmed Eastvaal Motors dealership in Middelburg. Its official branch page describes new, used and demo vehicles from GWM; this profile refers to that branch and does not imply a Mbombela location or other vehicle makes.",
+      image:
+        "https://www.eastvaal.co.za/wp-content/themes/generatepress_child_EastvaalGroup/assets/images/logos/Eastvaal-Motors-Logo.png",
+      imageAlt: "Eastvaal Motors logo",
+      imageFit: "contain",
+      imageNote: "Official Eastvaal Motors logo; a suitable branch photograph was not confirmed.",
+      logo: "https://www.eastvaal.co.za/wp-content/themes/generatepress_child_EastvaalGroup/assets/images/logos/Eastvaal-Motors-Logo.png",
+      logoAlt: "Eastvaal Motors logo",
+      website: "https://www.eastvaal.co.za/dealership/eastvaal-middelburg-gwm/",
+      source: "https://www.eastvaal.co.za/dealership/eastvaal-middelburg-gwm/",
+      sourceUrl: "https://www.eastvaal.co.za/dealership/eastvaal-middelburg-gwm/",
+      seoTitle: "Eastvaal Middelburg GWM | Eastvaal Motors | Discover",
+      seoDescription:
+        "Explore new, used and demo GWM vehicles at Eastvaal Middelburg GWM, an Eastvaal Motors dealership in Middelburg, Mpumalanga.",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+  ],
   "food-dining": [
     {
       id: "turn-n-tender-mbombela",
@@ -4884,6 +6917,13 @@ export function getCategoryListingPath(category: CategorySlug, listing: Category
   const slug = getBusinessSlug(listing);
   if (listing.listingKind === "event") return `/events/${slug}`;
   if (listing.listingKind === "property") return `/property/${slug}`;
+  if (
+    category === "beauty-wellness-fitness" &&
+    listing.listingKind === "accommodation" &&
+    listing.wellnessProfile
+  ) {
+    return `/accommodation/${slug}?view=wellness`;
+  }
   if (
     category === "accommodation" ||
     category === "stay" ||

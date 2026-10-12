@@ -33,6 +33,10 @@ export function generateSitemapXml() {
   if (homepage) paths.add(homepage);
   const propertyLandingPage = getPublicUrl("/property");
   if (propertyLandingPage) paths.add(propertyLandingPage);
+  if (getPublishedPropertyListings().length > 0) {
+    const propertyListingsPage = getPublicUrl("/property?view=listings");
+    if (propertyListingsPage) paths.add(propertyListingsPage);
+  }
 
   const sitemapCategories = new Set<CategorySlug>();
   entries.forEach(({ category }) => {

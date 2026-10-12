@@ -943,7 +943,7 @@ function CategoryShortcuts() {
               aria-expanded={showAllCategories}
               aria-controls="additional-category-cards"
               onClick={() => setShowAllCategories((expanded) => !expanded)}
-              className="inline-flex min-h-10 items-center gap-2 rounded-sm px-3 py-1.5 text-xs font-medium tracking-[0.02em] text-[#536267] transition-colors hover:text-[#17242b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a58c61]"
+              className="relative z-20 inline-flex min-h-11 touch-manipulation cursor-pointer items-center gap-2 rounded-sm border border-[#dce4e5] bg-white px-4 py-2 text-sm font-medium tracking-[0.02em] text-[#34474d] shadow-sm transition-colors hover:border-[#bfcfce] hover:text-[#17242b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a58c61]"
             >
               {showAllCategories ? "Show less" : "Explore all categories"}
               <ChevronDown

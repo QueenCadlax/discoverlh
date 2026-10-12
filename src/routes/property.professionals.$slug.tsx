@@ -29,15 +29,18 @@ export const Route = createFileRoute("/property/professionals/$slug")({
       };
     }
     const locality = professional.location ? ` in ${professional.location}` : " in Mpumalanga";
-    const title = `${professional.name} | Property Professional${locality} | Discover`;
+    const title =
+      professional.seoTitle ?? `${professional.name} | Property Professional${locality} | Discover`;
     const description =
+      professional.seoDescription ??
       professional.description ??
       `View the published property professional profile for ${professional.name}${locality}.`;
     const canonical = getPublicUrl(getPropertyProfessionalPath(professional));
-    const image = professional.image
-      ? professional.image.startsWith("http")
-        ? professional.image
-        : getPublicUrl(professional.image)
+    const socialImage = professional.coverImage ?? professional.images?.[0] ?? professional.image;
+    const image = socialImage
+      ? socialImage.startsWith("http")
+        ? socialImage
+        : getPublicUrl(socialImage)
       : undefined;
     return {
       meta: [
@@ -88,6 +91,19 @@ function PropertyProfessionalPage() {
   }
 
   const listings = getPropertyListingsForProfessional(professional);
+  const gallery = [
+    ...new Set(
+      [professional.coverImage, ...(professional.images ?? [])].filter((image): image is string =>
+        Boolean(image),
+      ),
+    ),
+  ];
+  const logo = professional.logo ?? professional.image;
+  const structuredImages = gallery.length
+    ? gallery
+    : professional.image
+      ? [professional.image]
+      : [];
   const phoneHref = getPropertyContactHref(professional.phone);
   const whatsappHref = getPropertyWhatsAppHref(professional.whatsapp);
   const structuredData = {
@@ -97,7 +113,8 @@ function PropertyProfessionalPage() {
     name: professional.name,
     url: getPublicUrl(getPropertyProfessionalPath(professional)),
     ...(professional.description ? { description: professional.description } : {}),
-    ...(professional.image ? { image: professional.image } : {}),
+    ...(structuredImages.length ? { image: structuredImages } : {}),
+    ...(logo ? { logo } : {}),
     ...(professional.phone ? { telephone: professional.phone } : {}),
     ...(professional.email ? { email: professional.email } : {}),
     ...(professional.website ? { sameAs: [professional.website] } : {}),
@@ -149,12 +166,12 @@ function PropertyProfessionalPage() {
 
         <section className="grid gap-6 border-b border-[#e5ebeb] pb-7 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
           <div className="flex items-start gap-4">
-            {professional.image && (
+            {logo && (
               <img
-                src={professional.image}
-                alt={professional.imageAlt ?? professional.name}
+                src={logo}
+                alt={professional.logoAlt ?? professional.imageAlt ?? `${professional.name} logo`}
                 fetchPriority="high"
-                className="h-20 w-20 shrink-0 object-cover sm:h-24 sm:w-24"
+                className={`h-20 w-20 shrink-0 rounded-sm border border-[#e5ebeb] bg-white p-1 sm:h-24 sm:w-24 ${professional.logo || professional.imageFit === "contain" ? "object-contain" : "object-cover"}`}
               />
             )}
             <div>
@@ -203,6 +220,36 @@ function PropertyProfessionalPage() {
             )}
           </div>
         </section>
+
+        {gallery.length > 0 && (
+          <figure className="mt-6">
+            <div className={`grid gap-2 ${gallery.length > 1 ? "sm:grid-cols-2" : ""}`}>
+              {gallery.slice(0, 4).map((image, index) => (
+                <img
+                  key={image}
+                  src={image}
+                  alt={
+                    index === 0
+                      ? (professional.coverImageAlt ??
+                        professional.imageAlts?.[index] ??
+                        `${professional.name} profile image`)
+                      : (professional.imageAlts?.[index] ??
+                        `${professional.name} image ${index + 1}`)
+                  }
+                  fetchPriority={index === 0 ? "high" : undefined}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  className={`w-full rounded-sm bg-[#f4f5f3] ${professional.imageFit === "contain" ? "object-contain" : "object-cover"} ${index === 0 ? "aspect-[16/10]" : "aspect-[16/9]"}`}
+                />
+              ))}
+            </div>
+            {professional.imageNote && (
+              <figcaption className="mt-2 text-xs leading-5 text-[#68767a]">
+                {professional.imageNote}
+              </figcaption>
+            )}
+          </figure>
+        )}
 
         {professional.description && (
           <section id="about" className="border-b border-[#e5ebeb] py-6">

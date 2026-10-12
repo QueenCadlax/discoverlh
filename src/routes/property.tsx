@@ -4,6 +4,7 @@ import { PropertyMarketplace } from "@/components/PropertyMarketplace";
 import {
   filterPropertyListings,
   getPublishedPropertyProfessionals,
+  propertyProfessionalServiceTypes,
   propertyFeatures,
   propertyLocations,
   propertyListingIntents,
@@ -13,9 +14,12 @@ import {
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
-const propertyTitle = "Property in Mpumalanga | Discover by Lowveld Hub";
-const propertyDescription =
+const propertyListingsTitle = "Property in Mpumalanga | Discover by Lowveld Hub";
+const propertyListingsDescription =
   "Discover homes, apartments, land, commercial spaces and holiday properties across Mpumalanga.";
+const professionalsTitle = "Property Businesses in Mpumalanga | Discover by Lowveld Hub";
+const professionalsDescription =
+  "Find estate agencies and property professionals serving Mbombela and Mpumalanga.";
 
 function safeNumber(value: unknown) {
   if (typeof value !== "string" || !/^\d{1,10}$/.test(value)) return undefined;
@@ -48,7 +52,10 @@ export const Route = createFileRoute("/property")({
     );
     const validPropertyTypes = new Set<string>(propertyTypes);
     return {
-      view: search.view === "professionals" || search.view === "saved" ? search.view : undefined,
+      view:
+        search.view === "professionals" || search.view === "listings" || search.view === "saved"
+          ? search.view
+          : undefined,
       listingType: listingIntent?.value,
       q:
         typeof search.q === "string" && search.q.trim().length <= 120
@@ -57,6 +64,12 @@ export const Route = createFileRoute("/property")({
       location:
         typeof search.location === "string" && propertyLocations.includes(search.location)
           ? search.location
+          : undefined,
+      serviceType:
+        (search.view === undefined || search.view === "professionals") &&
+        typeof search.serviceType === "string" &&
+        propertyProfessionalServiceTypes.includes(search.serviceType)
+          ? search.serviceType
           : undefined,
       propertyType:
         typeof search.propertyType === "string" && validPropertyTypes.has(search.propertyType)
@@ -70,25 +83,37 @@ export const Route = createFileRoute("/property")({
     };
   },
   head: ({ match }) => {
-    const canonical = getPublicUrl("/property");
+    const isProfessionalsView =
+      match.search.view === "professionals" || match.search.view === undefined;
+    const title = isProfessionalsView ? professionalsTitle : propertyListingsTitle;
+    const description = isProfessionalsView
+      ? professionalsDescription
+      : propertyListingsDescription;
+    const canonicalPath = isProfessionalsView
+      ? "/property"
+      : match.search.view === "listings"
+        ? "/property?view=listings"
+        : "/property";
+    const canonical = getPublicUrl(canonicalPath);
     const socialImage = getPublicUrl("/PROPERTY.jpg");
     const hasFilters =
       match.search.view === "saved" ||
-      (match.search.view === "professionals" && getPublishedPropertyProfessionals().length === 0) ||
+      (isProfessionalsView && getPublishedPropertyProfessionals().length === 0) ||
+      (match.search.view === "listings" && filterPropertyListings(match.search).length === 0) ||
       Object.entries(match.search).some(([key, value]) => key !== "view" && value !== undefined);
     return {
       meta: [
-        { title: propertyTitle },
-        { name: "description", content: propertyDescription },
+        { title },
+        { name: "description", content: description },
         { name: "robots", content: hasFilters ? "noindex,follow" : "index,follow" },
-        { property: "og:title", content: propertyTitle },
-        { property: "og:description", content: propertyDescription },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:type", content: "website" },
         ...(socialImage ? [{ property: "og:image", content: socialImage }] : []),
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
         { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: propertyTitle },
-        { name: "twitter:description", content: propertyDescription },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
       ],
       ...(canonical ? { links: [{ rel: "canonical", href: canonical }] } : {}),
     };
@@ -113,16 +138,23 @@ function PropertyPage() {
 
   if (pathname !== "/property") return <Outlet />;
 
-  const publishedCount =
-    search.view === "professionals"
-      ? getPublishedPropertyProfessionals().length
-      : filterPropertyListings(search).length;
+  const isProfessionalsView = search.view === "professionals" || search.view === undefined;
+  const publishedCount = isProfessionalsView
+    ? getPublishedPropertyProfessionals().length
+    : filterPropertyListings(search).length;
+  const title = isProfessionalsView ? professionalsTitle : propertyListingsTitle;
+  const description = isProfessionalsView ? professionalsDescription : propertyListingsDescription;
+  const canonicalPath = isProfessionalsView
+    ? "/property"
+    : search.view === "listings"
+      ? "/property?view=listings"
+      : "/property";
   const pageSchema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: propertyTitle,
-    description: propertyDescription,
-    url: getPublicUrl("/property"),
+    name: title,
+    description,
+    url: getPublicUrl(canonicalPath),
     isPartOf: {
       "@type": "WebSite",
       name: "Discover by Lowveld Hub",

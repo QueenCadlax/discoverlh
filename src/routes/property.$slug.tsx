@@ -80,7 +80,7 @@ function PropertyListingPage() {
           This listing may have been removed or is not currently available.
         </p>
         <a
-          href="/property"
+          href="/property?view=listings"
           className="mt-5 inline-flex min-h-11 items-center bg-[#17242b] px-4 text-sm font-semibold text-white"
         >
           Browse Property
@@ -175,7 +175,7 @@ function PropertyListingDetails({ listing }: { listing: PropertyListing }) {
             Home
           </a>
           <span aria-hidden="true">/</span>
-          <a href="/property" className="hover:text-[#17242b]">
+          <a href="/property?view=listings" className="hover:text-[#17242b]">
             Property
           </a>
           <span aria-hidden="true">/</span>

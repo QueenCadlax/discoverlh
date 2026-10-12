@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRight, BedDouble, Bath, Building2, Heart, MapPin, Search } from "lucide-react";
 
+import { DiscoveryCardImage } from "@/components/DiscoveryCardImage";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   filterPropertyListings,
@@ -10,6 +11,7 @@ import {
   getPropertyProfessionalPath,
   propertyFeatures,
   propertyListingIntents,
+  propertyProfessionalServiceTypes,
   propertyLocations,
   propertyTypes,
   type PropertySearchParams,
@@ -68,7 +70,7 @@ export function PropertyMarketplace({
   search: PropertySearchParams;
   onSearch: (nextSearch: PropertySearchParams) => void;
 }) {
-  const isProfessionalsView = search.view === "professionals";
+  const isProfessionalsView = search.view === "professionals" || search.view === undefined;
   const isSavedView = search.view === "saved";
   const { savedPropertyIds, toggleSavedProperty } = useSavedProperties();
   const listings = filterPropertyListings(search).filter(
@@ -85,7 +87,7 @@ export function PropertyMarketplace({
     event.preventDefault();
     onSearch({
       ...draft,
-      view: isProfessionalsView ? "professionals" : isSavedView ? "saved" : undefined,
+      view: isProfessionalsView ? "professionals" : isSavedView ? "saved" : "listings",
       q: draft.q?.trim() || undefined,
       location: draft.location || undefined,
       propertyType: draft.propertyType || undefined,
@@ -104,7 +106,11 @@ export function PropertyMarketplace({
         <section className="relative isolate min-h-[450px] overflow-hidden bg-[#17242b] text-white md:min-h-[520px]">
           <img
             src="/PROPERTY.jpg"
-            alt="Modern home exterior"
+            alt={
+              isProfessionalsView
+                ? "Illustrative property category image, not a current listing"
+                : "Illustrative property category image"
+            }
             fetchPriority="high"
             className="absolute inset-0 -z-20 h-full w-full object-cover"
           />
@@ -114,12 +120,20 @@ export function PropertyMarketplace({
               Property
             </p>
             <h1 className="mt-3 max-w-2xl font-display text-4xl font-medium leading-[1.05] sm:text-5xl md:text-6xl">
-              Property in Mpumalanga
+              {isProfessionalsView
+                ? "Property professionals in Mpumalanga"
+                : "Property in Mpumalanga"}
             </h1>
             <p className="mt-4 max-w-xl text-sm leading-6 text-white/85 sm:text-base sm:leading-7">
-              Find homes, rentals, land, commercial spaces and property professionals across
-              Mpumalanga.
+              {isProfessionalsView
+                ? "Discover estate agencies and property specialists serving Mbombela and the Lowveld."
+                : "Find homes, rentals, land and commercial spaces across Mpumalanga."}
             </p>
+            {isProfessionalsView && (
+              <p className="mt-3 text-xs text-white/70">
+                Illustrative category imagery; no property shown is advertised here.
+              </p>
+            )}
           </div>
         </section>
 
@@ -134,10 +148,10 @@ export function PropertyMarketplace({
               className="mb-3 flex gap-1 border-b border-[#e5ebeb]"
             >
               <a
-                href="/property"
-                aria-current={!isProfessionalsView ? "page" : undefined}
+                href="/property?view=listings"
+                aria-current={!isProfessionalsView && !isSavedView ? "page" : undefined}
                 className={`min-h-10 border-b-2 px-4 text-xs font-semibold transition-colors sm:text-sm ${
-                  !isProfessionalsView
+                  !isProfessionalsView && !isSavedView
                     ? "border-[#8a7655] text-[#17242b]"
                     : "border-transparent text-[#687378] hover:text-[#17242b]"
                 }`}
@@ -207,6 +221,23 @@ export function PropertyMarketplace({
                     value={draft.location}
                     onChange={(location) => setDraft({ ...draft, location })}
                   />
+                  <label>
+                    <span className="sr-only">Property service type</span>
+                    <select
+                      value={draft.serviceType ?? ""}
+                      onChange={(event) =>
+                        setDraft({ ...draft, serviceType: event.target.value || undefined })
+                      }
+                      className="h-11 w-full border border-[#dfe5e3] bg-white px-3 text-sm text-[#34474d] outline-none focus:border-[#8a7655]"
+                    >
+                      <option value="">Any service</option>
+                      {propertyProfessionalServiceTypes.map((service) => (
+                        <option key={service} value={service}>
+                          {service}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
                   <button
                     type="submit"
                     className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#17242b] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#30474f]"
@@ -354,9 +385,9 @@ export function PropertyMarketplace({
             <a
               href={
                 isProfessionalsView
-                  ? "/property"
+                  ? "/property?view=listings"
                   : isSavedView
-                    ? "/property"
+                    ? "/property?view=listings"
                     : "/property?view=professionals"
               }
               className="inline-flex min-h-10 w-fit items-center gap-2 text-sm font-medium text-[#52636a] underline underline-offset-4 hover:text-[#17242b]"
@@ -533,48 +564,66 @@ export function PropertyListingCard({
 }
 
 function PropertyProfessionalCard({ professional }: { professional: PropertyProfessional }) {
+  const identityImage = professional.logo ?? professional.image;
+  const image = professional.coverImage ?? identityImage;
+  const imageFit = professional.coverImage
+    ? "cover"
+    : (professional.imageFit ?? (professional.logo ? "contain" : "cover"));
+  const imageAlt = professional.coverImage
+    ? (professional.coverImageAlt ?? `${professional.name} property agency`)
+    : (professional.logoAlt ?? professional.imageAlt ?? `${professional.name} logo`);
+
   return (
-    <article className="border border-[#e2e7e5] bg-white p-4 transition-shadow hover:shadow-[0_12px_30px_-24px_rgba(23,36,43,0.48)]">
-      <div className="flex items-start gap-3">
-        {professional.image ? (
-          <img
-            src={professional.image}
-            alt={professional.imageAlt ?? professional.name}
-            loading="lazy"
-            decoding="async"
-            className="h-16 w-16 shrink-0 object-cover"
+    <article className="group relative h-full min-w-0">
+      <a
+        href={getPropertyProfessionalPath(professional)}
+        className="flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-[#e7eceb] bg-white shadow-[0_12px_28px_-24px_rgba(20,31,35,0.7)] transition-all duration-300 hover:-translate-y-1 hover:border-[#d5dfde] hover:shadow-[0_24px_42px_-26px_rgba(20,31,35,0.6)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#28718a] motion-reduce:transition-none"
+      >
+        <div className="relative overflow-hidden">
+          <DiscoveryCardImage
+            image={image}
+            alt={imageAlt}
+            name={professional.name}
+            fit={imageFit}
           />
-        ) : (
-          <span className="grid h-16 w-16 shrink-0 place-items-center bg-[#f1f3f1] text-[#8a7655]">
-            <Building2 className="h-6 w-6" />
-          </span>
-        )}
-        <div className="min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7655]">
+        </div>
+        <div className="flex flex-1 flex-col px-3.5 pb-4 pt-3.5">
+          <p className="line-clamp-1 text-xs leading-4 text-[#68767a]">
             Property {professional.profileType}
           </p>
-          <h3 className="mt-1 font-display text-lg font-medium text-[#17242b]">
+          <h3 className="mt-1 line-clamp-1 text-[15px] font-semibold leading-5 text-[#172a31] transition-colors group-hover:text-[#28718a]">
             {professional.name}
           </h3>
           {professional.location && (
-            <p className="mt-1 flex items-center gap-1 text-xs text-[#687378]">
-              <MapPin className="h-3.5 w-3.5" />
+            <p className="mt-1 line-clamp-1 text-xs leading-4 text-[#68767a]">
               {professional.location}
             </p>
           )}
+          {professional.imageNote && (
+            <p className="mt-1 line-clamp-1 text-[10px] leading-4 text-[#788589]">
+              {professional.imageNote}
+            </p>
+          )}
+          {professional.description && (
+            <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-[#536267]">
+              {professional.description}
+            </p>
+          )}
+          <div className="mt-3 flex h-6 gap-1.5 overflow-hidden">
+            {professional.services?.slice(0, 2).map((service) => (
+              <span
+                key={service}
+                className="max-w-[50%] truncate rounded-sm border border-[#e2e8e9] bg-[#f8faf9] px-2 py-1 text-[10px] leading-4 text-[#536267]"
+              >
+                {service}
+              </span>
+            ))}
+          </div>
+          <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-semibold text-[#172a31]">
+            View professional
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+          </span>
         </div>
-      </div>
-      {professional.description && (
-        <p className="mt-3 line-clamp-3 text-sm leading-6 text-[#687378]">
-          {professional.description}
-        </p>
-      )}
-      <a
-        href={getPropertyProfessionalPath(professional)}
-        className="mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#17242b]"
-      >
-        View professional
-        <ArrowRight className="h-4 w-4" />
       </a>
     </article>
   );

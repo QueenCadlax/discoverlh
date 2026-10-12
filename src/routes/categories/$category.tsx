@@ -69,7 +69,7 @@ export const Route = createFileRoute("/categories/$category")({
         search: {
           q: search.q,
           location: search.location,
-          view: search.mode === "businesses" ? "professionals" : "listings",
+          view: search.mode === "listings" ? "listings" : "professionals",
         },
         replace: true,
       });
@@ -119,8 +119,7 @@ export const Route = createFileRoute("/categories/$category")({
       match.search.mode === "vehicles" ? "vehicles" : "services";
     const isAutomotive = config.slug === "automotive";
     const isFoodDining = config.slug === "food-dining" || config.slug === "eat";
-    const propertyMode: PropertyMode =
-      match.search.mode === "businesses" ? "businesses" : "listings";
+    const propertyMode: PropertyMode = match.search.mode === "listings" ? "listings" : "businesses";
     const isProperty = config.slug === "property";
     const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
     const title = isFoodDining
@@ -151,8 +150,10 @@ export const Route = createFileRoute("/categories/$category")({
             : (config.seoDescription ?? config.description);
     const canonicalCategorySlug = getCanonicalCategorySlug(config.slug);
     const canonical = getPublicUrl(
-      isProperty && propertyMode === "businesses"
-        ? `/categories/${canonicalCategorySlug}?mode=businesses`
+      isProperty
+        ? propertyMode === "businesses"
+          ? "/property"
+          : "/property?view=listings"
         : `/categories/${canonicalCategorySlug}`,
     );
     const socialImage = config.heroImage
@@ -171,7 +172,6 @@ export const Route = createFileRoute("/categories/$category")({
     const hasSearch = Boolean(
       match.search.q?.trim() ||
       match.search.location ||
-      (isProperty && propertyMode === "businesses" && match.search.mode !== "businesses") ||
       (isFoodDining &&
         (match.search.cuisine?.length ||
           match.search.style?.length ||
@@ -267,7 +267,7 @@ function CategoryBySlug() {
       initialQuery={q ?? ""}
       initialLocation={location}
       initialAutomotiveMode={(mode as AutomotiveMode | undefined) ?? "services"}
-      initialPropertyMode={(mode as PropertyMode | undefined) ?? "listings"}
+      initialPropertyMode={(mode as PropertyMode | undefined) ?? "businesses"}
       initialAccommodationType={type && accommodationTypes.has(type) ? type : undefined}
       initialCategoryType={
         primaryDiscoveryCategorySlugs.some((slug) => slug === config.slug) ? type : undefined

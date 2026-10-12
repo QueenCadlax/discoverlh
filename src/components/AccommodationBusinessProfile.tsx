@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 
-import { CategoryListingCard } from "@/components/CategoryDiscoveryPage";
+import { CategoryListingCard, WellnessProfileDetails } from "@/components/CategoryDiscoveryPage";
 import { BusinessSocialLinks } from "@/components/BusinessSocialLinks";
 import { MpumalangaMap } from "@/components/MpumalangaMap";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -33,12 +33,19 @@ import { getPublicUrl } from "@/lib/site-url";
 export function AccommodationBusinessProfile({
   listing,
   canonicalPath,
+  wellnessView = false,
 }: {
   listing: CategoryListing;
   canonicalPath?: string;
+  wellnessView?: boolean;
 }) {
   const config = categoryConfigs.accommodation;
-  const gallery = [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
+  const wellnessProfile = wellnessView ? listing.wellnessProfile : undefined;
+  const categoryConfig = wellnessProfile ? categoryConfigs["beauty-wellness-fitness"] : config;
+  const gallery = wellnessProfile
+    ? [...new Set([wellnessProfile.image, ...(wellnessProfile.images ?? [])].filter(isString))]
+    : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
+  const galleryAlts = wellnessProfile?.imageAlts ?? listing.imageAlts;
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const visibleGallery = gallery.filter((image) => !failedImages.includes(image));
@@ -47,15 +54,26 @@ export function AccommodationBusinessProfile({
   const lightboxCloseRef = useRef<HTMLButtonElement>(null);
   const galleryTriggerRef = useRef<HTMLButtonElement>(null);
   const lightboxTouchStartX = useRef<number | null>(null);
-  const website = getSafeExternalUrl(listing.website);
-  const bookingUrl = getSafeExternalUrl(listing.bookingUrl);
+  const website = getSafeExternalUrl(wellnessProfile?.website ?? listing.website);
+  const bookingUrl = getSafeExternalUrl(wellnessProfile?.bookingUrl ?? listing.bookingUrl);
+  const logoUrl = getSafeExternalUrl(wellnessProfile?.logo ?? listing.logo);
   const socialLinks = (listing.socialLinks ?? []).flatMap((link) => {
     const href = getSafeExternalUrl(link.href);
     return href ? [{ ...link, href }] : [];
   });
   const phone = listing.phone?.replace(/[^\d+]/g, "");
-  const email = listing.email?.trim();
-  const propertyType = listing.accommodationType ?? listing.type;
+  const email = (wellnessProfile?.email ?? listing.email)?.trim();
+  const phoneLabel = wellnessProfile
+    ? listing.phone && !wellnessProfile.email
+      ? "Call resort"
+      : "Call spa"
+    : "Call";
+  const emailLabel = wellnessProfile
+    ? wellnessProfile.email
+      ? "Email spa"
+      : "Email resort"
+    : "Email";
+  const propertyType = wellnessProfile?.providerType ?? listing.accommodationType ?? listing.type;
   const propertyFeatures = [
     ...new Set([...(listing.amenities ?? []), ...(listing.facilities ?? [])].map(normalizeFeature)),
   ];
@@ -148,8 +166,14 @@ export function AccommodationBusinessProfile({
     (directionsQuery
       ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
       : undefined);
-  const recommendations = getCategoryListings("accommodation")
-    .filter((stay) => stay.id !== listing.id && isPublishedListing(stay))
+  const recommendationCategory = wellnessProfile ? "beauty-wellness-fitness" : "accommodation";
+  const recommendations = getCategoryListings(recommendationCategory)
+    .filter(
+      (stay) =>
+        stay.id !== listing.id &&
+        isPublishedListing(stay) &&
+        (!wellnessProfile || Boolean(stay.wellnessProfile)),
+    )
     .slice(0, 4);
   const nearbyListings = listing.location
     ? getPublishedListingsInLocation(listing.location)
@@ -193,11 +217,18 @@ export function AccommodationBusinessProfile({
   }, [closeLightbox, lightboxIndex, visibleGallery.length]);
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "LodgingBusiness",
-    name: listing.name,
-    ...(listing.description ? { description: listing.description } : {}),
+    "@type": wellnessProfile ? "HealthAndBeautyBusiness" : "LodgingBusiness",
+    name: wellnessProfile?.displayName ?? listing.name,
+    ...((wellnessProfile?.description ?? wellnessProfile?.summary ?? listing.description)
+      ? {
+          description:
+            wellnessProfile?.description ?? wellnessProfile?.summary ?? listing.description,
+        }
+      : {}),
     ...(profileUrl ? { url: profileUrl } : {}),
     ...(gallery.length ? { image: gallery } : {}),
+    ...(logoUrl ? { logo: logoUrl } : {}),
+    ...(!wellnessProfile && listing.roomCount ? { numberOfRooms: listing.roomCount } : {}),
     ...(website || socialLinks.length
       ? { sameAs: [...(website ? [website] : []), ...socialLinks.map((link) => link.href)] }
       : {}),
@@ -223,7 +254,7 @@ export function AccommodationBusinessProfile({
           },
         }
       : {}),
-    ...(listing.amenities?.length
+    ...(!wellnessProfile && listing.amenities?.length
       ? {
           amenityFeature: listing.amenities.map((amenity) => ({
             "@type": "LocationFeatureSpecification",
@@ -246,8 +277,11 @@ export function AccommodationBusinessProfile({
             },
           ]
         : []),
-      { name: config.label, url: getPublicUrl("/categories/stay") },
-      { name: listing.name, url: profileUrl },
+      {
+        name: categoryConfig.label,
+        url: getPublicUrl(`/categories/${wellnessProfile ? "beauty-wellness-fitness" : "stay"}`),
+      },
+      { name: wellnessProfile?.displayName ?? listing.name, url: profileUrl },
     ].flatMap(({ name, url }, index) =>
       url ? [{ "@type": "ListItem", position: index + 1, name, item: url }] : [],
     ),
@@ -290,10 +324,10 @@ export function AccommodationBusinessProfile({
 
       <main className="container-x py-5 pb-24 md:py-8 md:pb-8">
         <a
-          href="/categories/stay"
+          href={wellnessProfile ? "/categories/beauty-wellness-fitness" : "/categories/stay"}
           className="mb-3 inline-flex min-h-9 items-center gap-1.5 text-xs font-medium text-[#68767a] transition-colors hover:text-[#172a31] sm:hidden"
         >
-          <ArrowLeft className="h-3.5 w-3.5" /> Accommodation
+          <ArrowLeft className="h-3.5 w-3.5" /> {categoryConfig.label}
         </a>
         <nav
           aria-label="Breadcrumb"
@@ -311,20 +345,28 @@ export function AccommodationBusinessProfile({
             <span>{[listing.location, listing.province].filter(Boolean).join(", ")}</span>
           )}
           <span aria-hidden="true">/</span>
-          <a href="/categories/stay" className="hover:text-[#172a31]">
-            Accommodation
+          <a
+            href={wellnessProfile ? "/categories/beauty-wellness-fitness" : "/categories/stay"}
+            className="hover:text-[#172a31]"
+          >
+            {categoryConfig.label}
           </a>
           <span aria-hidden="true">/</span>
           <span aria-current="page" className="font-medium text-[#34474d]">
-            {listing.name}
+            {wellnessProfile?.displayName ?? listing.name}
           </span>
         </nav>
 
         {visibleGallery.length > 0 ? (
-          <section aria-label="Property photo gallery" className="relative">
+          <section
+            aria-label={
+              wellnessProfile ? `${propertyType} photo gallery` : "Property photo gallery"
+            }
+            className="relative"
+          >
             <div
               role="group"
-              aria-label="Select a property photo to enlarge"
+              aria-label={`Select a ${wellnessProfile ? "spa" : "property"} photo to enlarge`}
               className="grid grid-cols-2 gap-2 overflow-hidden rounded-md sm:h-[280px] sm:grid-cols-[1.8fr_1fr_1fr] sm:grid-rows-2 md:h-[340px]"
             >
               {visibleGallery.slice(0, 5).map((image, index) => (
@@ -341,7 +383,7 @@ export function AccommodationBusinessProfile({
                   <img
                     src={image}
                     alt={
-                      listing.imageAlts?.[gallery.indexOf(image)] ??
+                      galleryAlts?.[gallery.indexOf(image)] ??
                       `${listing.name}${index ? `, photo ${index + 1}` : ""}`
                     }
                     fetchPriority={index === 0 ? "high" : undefined}
@@ -427,7 +469,7 @@ export function AccommodationBusinessProfile({
             <img
               src={visibleGallery[lightboxIndex]}
               alt={
-                listing.imageAlts?.[gallery.indexOf(visibleGallery[lightboxIndex])] ??
+                galleryAlts?.[gallery.indexOf(visibleGallery[lightboxIndex])] ??
                 `${listing.name} photo ${lightboxIndex + 1}`
               }
               onError={() => {
@@ -455,9 +497,18 @@ export function AccommodationBusinessProfile({
         )}
 
         <section className="mt-4 border-b border-[#e5ebeb] pb-4 sm:mt-5 sm:pb-5">
-          <h1 className="font-display text-2xl font-medium leading-tight text-[#172a31] sm:text-3xl">
-            {listing.name}
-          </h1>
+          <div className="flex items-center gap-3">
+            {logoUrl && (
+              <img
+                src={logoUrl}
+                alt={wellnessProfile?.logoAlt ?? `${listing.name} logo`}
+                className="h-11 w-16 shrink-0 object-contain"
+              />
+            )}
+            <h1 className="font-display text-2xl font-medium leading-tight text-[#172a31] sm:text-3xl">
+              {wellnessProfile?.displayName ?? listing.name}
+            </h1>
+          </div>
           {listing.location ? (
             locationPage ? (
               <a
@@ -476,12 +527,16 @@ export function AccommodationBusinessProfile({
           ) : (
             <p className="mt-1.5 text-sm text-[#536267]">{propertyType}</p>
           )}
-          <p className="mt-3 text-xs text-[#68767a]">{gallery.length} photos</p>
+          <p className="mt-3 text-xs text-[#68767a]">
+            {gallery.length} {wellnessProfile ? "spa photos" : "photos"}
+          </p>
         </section>
 
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,0.34fr)] lg:gap-12">
           <aside className="order-first h-fit border-b border-[#e5ebeb] pb-5 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-1 lg:border lg:p-5">
-            <h2 className="text-base font-semibold">Plan your stay</h2>
+            <h2 className="text-base font-semibold">
+              {wellnessProfile ? "Plan a spa visit" : "Plan your stay"}
+            </h2>
             <div className="mt-4 grid gap-2">
               {bookingUrl && (
                 <a
@@ -490,7 +545,8 @@ export function AccommodationBusinessProfile({
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-[#142b4a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#244568]"
                 >
-                  Check availability <ArrowRight className="h-4 w-4" />
+                  {wellnessProfile?.bookingLabel ?? "Check availability"}{" "}
+                  <ArrowRight className="h-4 w-4" />
                 </a>
               )}
               {!bookingUrl && website && (
@@ -505,7 +561,7 @@ export function AccommodationBusinessProfile({
               )}
               {listing.whatsapp && (
                 <a
-                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${listing.name} on Discover by Lowveld Hub and would like to enquire about a stay.`)}`}
+                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${wellnessProfile?.displayName ?? listing.name} on Discover by Lowveld Hub and would like to enquire about ${wellnessProfile ? "a spa treatment" : "a stay"}.`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
@@ -528,7 +584,7 @@ export function AccommodationBusinessProfile({
                   href={`tel:${phone}`}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
                 >
-                  <Phone className="h-4 w-4" /> Call
+                  <Phone className="h-4 w-4" /> {phoneLabel}
                 </a>
               )}
               {email && (
@@ -536,7 +592,7 @@ export function AccommodationBusinessProfile({
                   href={`mailto:${email}`}
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
                 >
-                  <Mail className="h-4 w-4" /> Email
+                  <Mail className="h-4 w-4" /> {emailLabel}
                 </a>
               )}
               {website && bookingUrl && (
@@ -553,17 +609,27 @@ export function AccommodationBusinessProfile({
             <div className="mt-4">
               <BusinessSocialLinks businessName={listing.name} links={socialLinks} />
             </div>
+            {wellnessProfile && (
+              <a
+                href={getCategoryListingPath("accommodation", listing)}
+                className="mt-4 inline-flex min-h-9 items-center text-xs font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
+              >
+                View {listing.name} accommodation
+              </a>
+            )}
           </aside>
 
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-            {listing.description && (
+            {!wellnessProfile && listing.description && (
               <section className="border-b border-[#e5ebeb] pb-5">
                 <h2 className="text-lg font-semibold">About {listing.name}</h2>
                 <p className="mt-2 text-sm leading-7 text-[#5f6d72]">{listing.description}</p>
               </section>
             )}
 
-            {listing.roomTypes?.length ? (
+            {wellnessProfile && <WellnessProfileDetails profile={wellnessProfile} />}
+
+            {!wellnessProfile && listing.roomTypes?.length ? (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-lg font-semibold">The rooms</h2>
                 <p className="mt-2 text-sm leading-6 text-[#68767a]">
@@ -572,7 +638,7 @@ export function AccommodationBusinessProfile({
               </section>
             ) : null}
 
-            {stayHighlights.length > 0 && (
+            {!wellnessProfile && stayHighlights.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
                   Why you’ll like it
@@ -588,7 +654,7 @@ export function AccommodationBusinessProfile({
               </section>
             )}
 
-            {perfectFor.length > 0 && (
+            {!wellnessProfile && perfectFor.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-lg font-semibold">Perfect for</h2>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -604,7 +670,7 @@ export function AccommodationBusinessProfile({
               </section>
             )}
 
-            {tripIdeas.length > 0 && (
+            {!wellnessProfile && tripIdeas.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-lg font-semibold">Plan around your stay</h2>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
@@ -621,7 +687,7 @@ export function AccommodationBusinessProfile({
               </section>
             )}
 
-            {propertyFeatures.length > 0 && (
+            {!wellnessProfile && propertyFeatures.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-lg font-semibold">At a glance</h2>
                 <ul className="mt-3 grid gap-x-6 gap-y-2 text-sm text-[#68767a] sm:grid-cols-2">
@@ -681,8 +747,12 @@ export function AccommodationBusinessProfile({
                           locationAccuracy: listing.locationAccuracy,
                         },
                       ]}
-                      heading="Explore the area"
-                      description="Explore the property location on the map."
+                      heading={wellnessProfile ? "Explore the spa location" : "Explore the area"}
+                      description={
+                        wellnessProfile
+                          ? `Explore the location of ${wellnessProfile.displayName}.`
+                          : "Explore the property location on the map."
+                      }
                     />
                   </div>
                 )}
@@ -715,31 +785,45 @@ export function AccommodationBusinessProfile({
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
                 Keep exploring
               </p>
-              <h2 className="mt-1 text-xl font-semibold text-[#172a31]">You might also like</h2>
+              <h2 className="mt-1 text-xl font-semibold text-[#172a31]">
+                {wellnessProfile ? "More wellness experiences" : "You might also like"}
+              </h2>
             </div>
             <a
-              href="/categories/accommodation"
+              href={
+                wellnessProfile
+                  ? "/categories/beauty-wellness-fitness"
+                  : "/categories/accommodation"
+              }
               className="inline-flex items-center gap-1 text-xs font-semibold text-[#34474d] hover:text-[#39703b]"
             >
-              All stays <ArrowRight className="h-3.5 w-3.5" />
+              {wellnessProfile ? "All wellness" : "All stays"}{" "}
+              <ArrowRight className="h-3.5 w-3.5" />
             </a>
           </div>
           {recommendations.length > 0 ? (
             <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 md:grid-cols-3 xl:grid-cols-4 xl:gap-x-5">
               {recommendations.map((stay) => (
-                <CategoryListingCard key={stay.id} listing={stay} config={config} />
+                <CategoryListingCard key={stay.id} listing={stay} config={categoryConfig} />
               ))}
             </div>
           ) : (
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3 border-t border-[#e5ebeb] py-4">
               <p className="text-sm text-[#68767a]">
-                More stays are being added across Mpumalanga.
+                {wellnessProfile
+                  ? "More wellness experiences are being added across Mpumalanga."
+                  : "More stays are being added across Mpumalanga."}
               </p>
               <a
-                href="/categories/accommodation"
+                href={
+                  wellnessProfile
+                    ? "/categories/beauty-wellness-fitness"
+                    : "/categories/accommodation"
+                }
                 className="inline-flex min-h-10 items-center gap-1.5 text-xs font-semibold text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
               >
-                Explore Accommodation <ArrowRight className="h-3.5 w-3.5" />
+                {wellnessProfile ? "Explore wellness" : "Explore Accommodation"}{" "}
+                <ArrowRight className="h-3.5 w-3.5" />
               </a>
             </div>
           )}
@@ -762,7 +846,7 @@ export function AccommodationBusinessProfile({
             gridTemplateColumns: `repeat(${Number(Boolean(bookingUrl || website)) + Number(Boolean(directionsUrl))}, minmax(0, 1fr))`,
           }}
           role="group"
-          aria-label="Quick accommodation actions"
+          aria-label={wellnessProfile ? "Quick spa actions" : "Quick accommodation actions"}
         >
           {(bookingUrl || website) && (
             <a
@@ -771,7 +855,9 @@ export function AccommodationBusinessProfile({
               rel="noreferrer"
               className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm bg-[#142b4a] px-2 text-xs font-semibold text-white"
             >
-              {bookingUrl ? "Check availability" : "Visit website"}
+              {bookingUrl
+                ? (wellnessProfile?.bookingLabel ?? "Check availability")
+                : "Visit website"}
             </a>
           )}
           {directionsUrl && (

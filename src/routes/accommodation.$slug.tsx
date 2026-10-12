@@ -5,7 +5,10 @@ import { findBusinessBySlug } from "@/lib/category-discovery";
 import { getPublicUrl } from "@/lib/site-url";
 
 export const Route = createFileRoute("/accommodation/$slug")({
-  head: ({ params }) => {
+  validateSearch: (search: Record<string, unknown>) => ({
+    view: search.view === "wellness" ? "wellness" : undefined,
+  }),
+  head: ({ params, match }) => {
     const profile = findBusinessBySlug(params.slug);
     if (!profile || profile.category !== "accommodation") {
       return {
@@ -16,18 +19,24 @@ export const Route = createFileRoute("/accommodation/$slug")({
       };
     }
 
-    const title =
-      profile.listing.seoTitle ??
-      `${profile.listing.name} | Accommodation in Mbombela | Discover by Lowveld Hub`;
-    const description =
-      profile.listing.seoDescription ??
-      profile.listing.description ??
-      `${profile.listing.name} is a premium accommodation option in Mbombela, Mpumalanga.`;
+    const wellnessView =
+      match.search.view === "wellness" ? profile.listing.wellnessProfile : undefined;
+    const title = wellnessView
+      ? (wellnessView.seoTitle ??
+        `${wellnessView.displayName} | ${profile.listing.location ?? "Mpumalanga"} Spa | Discover`)
+      : (profile.listing.seoTitle ??
+        `${profile.listing.name} | Accommodation in Mbombela | Discover by Lowveld Hub`);
+    const description = wellnessView
+      ? (wellnessView.seoDescription ?? wellnessView.description ?? wellnessView.summary)
+      : (profile.listing.seoDescription ??
+        profile.listing.description ??
+        `${profile.listing.name} is a premium accommodation option in Mbombela, Mpumalanga.`);
     const canonical = getPublicUrl(`/accommodation/${params.slug}`);
-    const socialImage = profile.listing.image
-      ? profile.listing.image.startsWith("http")
-        ? profile.listing.image
-        : getPublicUrl(profile.listing.image)
+    const image = wellnessView?.image ?? profile.listing.image;
+    const socialImage = image
+      ? image.startsWith("http")
+        ? image
+        : getPublicUrl(image)
       : undefined;
 
     return {
@@ -53,6 +62,7 @@ export const Route = createFileRoute("/accommodation/$slug")({
 
 function AccommodationBySlug() {
   const { slug } = Route.useParams();
+  const { view } = Route.useSearch();
   const profile = findBusinessBySlug(slug);
 
   if (!profile || profile.category !== "accommodation") {
@@ -81,6 +91,7 @@ function AccommodationBySlug() {
     <AccommodationBusinessProfile
       listing={profile.listing}
       canonicalPath={`/accommodation/${slug}`}
+      wellnessView={view === "wellness"}
     />
   );
 }

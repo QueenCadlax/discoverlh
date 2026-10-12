@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { AccommodationBusinessProfile } from "@/components/AccommodationBusinessProfile";
 import { BusinessProfilePage } from "@/components/BusinessProfilePage";
+import { EducationInstitutionProfile } from "@/components/EducationInstitutionProfile";
 import {
   categoryConfigs,
   findBusinessBySlug,
@@ -104,6 +105,9 @@ function BusinessBySlug() {
         canonicalPath={`/accommodation/${slug}`}
       />
     );
+  }
+  if (profile.category === "education-training" && profile.listing.educationProfile) {
+    return <EducationInstitutionProfile key={profile.listing.id} listing={profile.listing} />;
   }
   return <BusinessProfilePage listing={profile.listing} config={config} />;
 }
