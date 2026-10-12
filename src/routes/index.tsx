@@ -14,6 +14,7 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Boxes,
+  ChevronDown,
   Cloud,
   CloudRain,
   CloudSun,
@@ -892,6 +893,10 @@ function WeatherWidget() {
 }
 
 function CategoryShortcuts() {
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const initialShortcuts = shortcuts.slice(0, 10);
+  const additionalShortcuts = shortcuts.slice(10);
+
   const renderShortcut = (shortcut: Shortcut, index: number) => {
     const category = categoryConfigs[shortcut.slug];
     return (
@@ -921,7 +926,36 @@ function CategoryShortcuts() {
             Find the right business, service or place for what you need.
           </p>
         </ScrollReveal>
-        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
+        <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:hidden">
+          {initialShortcuts.map(renderShortcut)}
+        </div>
+        {additionalShortcuts.length > 0 && showAllCategories && (
+          <div id="additional-category-cards" className="grid auto-rows-fr grid-cols-2 gap-2 sm:hidden">
+            {additionalShortcuts.map((shortcut, index) =>
+              renderShortcut(shortcut, index + initialShortcuts.length),
+            )}
+          </div>
+        )}
+        {additionalShortcuts.length > 0 && (
+          <div className="mt-1 flex justify-center sm:hidden">
+            <button
+              type="button"
+              aria-expanded={showAllCategories}
+              aria-controls="additional-category-cards"
+              onClick={() => setShowAllCategories((expanded) => !expanded)}
+              className="inline-flex min-h-10 items-center gap-2 rounded-sm px-3 py-1.5 text-xs font-medium tracking-[0.02em] text-[#536267] transition-colors hover:text-[#17242b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a58c61]"
+            >
+              {showAllCategories ? "Show less" : "Explore all categories"}
+              <ChevronDown
+                aria-hidden="true"
+                className={`h-3.5 w-3.5 transition-transform duration-300 motion-reduce:transition-none ${
+                  showAllCategories ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+          </div>
+        )}
+        <div className="hidden auto-rows-fr grid-cols-2 gap-2 sm:grid sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
           {shortcuts.map(renderShortcut)}
         </div>
       </div>
