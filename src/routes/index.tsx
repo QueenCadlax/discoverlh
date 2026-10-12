@@ -14,7 +14,6 @@ import {
   ArrowRight,
   BriefcaseBusiness,
   Boxes,
-  ChevronDown,
   Cloud,
   CloudRain,
   CloudSun,
@@ -893,10 +892,6 @@ function WeatherWidget() {
 }
 
 function CategoryShortcuts() {
-  const [showAllCategories, setShowAllCategories] = useState(false);
-  const originalShortcuts = shortcuts.slice(0, 10);
-  const additionalShortcuts = shortcuts.slice(10);
-
   const renderShortcut = (shortcut: Shortcut, index: number) => {
     const category = categoryConfigs[shortcut.slug];
     return (
@@ -927,40 +922,7 @@ function CategoryShortcuts() {
           </p>
         </ScrollReveal>
         <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
-          {originalShortcuts.map(renderShortcut)}
-        </div>
-        <div
-          id="additional-category-cards"
-          aria-hidden={!showAllCategories}
-          inert={!showAllCategories}
-          className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none ${
-            showAllCategories ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-          }`}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 lg:gap-2.5 xl:grid-cols-5 2xl:grid-cols-5">
-              {additionalShortcuts.map((shortcut, index) =>
-                renderShortcut(shortcut, index + originalShortcuts.length),
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="mt-1 flex justify-center">
-          <button
-            type="button"
-            aria-expanded={showAllCategories}
-            aria-controls="additional-category-cards"
-            onClick={() => setShowAllCategories((expanded) => !expanded)}
-            className="inline-flex min-h-10 items-center gap-2 rounded-sm px-3 py-1.5 text-xs font-medium tracking-[0.02em] text-[#536267] transition-colors hover:text-[#17242b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a58c61]"
-          >
-            {showAllCategories ? "Show less" : "Explore all categories"}
-            <ChevronDown
-              aria-hidden="true"
-              className={`h-3.5 w-3.5 transition-transform duration-300 motion-reduce:transition-none ${
-                showAllCategories ? "rotate-180" : ""
-              }`}
-            />
-          </button>
+          {shortcuts.map(renderShortcut)}
         </div>
       </div>
     </section>
