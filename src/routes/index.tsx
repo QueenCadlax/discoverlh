@@ -39,7 +39,6 @@ import {
   getCategoryListings,
   getCategoryListingPath,
   isPublishedListing,
-  newDiscoveryCategorySlugs,
   primaryDiscoveryCategorySlugs,
   searchTextMatches,
   type CategorySlug,
@@ -223,14 +222,24 @@ const categoryShortcut = (slug: Shortcut["slug"]): Shortcut => ({
   slug,
   terms: categorySearchTerms[slug],
 });
-const originalCategorySlugs = primaryDiscoveryCategorySlugs.filter(
-  (slug) => !newDiscoveryCategorySlugs.includes(slug as (typeof newDiscoveryCategorySlugs)[number]),
-);
-const shortcuts: Shortcut[] = [
-  ...originalCategorySlugs.map(categoryShortcut),
-  categoryShortcut("property"),
-  ...newDiscoveryCategorySlugs.map(categoryShortcut),
-];
+const shortcutOrder = [
+  "stay",
+  "eat",
+  "events",
+  "health",
+  "professional",
+  "home-property",
+  "automotive",
+  "travel-transport",
+  "leisure-entertainment",
+  "property",
+  "beauty-wellness-fitness",
+  "shop",
+  "education-training",
+  "agriculture",
+  "security",
+] as const satisfies readonly CategorySlug[];
+const shortcuts = shortcutOrder.map(categoryShortcut);
 
 const searchSuggestions = [
   {
