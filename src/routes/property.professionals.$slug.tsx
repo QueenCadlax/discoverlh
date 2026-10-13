@@ -34,7 +34,7 @@ export const Route = createFileRoute("/property/professionals/$slug")({
     const description =
       professional.seoDescription ??
       professional.description ??
-      `View the published property professional profile for ${professional.name}${locality}.`;
+      `${professional.name} is a property professional${locality}.`;
     const canonical = getPublicUrl(getPropertyProfessionalPath(professional));
     const socialImage = professional.coverImage ?? professional.images?.[0] ?? professional.image;
     const image = socialImage
@@ -78,7 +78,7 @@ function PropertyProfessionalPage() {
           Professional profile not found
         </h1>
         <p className="mt-2 max-w-lg text-sm leading-6 text-[#68767a]">
-          This profile may have moved or is not currently published.
+          This profile is not available right now.
         </p>
         <a
           href="/property?view=professionals"

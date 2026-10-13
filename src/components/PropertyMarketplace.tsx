@@ -411,7 +411,7 @@ export function PropertyMarketplace({
             ) : (
               <EmptyState
                 title="No property professionals are listed yet."
-                description="Published agency and property-practitioner profiles will appear here when verified information is available."
+                description="Check back soon for local property professionals."
               />
             )
           ) : listings.length ? (
@@ -430,12 +430,12 @@ export function PropertyMarketplace({
               title={
                 isSavedView
                   ? "You have no saved properties yet."
-                  : "No published property listings match yet."
+                  : "No property listings match yet."
               }
               description={
                 isSavedView
                   ? "Save a property from its listing card to keep it here for later."
-                  : "There are no approved property listings for these filters. Try another search or check back as verified listings are added."
+                  : "Try another search or check back soon for new listings."
               }
             />
           )}
@@ -451,7 +451,7 @@ export function PropertyMarketplace({
                 Bring your property listings to Discover
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687378]">
-                Contact the Lowveld Hub team to discuss a verified property or professional profile.
+                Contact the Lowveld Hub team to discuss a property or professional profile.
               </p>
             </div>
             <a

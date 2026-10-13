@@ -116,27 +116,32 @@ export function WellnessProfileDetails({ profile }: { profile: WellnessBusinessP
           {profile.description ?? profile.summary}
         </p>
       </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        {profile.treatmentSections.map((section) => (
-          <div key={section.title} className="rounded-sm border border-[#e5ebeb] bg-[#fafcfc] p-4">
-            <h3 className="text-sm font-semibold text-[#34474d]">{section.title}</h3>
-            <ul className="mt-2 space-y-2 text-sm leading-6 text-[#5f6d72]">
-              {section.items.map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span
-                    aria-hidden="true"
-                    className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a7655]"
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            {section.note && (
-              <p className="mt-3 text-xs leading-5 text-[#68767a]">{section.note}</p>
-            )}
-          </div>
-        ))}
-      </div>
+      {profile.treatmentSections.length > 0 && (
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {profile.treatmentSections.map((section) => (
+            <div
+              key={section.title}
+              className="rounded-sm border border-[#e5ebeb] bg-[#fafcfc] p-4"
+            >
+              <h3 className="text-sm font-semibold text-[#34474d]">{section.title}</h3>
+              <ul className="mt-2 space-y-2 text-sm leading-6 text-[#5f6d72]">
+                {section.items.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span
+                      aria-hidden="true"
+                      className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a7655]"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              {section.note && (
+                <p className="mt-3 text-xs leading-5 text-[#68767a]">{section.note}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
       {profile.facilities && profile.facilities.length > 0 && (
         <div className="mt-4">
           <h3 className="text-sm font-semibold text-[#34474d]">Setting &amp; facilities</h3>
@@ -361,7 +366,7 @@ function getCategoryViewConfig(
         ? "No property businesses match your search."
         : "Property listings are coming soon.",
       emptyDescription: isBusinessView
-        ? "There are no published property business profiles available to show right now."
+        ? "No property business profiles are available right now."
         : "The property marketplace is ready for approved submissions. No properties are currently advertised.",
       ownerHeading: isBusinessView
         ? "Are you a property professional?"
@@ -405,7 +410,7 @@ function getCategoryViewConfig(
       : "No automotive service providers listed yet.",
     emptyDescription: isVehicleView
       ? "Vehicle listings will appear here as dealerships and private sellers join Discover."
-      : "There are no published automotive service profiles available to show right now.",
+      : "No automotive service profiles are available right now.",
     ownerHeading: isVehicleView
       ? "Are you a dealership or private seller?"
       : "Are you an automotive service provider?",

@@ -2369,7 +2369,6 @@ const wellnessListings: CategoryListing[] = [
         {
           title: "Spa treatments",
           items: ["Massages", "Facials", "Body treatments"],
-          note: "View the treatment menu for current options.",
         },
       ],
       facilities: ["Treatment rooms", "Riverfront setting"],
@@ -2401,7 +2400,7 @@ const wellnessListings: CategoryListing[] = [
     province: "Mpumalanga",
     country: "South Africa",
     description:
-      "Pause Spa is located at ANEW Resort Hazyview. Its published menu includes massage, facial, manicure and pedicure, tinting and waxing services; appointments are arranged directly with the spa.",
+      "Pause Spa at ANEW Resort Hazyview offers massages, facials, manicures, pedicures, tinting and waxing. Appointments are arranged directly with the spa.",
     image: "https://anewhotels.com/wp-content/uploads/2025/11/Spa-9.jpg",
     imageAlt: "Spa treatment setting at Pause Spa, ANEW Resort Hazyview",
     images: [
@@ -2462,7 +2461,7 @@ const wellnessListings: CategoryListing[] = [
     },
     seoTitle: "Pause Spa at ANEW Resort Hazyview | Discover",
     seoDescription:
-      "Explore Pause Spa at ANEW Resort Hazyview, with published massage, facial, manicure, pedicure, tinting and waxing treatments and direct spa contacts.",
+      "Explore massage, facial, manicure, pedicure, tinting and waxing services at Pause Spa at ANEW Resort Hazyview.",
     seeded: true,
     sourceType: "seeded_public_data",
     claimed: false,
@@ -2638,7 +2637,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
         ],
         enquiryNote:
-          "Use the venue contact page to discuss dates, event layouts, catering, rentals and which services are included.",
+          "Contact the venue about dates, event layouts, catering, rentals and included services.",
         officialLinks: [
           { label: "Wedding venues", href: "https://www.umbali.co.za/our-wedding-venues/" },
           {
@@ -2794,7 +2793,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "All-inclusive destination weddings",
             description:
-              "The estate describes an in-house planning team and coordinator who manage wedding details through one coordinated process.",
+              "An in-house planning team and coordinator manage wedding details through one coordinated process.",
           },
           {
             title: "Ceremonies & celebrations",
@@ -2834,7 +2833,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         officialLinks: [
           { label: "Weddings & packages", href: "https://whisperingthorns.com/weddings/" },
           { label: "The venue", href: "https://whisperingthorns.com/venue/" },
-          { label: "Official gallery", href: "https://whisperingthorns.com/gallery/" },
+          { label: "Gallery", href: "https://whisperingthorns.com/gallery/" },
           { label: "Accommodation", href: "https://whisperingthorns.com/accommodation/" },
           { label: "Book a private viewing", href: "https://whisperingthorns.com/contact/" },
         ],
@@ -3027,7 +3026,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           { label: "The Chapel", href: "https://archandarrow.co.za/the-chapel/" },
           { label: "The Boma", href: "https://archandarrow.co.za/the-boma/" },
           { label: "Wedding packages", href: "https://archandarrow.co.za/wedding-packages" },
-          { label: "Official gallery", href: "https://archandarrow.co.za/gallery/" },
+          { label: "Gallery", href: "https://archandarrow.co.za/gallery/" },
         ],
       },
     },
@@ -3087,12 +3086,12 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Garden ceremonies & receptions",
             description:
-              "The wedding page highlights gardens, a gazebo, a water feature and views over the golf course and surrounding farmland, with the restaurant, lounge, bar and verandas available for different parts of the celebration.",
+              "Gardens, a gazebo, a water feature and views over the golf course and farmland set the scene for ceremonies and receptions. The restaurant, lounge, bar and verandas provide additional gathering spaces.",
           },
           {
             title: "Food & wedding coordination",
             description:
-              "Oliver's describes chef-prepared food, an in-house coordinator and wedding packages that can be tailored to the event.",
+              "Chef-prepared food, an in-house coordinator and wedding packages tailored to the event.",
           },
         ],
         venueSpaces: [
@@ -3124,7 +3123,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           { label: "Weddings", href: "https://olivers.co.za/weddings/" },
           { label: "Functions", href: "https://olivers.co.za/functions/" },
           { label: "Accommodation", href: "https://olivers.co.za/accommodation/" },
-          { label: "Official gallery", href: "https://olivers.co.za/gallery/" },
+          { label: "Gallery", href: "https://olivers.co.za/gallery/" },
         ],
       },
     },
@@ -3150,10 +3149,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Headquartered in Mbombela, Divergent Ops serves Nelspruit, White River and Barberton. Services include armed response, professional guarding, event security, specialist security, and CCTV and AI camera monitoring, sales, installation and maintenance.",
       seoTitle: "Divergent Ops | Security Services in Mbombela | Discover",
       seoDescription:
-        "Explore Divergent Ops' published guarding, armed response, event-security and CCTV services in Mbombela, White River and Barberton.",
+        "Guarding, armed response, event security and CCTV services in Mbombela, White River and Barberton from Divergent Ops.",
       image:
-        "https://static.wixstatic.com/media/e453ee_d82bcc697de7414dbc24e2e355fe73a0~mv2.jpg/v1/fill/w_285,h_433,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/e453ee_d82bcc697de7414dbc24e2e355fe73a0~mv2.jpg",
-      imageAlt: "Divergent Ops security personnel in uniform",
+        "https://static.wixstatic.com/media/e453ee_ebc0c448735a4f15b904a5e6c4d3480f~mv2.png/v1/fill/w_594,h_521,al_t,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/e453ee_ebc0c448735a4f15b904a5e6c4d3480f~mv2.png",
+      imageAlt: "Divergent Ops security services image",
       imageSourceUrls: ["https://www.divergent-ops.co.za/services"],
       services: [
         "Armed response",
@@ -3192,10 +3191,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       postalCode: "1200",
       country: "South Africa",
       description:
-        "ACS Security is based in Nelspruit and publishes services spanning access control, roaming guards, armed response and alarm monitoring, retail and car-park guarding, and security technology including CCTV and alarm systems.",
+        "ACS Security provides access control, roaming guards, armed response, alarm monitoring, retail and car-park guarding, and CCTV and alarm systems in Nelspruit.",
       seoTitle: "ACS Security | Guarding & CCTV in Nelspruit | Discover",
       seoDescription:
-        "Contact Nelspruit-based ACS Security for published access-control, roaming-guard, armed-response, alarm-monitoring, retail-guarding and CCTV services.",
+        "Contact ACS Security in Nelspruit about access control, roaming guards, armed response, alarm monitoring, retail guarding and CCTV.",
       image: "https://www.acssecurity.co.za/wp-content/uploads/2019/08/cctvkits.png",
       imageAlt: "CCTV security equipment offered by ACS Security",
       imageSourceUrls: [
@@ -3238,7 +3237,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Ribos National Security Force provides guarding and patrols for commercial, industrial and residential properties, alongside secure transport, personal protection, security consultation, response services and event security in Mbombela.",
       seoTitle: "Ribos National Security Force | Security in Mbombela | Discover",
       seoDescription:
-        "Explore Ribos National Security Force's published guarding, secure-transport, personal-protection, consultation and event-security services in Mbombela.",
+        "Explore guarding, secure transport, personal protection, security consulting and event security from Ribos National Security Force in Mbombela.",
       image:
         "https://static.zarlacdn.com/website/ctjqd84gjf4ftdtwrft3/image/719043ac54034574abae25545889fbbb20b424d57eb6d76ed7d7091f8e54b35d/desktop-920@2x",
       imageAlt: "Ribos National Security Force security vehicle",
@@ -3293,10 +3292,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Gauteng",
       country: "South Africa",
       description:
-        "Thorburn Security Solutions is part of Tsebo Solutions Group. Its Midrand regional contact office covers Gauteng, Limpopo, Mpumalanga and North West. Published capabilities include physical guarding, off-site monitoring, consulting, integrated technology, specialist security and data analytics.",
+        "Thorburn Security Solutions is part of the Tsebo Solutions Group and provides integrated security services for businesses. Its capabilities include physical guarding, off-site monitoring, consulting, integrated technology, specialist security services and data analytics.",
       seoTitle: "Thorburn Security Solutions | Serving Mpumalanga | Discover",
       seoDescription:
-        "Thorburn Security Solutions lists Mpumalanga among the provinces covered by its Midrand regional office. View its guarding, monitoring and technology services.",
+        "Explore Thorburn Security Solutions' physical guarding, off-site monitoring, consulting, integrated technology and specialist security services in Mpumalanga.",
       image: "https://www.thorburn.co.za/wp-content/uploads/1-Physical-and-guarding.webp",
       imageAlt: "Physical security and guarding services from Thorburn",
       images: [
@@ -3326,74 +3325,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       website: "https://www.thorburn.co.za/",
       source: "Thorburn Security Solutions",
       sourceUrl: "https://www.thorburn.co.za/contact-us/",
-      sourceType: "seeded_public_data",
-      seeded: true,
-      status: "published",
-    },
-    {
-      id: "bolwa-security-services",
-      slug: "bolwa-security-services",
-      listingKind: "business",
-      featuredOrder: 5,
-      type: "Security Company",
-      subcategory: "Security Company",
-      serviceType: "Manned guarding",
-      name: "Bolwa Security Services",
-      location: "Rivonia",
-      address: "345 Rivonia Blvd, Rivonia, Johannesburg",
-      addressLabel: "Head office",
-      province: "Gauteng",
-      postalCode: "2499",
-      country: "South Africa",
-      description:
-        "Bolwa Security Services lists Mpumalanga among its service regions, naming Mbombela, Middelburg and eMalahleni. Its published solutions include manned guarding, estate and residential security, retail and industrial security, access control, event security, and CCTV and alarm monitoring.",
-      seoTitle: "Bolwa Security Services | Mpumalanga Security | Discover",
-      seoDescription:
-        "Bolwa Security Services lists Mbombela, Middelburg and eMalahleni among its Mpumalanga service areas, with guarding, access-control and site-security solutions.",
-      image:
-        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/06/estate-security-lonehill-1080x675.jpg",
-      imageAlt: "Residential estate entrance shown on Bolwa Security Services' website",
-      images: [
-        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/07/professional-commercial-security-guards.png",
-        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/06/shopping-centre-security-south-africa-1080x675.jpg",
-        "https://bolwasecurityservices.co.za/wp-content/uploads/2026/07/open-pit-mine-security-cost-photo-1080x675.jpg",
-      ],
-      imageAlts: [
-        "Commercial security-guarding image published by Bolwa",
-        "Shopping-centre security image published by Bolwa",
-        "Mining-security image published by Bolwa",
-      ],
-      imageSourceUrls: [
-        "https://bolwasecurityservices.co.za/",
-        "https://bolwasecurityservices.co.za/security-solutions/",
-      ],
-      services: [
-        "Manned guarding",
-        "Estate and residential security",
-        "Retail security",
-        "Commercial and industrial security",
-        "Mining security",
-        "Access control and visitor management",
-        "Event security",
-        "Armed-response integration",
-        "CCTV and alarm monitoring",
-      ],
-      specialties: [
-        "Residential estates",
-        "Retail",
-        "Commercial and industrial",
-        "Mining",
-        "Education",
-        "Hospitality",
-        "Events",
-      ],
-      serviceAreas: ["Mbombela", "Middelburg", "eMalahleni"],
-      logo: "https://bolwasecurityservices.co.za/wp-content/uploads/2024/08/Bolwa-Security_High-Res-Logo-Landscape_Full-ColourNew.png",
-      phone: "086 1112 231",
-      email: "info@bolwasecurityservices.co.za",
-      website: "https://bolwasecurityservices.co.za/",
-      source: "Bolwa Security Services",
-      sourceUrl: "https://bolwasecurityservices.co.za/security-solutions/",
       sourceType: "seeded_public_data",
       seeded: true,
       status: "published",
@@ -3548,7 +3479,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       name: "Ehlanzeni TVET College — Nelspruit Campus",
       seoTitle: "Ehlanzeni TVET College, Nelspruit Campus | Discover",
       seoDescription:
-        "Find official campus and programme information for Ehlanzeni TVET College's Nelspruit Campus.",
+        "Explore Ehlanzeni TVET College's Nelspruit Campus and its technical and vocational education programmes.",
       location: "Mbombela",
       province: "Mpumalanga",
       country: "South Africa",
@@ -3601,12 +3532,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationLevels: ["Preschool", "Preparatory school", "High school"],
       name: "Penryn School",
       seoTitle: "Penryn School | Education in Mpumalanga | Discover",
-      seoDescription:
-        "Explore Penryn School's preschool, preparatory and college phases, with links to official information.",
+      seoDescription: "Explore Penryn School's preschool, preparatory and college phases.",
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Penryn School describes an education journey spanning preschool, preparatory school and college. Its published approach highlights belonging, age-appropriate learning and preparing scholars to participate in a changing world.",
+        "Penryn School offers preschool, preparatory school and college phases, with age-appropriate learning and a focus on belonging and preparing scholars to participate in a changing world.",
       image: "https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp",
       imageAlt: "Penryn College campus",
       logo: "https://www.penryn.co.za/wp-content/uploads/2025/01/Penryn-Emblem.svg",
@@ -3627,8 +3557,8 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
         ],
         studentExperience: [
-          "The College describes sport as part of school life, with activities and coaching across different skill levels.",
-          "The Preparatory section describes a weekly programme combining academics, sport and co-curricular activities.",
+          "Sport is part of school life, with activities and coaching across different skill levels.",
+          "The Preparatory programme combines academics, sport and co-curricular activities each week.",
         ],
         officialLinks: [
           { label: "About Penryn", href: "https://www.penryn.co.za/about/" },
@@ -3661,7 +3591,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       name: "Curro Nelspruit High School",
       seoTitle: "Curro Nelspruit High School | Discover by Lowveld Hub",
       seoDescription:
-        "Explore Curro Nelspruit High School's Grades 8–12, IEB pathway and official school information.",
+        "Explore Curro Nelspruit High School's Grades 8–12 and IEB pathway in Sonheuwel.",
       location: "Mbombela",
       province: "Mpumalanga",
       country: "South Africa",
@@ -3688,7 +3618,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
         ],
         studentExperience: [
-          "Curro states that class sizes are limited to no more than 25 learners.",
+          "Class sizes are limited to no more than 25 learners.",
           "School activities include sports and cultural programmes such as soccer and cheerleading.",
           "Support programmes include a full-time school counsellor, subject-choice assessments and academic support.",
         ],
@@ -3762,7 +3692,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           applicationUrl: "https://www.unigradcollege.co.za/registration/",
         },
         studentExperience: [
-          "The College describes practicals, field trips and industry visits as part of some courses.",
+          "Some courses include practicals, field trips and industry visits.",
           "Career guidance includes a career profile assessment.",
         ],
         officialLinks: [
@@ -4114,8 +4044,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Kruger Transfers is based around 10 minutes from Kruger Mpumalanga International Airport in Nelspruit and focuses on transport for airport, lodge and Kruger-region travel.",
       image:
         "https://z-p3-scontent.fjnb12-1.fna.fbcdn.net/v/t39.30808-1/241454650_315404847044293_6448819179122271178_n.jpg?stp=dst-jpg_tt6&cstp=mx1000x667&ctp=s960x960&_nc_cat=108&_nc_sid=3ab345&_nc_ohc=nNlZXHyoGm8Q7kNvwFlJya_&_nc_oc=AdrCWVEqWUsQ54ypMhGzSe6nlOs1N-G6pNrjW17hWCndkGkWFCtrDwuHmgZ5i2SNY8s&_nc_zt=24&_nc_ht=z-p3-scontent.fjnb12-1.fna&_nc_gid=5EAaibDFEvk3dFFGqfV5Fw&_nc_ss=7c20f&oh=00_AQMswGfdppasr4KSipVFdjflffBXA71rfNAyfmOrchiJKw&oe=6AD24FBA",
-      imageAlt:
-        "Kruger Transfers vehicle and transfer service image from the official Facebook page",
+      imageAlt: "Kruger Transfers passenger shuttle",
       website: "https://www.facebook.com/krugertransfers/",
       source: "https://www.facebook.com/krugertransfers/",
       sourceUrl: "https://www.facebook.com/krugertransfers/",
@@ -4530,10 +4459,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         summary:
           "An open-air spa by the Sabie River, a short walk from Summerfields' tented suites and River Café.",
         description:
-          "Rose Spa is Summerfields' riverside spa, set on the Sabie River within the retreat grounds. The resort publishes its treatment range in a downloadable spa brochure and asks guests to book in advance.",
+          "Rose Spa at Summerfields offers a riverside spa experience on the Sabie River. Bookings are essential and can be made online; guests can contact the spa about available treatments.",
         seoTitle: "Rose Spa at Summerfields | Hazyview Spa | Discover",
         seoDescription:
-          "Explore Rose Spa at Summerfields in Hazyview, a riverside spa with advance booking and an official treatment brochure.",
+          "Enjoy a riverside spa experience at Summerfields in Hazyview. Rose Spa is open daily, and bookings are essential.",
         website: "https://summerfields.co.za/rose-spa",
         bookingUrl:
           "https://online.salonbridge.co.za/includes/widget/bookNowiFrame.php?businessID=3712&businessUID=f478bb0d-17bc-11ec-8fa7-0a919287fb63",
@@ -4560,17 +4489,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           "https://summerfields.co.za/assets/components/phpthumbof/cache/image00006.69cecccc100f974c4c3582b32f024c6e.jpg",
           "https://summerfields.co.za/assets/components/phpthumbof/cache/jan09344.69cecccc100f974c4c3582b32f024c6e.jpg",
         ],
-        treatmentSections: [
-          {
-            title: "Spa treatments",
-            items: ["Treatments listed in Summerfields' official Rose Spa brochure"],
-            note: "Download the current spa brochure from Summerfields for treatment details.",
-          },
-        ],
+        treatmentSections: [],
         facilities: ["Riverside spa setting"],
         visitNotes: [
-          "Bookings are essential. Rose Spa is open daily.",
-          "The spa is beside the river, within walking distance of the tented suites and River Café.",
+          "Open daily. Bookings are essential.",
+          "Set beside the river, a short walk from the tented suites and River Café.",
         ],
       },
       seoTitle: "Summerfields Rose Retreat & Spa | Hazyview Accommodation | Discover",
@@ -4949,10 +4872,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         summary:
           "A garden spa on the Walkersons Estate, offering massages, skin-care rituals and facials in Dullstroom.",
         description:
-          "Walkersons Spa is a garden spa on the hotel's Dullstroom estate. Published treatments include massages, skin-care rituals and facials; sauna access is reserved for hotel guests and groups booking the Revive Package.",
+          "Walkersons Spa is a garden spa on the hotel's Dullstroom estate, offering massages, skin-care rituals and facials. Sauna access is reserved for hotel guests and groups booking the Revive Package.",
         seoTitle: "Walkersons Spa | Dullstroom Spa Treatments | Discover",
         seoDescription:
-          "Explore Walkersons Spa in Dullstroom for massages, skin-care rituals, facials and a garden-estate setting. Sauna access is subject to the hotel's published restrictions.",
+          "Explore Walkersons Spa in Dullstroom for massages, skin-care rituals, facials and a garden-estate setting. Sauna access is for hotel guests and Revive Package groups.",
         website: "https://www.walkersons.co.za/spa/",
         email: "spa@walkersons.co.za",
         logo: "https://www.walkersons.co.za/wp-content/uploads/2024/06/thumbnail_Walkersons-logo-transparent-updated-1.png",
@@ -5278,7 +5201,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       address: "7 Van Niekerk Street, Nelspruit",
       postalCode: "1200",
       description:
-        "Established in Nelspruit (now Mbombela) in 1976, DU TOIT-SMUTS & PARTNERS ATTORNEYS serves private and public-sector clients, businesses and individuals across Mpumalanga. Its published practice areas include conveyancing, commercial and company law, estates and trusts, family law, litigation and more.",
+        "Established in Nelspruit (now Mbombela) in 1976, DU TOIT-SMUTS & PARTNERS ATTORNEYS serves private and public-sector clients, businesses and individuals across Mpumalanga. Its practice areas include conveyancing, commercial and company law, estates and trusts, family law, litigation and more.",
       image:
         "https://www.dtsmp.co.za/wp-content/uploads/2023/09/DU-TOITS-SMUTS-PARTNERS-contatc-.jpg",
       imageAlt: "DU TOIT-SMUTS & PARTNERS ATTORNEYS",
@@ -5336,7 +5259,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       address: "1st Floor, Volante House, 20 Ferreira Street, Nelspruit",
       postalCode: "1201",
       description:
-        "Kruger & Partners Inc. is a law firm in Mbombela (Nelspruit) with a published focus on corporate and commercial legal services. Its listed practice areas also include litigation, wills and trusts, transnational insolvency, personal injury and collections.",
+        "Kruger & Partners Inc. is a law firm in Mbombela (Nelspruit) focused on corporate and commercial law. It also handles litigation, wills and trusts, transnational insolvency, personal injury and collections.",
       image:
         "https://www.krugerandpartners.co.za/wp-content/uploads/2025/10/Kruger-and-partners-Our-Policy-1536x1024.webp",
       imageAlt: "Kruger & Partners Inc.",
@@ -5940,13 +5863,13 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         ],
         menuLinks: [
           {
-            label: "Official menu PDF",
-            description: "Download the current menu directly from The Orange Restaurant website.",
+            label: "View menu",
+            description: "Browse the current menu.",
             href: "https://www.eatatorange.co.za/wp-content/uploads/2025/10/ORANGE-RESTAURANT-MENU-2025.pdf",
           },
           {
             label: "Book a table",
-            description: "Reserve your table through the official restaurant booking page.",
+            description: "Reserve a table.",
             href: "https://eatatorange.co.za/booking/",
           },
         ],
@@ -5954,7 +5877,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         experienceEyebrow: "Lowveld dining",
         experienceHeading: "A memorable hilltop setting",
         menuIntroduction:
-          "Browse the official menu PDF and booking page for the latest dining details from The Orange Restaurant.",
+          "Browse the menu and reserve a table for lunch, dinner or a special occasion.",
       },
       seoTitle: "The Orange Restaurant | Discover Mbombela",
       seoDescription:
@@ -6049,7 +5972,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
           {
             label: "Make a reservation",
-            description: "Book your table directly through the official Salsa reservation page.",
+            description: "Reserve a table for your visit.",
             href: "https://salsamexicangrill.co.za/make-a-reservation-2/",
           },
         ],
@@ -6057,7 +5980,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         experienceEyebrow: "Lowveld dining",
         experienceHeading: "A lively Mexican fiesta",
         menuIntroduction:
-          "Browse the official Salsa menu and reservation page for the latest dishes, offers and table booking details.",
+          "Explore the menu and reserve a table for Mexican favourites, cocktails and group dining.",
       },
       seoTitle: "Salsa Mexican Grill | Discover Mbombela",
       seoDescription:
@@ -6143,7 +6066,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "All-day breakfast & brunch",
             description:
-              "The official branch menu features hearty breakfasts, Eggs Benedict, breakfast bagels and other brunch choices.",
+              "Hearty breakfasts include Eggs Benedict, breakfast bagels and other brunch choices.",
           },
           {
             title: "Generous lunch",
@@ -6169,12 +6092,12 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
           {
             label: "Generous Lunch",
-            description: "Browse current lunch dishes on the official sit-down menu.",
+            description: "Browse current lunch dishes.",
             href: "https://www.muggandbean.co.za/our-menu/sit-down-menu/#hearty-generous",
           },
           {
             label: "Freshly Baked",
-            description: "Explore the baked treats featured on the official menu.",
+            description: "Explore freshly baked treats.",
             href: "https://www.muggandbean.co.za/our-menu/sit-down-menu/#freshly-baked",
           },
         ],
@@ -6182,7 +6105,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         experienceEyebrow: "Coffee, breakfast & lunch",
         experienceHeading: "More & More at Crossing Centre",
         menuIntroduction:
-          "Browse Mugg & Bean's official sit-down menu for current dishes and details.",
+          "Explore the sit-down menu for breakfast, lunch and freshly baked treats.",
       },
       seoDescription:
         "Visit Mugg & Bean Crossing Centre in Mbombela for coffee, breakfast, brunch, lunch and freshly baked treats. See its menu, opening hours, directions and contact details.",

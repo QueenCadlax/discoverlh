@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -78,79 +78,6 @@ export function AccommodationBusinessProfile({
     ...new Set([...(listing.amenities ?? []), ...(listing.facilities ?? [])].map(normalizeFeature)),
   ];
   const visibleFeatures = showAllFeatures ? propertyFeatures : propertyFeatures.slice(0, 6);
-  const stayHighlights = useMemo(() => {
-    const highlights: string[] = [];
-    if (listing.location) {
-      highlights.push(`A comfortable base in ${listing.location}`);
-    }
-    if (propertyType) {
-      highlights.push(`${propertyType} accommodation with a practical, easy-to-navigate layout`);
-    }
-    if (
-      propertyFeatures.some((feature) =>
-        /wi-fi|conference|breakfast|restaurant|workspace/i.test(feature),
-      )
-    ) {
-      highlights.push("Well suited to short stays, work trips and relaxed weekends.");
-    }
-    if (propertyFeatures.some((feature) => /pool|garden|terrace|spa/i.test(feature))) {
-      highlights.push("A calm setting to unwind after a day of exploring the Lowveld.");
-    }
-    if (listing.roomTypes?.length) {
-      highlights.push(`${listing.roomTypes[0]} room options make the stay flexible.`);
-    }
-    return Array.from(new Set(highlights)).slice(0, 4);
-  }, [listing.location, listing.roomTypes, propertyFeatures, propertyType]);
-  const perfectFor = useMemo(() => {
-    const tags: string[] = [];
-    if (propertyFeatures.some((feature) => /pool|garden|spa|terrace/i.test(feature))) {
-      tags.push("Slow mornings");
-    }
-    if (
-      propertyFeatures.some((feature) => /wi-fi|conference|breakfast|restaurant/i.test(feature))
-    ) {
-      tags.push("Business trips");
-    }
-    if (listing.roomTypes?.some((type) => /family|suite|apartment|studio/i.test(type))) {
-      tags.push("Families");
-    }
-    if (propertyFeatures.some((feature) => /parking|restaurant|breakfast|pool/i.test(feature))) {
-      tags.push("Weekend escapes");
-    }
-    if (!tags.length && listing.location) {
-      tags.push(`Exploring ${listing.location}`);
-    }
-    return Array.from(new Set(tags)).slice(0, 5);
-  }, [listing.location, listing.roomTypes, propertyFeatures]);
-  const tripIdeas = useMemo(() => {
-    const ideas = [] as { title: string; description: string }[];
-    if (propertyFeatures.some((feature) => /pool|garden|terrace/i.test(feature))) {
-      ideas.push({
-        title: "Poolside downtime",
-        description: "Keep the pace easy with a relaxed afternoon by the pool after a day out.",
-      });
-    }
-    if (propertyFeatures.some((feature) => /restaurant|breakfast/i.test(feature))) {
-      ideas.push({
-        title: "Easy dining",
-        description: "Enjoy a simple breakfast or dinner without leaving the property.",
-      });
-    }
-    if (listing.location) {
-      ideas.push({
-        title: `Explore ${listing.location}`,
-        description:
-          "Use this as your base for local experiences, food stops and low-key discovery.",
-      });
-    }
-    if (propertyFeatures.some((feature) => /parking|reception|conference/i.test(feature))) {
-      ideas.push({
-        title: "Smooth arrival",
-        description: "A practical setup for quick check-ins, easy parking and a stress-free stay.",
-      });
-    }
-    return ideas.slice(0, 4);
-  }, [listing.location, propertyFeatures]);
   const profileUrl = getPublicUrl(
     canonicalPath ?? getCategoryListingPath("accommodation", listing),
   );
@@ -637,55 +564,6 @@ export function AccommodationBusinessProfile({
                 </p>
               </section>
             ) : null}
-
-            {!wellnessProfile && stayHighlights.length > 0 && (
-              <section className="border-b border-[#e5ebeb] py-5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
-                  Why you’ll like it
-                </p>
-                <ul className="mt-3 space-y-3 text-sm leading-6 text-[#5f6d72]">
-                  {stayHighlights.map((highlight) => (
-                    <li key={highlight} className="flex items-start gap-2">
-                      <Check className="mt-1 h-4 w-4 shrink-0 text-[#28718a]" />
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {!wellnessProfile && perfectFor.length > 0 && (
-              <section className="border-b border-[#e5ebeb] py-5">
-                <h2 className="text-lg font-semibold">Perfect for</h2>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {perfectFor.map((tag) => (
-                    <span
-                      key={tag}
-                      className="inline-flex items-center rounded-full border border-[#d5dfe1] bg-[#f3f7f7] px-2.5 py-1.5 text-xs font-medium text-[#34474d]"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {!wellnessProfile && tripIdeas.length > 0 && (
-              <section className="border-b border-[#e5ebeb] py-5">
-                <h2 className="text-lg font-semibold">Plan around your stay</h2>
-                <div className="mt-3 grid gap-3 md:grid-cols-2">
-                  {tripIdeas.map((idea) => (
-                    <div
-                      key={idea.title}
-                      className="rounded-sm border border-[#e5ebeb] bg-[#fafcfc] p-3.5"
-                    >
-                      <p className="text-sm font-semibold text-[#172a31]">{idea.title}</p>
-                      <p className="mt-1 text-sm leading-6 text-[#68767a]">{idea.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
 
             {!wellnessProfile && propertyFeatures.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">

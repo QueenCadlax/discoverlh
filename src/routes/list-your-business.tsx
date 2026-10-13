@@ -175,7 +175,14 @@ function ListingRequestPage() {
             missing information before a listing is published.
           </p>
           <div className="mt-5 rounded-sm border border-[#e5ebeb] bg-[#f7faf8] p-3 text-sm text-[#34474d]">
-            Explore the available visibility options in our <a href="/business-packages" className="font-semibold text-[#172a31] underline underline-offset-2">Business Packages</a>.
+            Explore the available visibility options in our{" "}
+            <a
+              href="/business-packages"
+              className="font-semibold text-[#172a31] underline underline-offset-2"
+            >
+              Business Packages
+            </a>
+            .
           </div>
         </div>
 
@@ -430,6 +437,10 @@ function ListingRequestPage() {
                 rows={5}
                 className="resize-y rounded-sm border border-[#dce4e5] px-3 py-2 font-normal leading-6 outline-none focus:border-[#39703b]"
               />
+              <span className="text-xs font-normal leading-5 text-[#788589]">
+                Describe what the business offers and what customers can expect. Include only
+                accurate details; avoid research notes or claims you cannot verify.
+              </span>
             </label>
             <label className="flex min-h-11 items-start gap-2 text-xs leading-5 text-[#536267] sm:col-span-2">
               <input

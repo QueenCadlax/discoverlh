@@ -571,8 +571,8 @@ export function RestaurantBusinessProfile({
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-6 text-[#687378]">
                 {menuUrl
-                  ? "Explore the restaurant's cuisine profile, then visit its official menu for current dishes and details."
-                  : "Explore the cuisine and dining details provided for this restaurant."}
+                  ? "Explore the restaurant's cuisine, then browse the menu for current dishes."
+                  : "Explore the restaurant's cuisine and dining options."}
               </p>
               {diningDetails.length > 0 && (
                 <div className="mt-5 border-y border-[#e5ebeb] py-4">
@@ -581,9 +581,6 @@ export function RestaurantBusinessProfile({
                   </p>
                   <p className="mt-1 text-sm font-medium text-[#34474d]">
                     {[...new Set(diningDetails)].join(" · ")}
-                  </p>
-                  <p className="mt-1 text-xs text-[#687378]">
-                    Cuisine descriptors, not a menu listing.
                   </p>
                 </div>
               )}
@@ -737,14 +734,13 @@ export function RestaurantBusinessProfile({
               >
                 <div className="container-x">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
-                    Official menus
+                    Menus
                   </p>
                   <h2 className="mt-2 font-display text-3xl font-medium text-[#17242b] sm:text-4xl">
                     Explore the menu
                   </h2>
                   <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687378]">
-                    {restaurantProfile.menuIntroduction ??
-                      `Visit ${listing.name}'s official menu pages for current dishes and details.`}
+                    {restaurantProfile.menuIntroduction ?? `Browse ${listing.name}'s menu.`}
                   </p>
                   <div className="mt-6 grid gap-3 md:grid-cols-2">
                     {restaurantProfile.menuLinks.map((menu) => {
