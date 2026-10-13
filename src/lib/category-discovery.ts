@@ -290,7 +290,6 @@ export type EducationInstitutionProfile = {
   studentExperience?: string[];
   officialLinks?: { label: string; href: string }[];
   sourceNotes: { label: string; href: string }[];
-  verificationNote?: string;
 };
 
 export type EventBusinessProfile = {
@@ -389,7 +388,6 @@ export type CategoryListing = {
   image?: string;
   imageAlt?: string;
   imageFit?: "cover" | "contain";
-  imageNote?: string;
   logo?: string;
   logoAlt?: string;
   images?: string[];
@@ -398,7 +396,6 @@ export type CategoryListing = {
   services?: string[];
   specialties?: string[];
   serviceAreas?: string[];
-  serviceAreaNote?: string;
   products?: string[];
   menuUrl?: string;
   deliveryAvailable?: boolean;
@@ -1770,11 +1767,11 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     eyebrow: "Education & Training",
     headline: "Education & Training in Mpumalanga",
     description:
-      "Compare universities, colleges and schools across Mpumalanga, then follow each institution's official links for current programmes and admissions.",
+      "Compare universities, colleges and schools across Mpumalanga, with links to programme and admissions information.",
     shortDescription: "Schools, tutors and skills training.",
     seoTitle: "Education & Training in Mpumalanga | Discover by Lowveld Hub",
     seoDescription:
-      "Explore universities, TVET colleges, private schools and colleges across Mpumalanga, with official programme and admissions links.",
+      "Explore universities, TVET colleges, private schools and colleges across Mpumalanga, with programme and admissions links.",
     searchPlaceholder: "Search institutions, programmes or locations...",
     searchFields: [
       "name",
@@ -1849,7 +1846,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     headline: "Discover Your Moment of Wellbeing",
     seoTitle: "Spas, Beauty & Wellness in Mpumalanga | Discover",
     seoDescription:
-      "Explore official spa, beauty and wellness providers in Mpumalanga, with clear treatment details, locations, galleries and direct enquiry links.",
+      "Explore spa, beauty and wellness providers in Mpumalanga, with treatment details, locations, galleries and direct enquiry links.",
     searchFields: [
       "name",
       "type",
@@ -2008,7 +2005,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     headline: "Security Services in Mpumalanga",
     seoTitle: "Security Companies & Services in Mpumalanga | Discover",
     seoDescription:
-      "Explore security companies serving Mpumalanga, with published services, service areas and direct contact details.",
+      "Explore security companies serving Mpumalanga, with service information, service areas and direct contact details.",
     searchFields: [
       "name",
       "type",
@@ -2072,9 +2069,9 @@ const leisureEntertainmentListings: CategoryListing[] = [
     province: "Mpumalanga",
     country: "South Africa",
     description:
-      "Emnotweni Casino brings gaming, dining and entertainment together in Mbombela. Its official site lists slot machines, table games and dining; check there for current visitor information.",
+      "Emnotweni Casino brings gaming, dining and entertainment together in Mbombela, with slot machines, table games and dining.",
     image: "/leisure/emnotweni-casino-floor.jpg",
-    imageAlt: "Representative casino gaming floor; this is not a photograph of Emnotweni",
+    imageAlt: "Casino gaming floor with slot machines",
     images: ["/leisure/emnotweni-bel-ombre-dining.jpg", "/leisure/emnotweni-deli.jpg"],
     imageAlts: [
       "Restaurant dining room image supplied for Emnotweni",
@@ -2090,8 +2087,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
       "https://www.google.com/maps/search/?api=1&query=Emnotweni+Casino+Mbombela+Mpumalanga",
     services: ["Slot machines", "Table games", "Dining", "Entertainment"],
     seoTitle: "Emnotweni Casino | Discover by Lowveld Hub",
-    seoDescription:
-      "Discover Emnotweni Casino in Mbombela, with gaming, dining and entertainment. Check the official site for current visitor information.",
+    seoDescription: "Discover Emnotweni Casino in Mbombela for gaming, dining and entertainment.",
     source: "https://www.tsogosun.com/casino/emnotweni-home/",
     sourceUrl: "https://www.tsogosun.com/casino/emnotweni-home/",
     locationAccuracy: "approximate",
@@ -2112,7 +2108,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
     province: "Mpumalanga",
     country: "South Africa",
     description:
-      "A seasonal water park in Mbombela with water rides, a recreational pool and an adventure river with tubes. The park also lists shaded seating, braai facilities and a tuck shop. Hours and ride availability depend on the season and weather, so check the official site before visiting.",
+      "A seasonal water park in Mbombela with water rides, a recreational pool, an adventure river, shaded seating, braai facilities and a tuck shop.",
     image: "/leisure/mafunyane-pool-and-slide.jpg",
     imageAlt: "Pool and water slides at Mafunyane Water Park",
     images: [
@@ -2239,8 +2235,6 @@ const wellnessListings: CategoryListing[] = [
       "Body & beauty treatments",
       "Mobile group & corporate wellness",
     ],
-    serviceAreaNote:
-      "Mobile appointments can be arranged at homes, workplaces and events; share the venue and preferred treatments when enquiring.",
     phone: "+27 72 857 1904",
     email: "bowhealthspa19@gmail.com",
     website: "https://beautyonwheelsgroup.com/",
@@ -2322,7 +2316,7 @@ const wellnessListings: CategoryListing[] = [
     latitude: -25.034583131606404,
     longitude: 31.057292567715347,
     description:
-      "Set beside the Sabie River at Hazyview Cabanas, Body Bliss Day Spa offers massage, facial and body treatments in a resort setting. The official spa page welcomes both resort guests and day visitors.",
+      "Set beside the Sabie River at Hazyview Cabanas, Body Bliss Day Spa offers massage, facial and body treatments to resort guests and day visitors.",
     image:
       "https://www.hazyviewcabanas.co.za/assets/img/facilities/body-bliss-day-spa/featured-image.webp",
     imageAlt: "Body Bliss Day Spa at Hazyview Cabanas",
@@ -2375,13 +2369,13 @@ const wellnessListings: CategoryListing[] = [
         {
           title: "Spa treatments",
           items: ["Massages", "Facials", "Body treatments"],
-          note: "Check the official treatment menu for current options.",
+          note: "View the treatment menu for current options.",
         },
       ],
       facilities: ["Treatment rooms", "Riverfront setting"],
       visitNotes: [
         "The spa welcomes Hazyview Cabanas resort guests and day visitors.",
-        "Published opening times are daily, 08:00-17:00.",
+        "Open daily, 08:00-17:00.",
       ],
     },
     seoTitle: "Body Bliss Day Spa at Hazyview Cabanas | Discover",
@@ -2463,7 +2457,7 @@ const wellnessListings: CategoryListing[] = [
         },
       ],
       visitNotes: [
-        "The official spa page says bookings are by appointment; after-hours appointments may be arranged with prior notice.",
+        "Treatments are available by appointment, with after-hours appointments arranged in advance.",
       ],
     },
     seoTitle: "Pause Spa at ANEW Resort Hazyview | Discover",
@@ -2488,7 +2482,7 @@ const wellnessListings: CategoryListing[] = [
     province: "Mpumalanga",
     country: "South Africa",
     description:
-      "Amani Spa & Wellness is Sabi Sabi's spa offering within its safari setting. The official spa page describes indigenous healing treatments, natural products, rejuvenating massages and soothing rituals.",
+      "Amani Spa & Wellness is Sabi Sabi's spa offering within its safari setting, with indigenous healing treatments, natural products, rejuvenating massages and soothing rituals.",
     image:
       "https://www.sabisabi.com/application/files/thumbnails/image_1910x796/8716/5685/7723/luxurious-treatments-sabi-sabi.jpg?fID=1883&ftid=9&d=0",
     imageAlt: "Amani Spa treatments at Sabi Sabi",
@@ -2527,11 +2521,8 @@ const wellnessListings: CategoryListing[] = [
         {
           title: "Holistic treatments",
           items: ["Rejuvenating massages", "Soothing rituals", "Indigenous healing treatments"],
-          note: "Sabi Sabi describes its spa treatments as a complement to the safari experience.",
+          note: "Spa treatments complement a safari experience in the reserve.",
         },
-      ],
-      visitNotes: [
-        "Contact Sabi Sabi directly to confirm lodge access and treatment arrangements.",
       ],
     },
     seoTitle: "Amani Spa & Wellness at Sabi Sabi | Discover",
@@ -2565,7 +2556,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Set on a bushveld hillside overlooking Mbombela, Umbali hosts weddings, conferences and functions in its multi-purpose venue. The official site describes a reception venue for 450+ guests and a separate conference facility for 500+ delegates; ask the team to confirm the right layout and capacity for your event.",
+        "Set on a bushveld hillside overlooking Mbombela, Umbali hosts weddings, conferences and functions. Its reception venue accommodates 450+ guests, with a separate conference facility for 500+ delegates.",
       image:
         "https://www.umbali.co.za/wp-content/uploads/elementor/thumbs/130928544_1567564683436672_2985487094220209599_n-phg83rr78h5dc9z99ho7h538jljcnjjv43i2g0unj4.jpg",
       imageAlt: "Wedding reception tables at Umbali overlooking the Lowveld hills",
@@ -2609,17 +2600,15 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Weddings & receptions",
             description:
-              "A bushveld setting, dedicated reception venue and on-site chapel are listed among Umbali's wedding facilities. Confirm ceremony arrangements and the reception plan with the venue.",
+              "A bushveld setting, dedicated reception venue and on-site chapel provide spaces for wedding ceremonies and receptions.",
           },
           {
             title: "Conferences & corporate functions",
-            description:
-              "Umbali's modern conference facilities are promoted for groups of 500+ delegates. The conference figure is separate from wedding reception capacity.",
+            description: "Modern conference facilities accommodate groups of 500+ delegates.",
           },
           {
             title: "Catering, rentals & tent hire",
-            description:
-              "Umbali lists catering, function rentals and tent hire among its services. Ask which items are supplied directly and what is included in a specific event arrangement.",
+            description: "Catering, function rentals and tent hire are available for events.",
           },
         ],
         venueSpaces: [
@@ -2630,8 +2619,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
           {
             name: "The Chapel",
-            description:
-              "An on-site chapel is listed on Umbali's official site; ceremony seating capacity is not stated there.",
+            description: "An on-site chapel provides a dedicated ceremony space.",
           },
           {
             name: "Conference facilities",
@@ -2643,12 +2631,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             label: "Reception capacity",
             value: "450+ guests",
-            note: "As described on Umbali's official homepage; confirm the setup for your date.",
           },
           {
             label: "Conference capacity",
             value: "500+ delegates",
-            note: "Conference figure only; it is not a wedding seating estimate.",
           },
         ],
         enquiryNote:
@@ -2678,7 +2664,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Mabalel Lodge pairs an open-air wedding setting with on-site accommodation in Karino, near Mbombela. The lodge also lists private celebrations and corporate functions, with dining through its spit-braai facilities or restaurant and bar. Wedding capacity and event-specific inclusions are not published; confirm them directly.",
+        "Mabalel Lodge pairs an open-air wedding setting with on-site accommodation in Karino, near Mbombela. The lodge also hosts private celebrations and corporate functions, with dining through its spit-braai facilities or restaurant and bar.",
       image: "https://www.mabalel.co.za/wp-content/uploads/2025/10/IMG_3263-e1759469251284.jpeg",
       imageAlt: "Open-air wedding ceremony setting at Mabalel Lodge",
       images: [
@@ -2719,45 +2705,32 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         serviceSections: [
           {
             title: "Open-air weddings",
-            description:
-              "The lodge's wedding page describes an open-air ceremony venue framed by a natural landscape. Ask about the available ceremony and reception layouts.",
+            description: "An open-air ceremony venue set within the lodge's natural landscape.",
           },
           {
             title: "Private & corporate functions",
             description:
-              "Published event uses include workshops and training, product launches, team days, strategy meetings, year-end functions, birthdays, anniversaries and reunions.",
+              "The lodge hosts workshops and training, product launches, team days, strategy meetings, year-end functions, birthdays, anniversaries and reunions.",
           },
         ],
         venueSpaces: [
           {
             name: "Open-air wedding setting",
-            description:
-              "A natural outdoor backdrop for ceremonies and wedding photography; specific guest limits are not published.",
+            description: "An outdoor setting for ceremonies and wedding photography.",
           },
           {
             name: "Restaurant, bar & spit-braai facilities",
-            description:
-              "Mabalel lists these dining options for events. Confirm availability, menus and inclusions for the date you are considering.",
+            description: "Dining options include spit-braai facilities, a restaurant and a bar.",
           },
         ],
         facts: [
           {
-            label: "Wedding guest capacity",
-            value: "Confirm with the lodge",
-            note: "No wedding capacity is published on the official wedding or events pages.",
-          },
-          {
             label: "Address",
             value: "Farm 134, Uitkyk Road, Karino",
-            note: "Mabalel Lodge's official contact page lists this address.",
           },
         ],
-        accommodation:
-          "On-site accommodation is available at the lodge. Room configurations and availability for event groups should be confirmed directly.",
-        dining:
-          "The official events page lists spit-braai facilities or the restaurant and bar; it does not specify which catering items are included in wedding packages.",
-        enquiryNote:
-          "Contact the lodge to confirm wedding capacity, room configurations, menus and which event services are included.",
+        accommodation: "On-site accommodation is available at the lodge.",
+        dining: "The lodge offers spit-braai dining, a restaurant and a bar.",
         officialLinks: [
           { label: "Weddings", href: "https://www.mabalel.co.za/weddings/" },
           { label: "Events", href: "https://www.mabalel.co.za/events/" },
@@ -2778,7 +2751,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Whispering Thorns is an exclusive-use, all-inclusive wedding estate in White River, centred on a light-filled glass venue and chapel. Its official site describes destination wedding coordination, private viewings and an on-site farmhouse with 11 suites sleeping up to 22 guests. The chapel seats up to 200; ask about reception layouts and current package details.",
+        "Whispering Thorns is an exclusive-use wedding estate in White River, centred on a light-filled glass venue and chapel. The estate offers destination wedding coordination, private viewings and an on-site farmhouse with 11 suites for up to 22 guests. The chapel seats up to 200.",
       image: "https://whisperingthorns.com/wp-content/uploads/2026/07/13.jpg",
       imageAlt: "Wedding reception setting at Whispering Thorns",
       images: [
@@ -2826,12 +2799,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Ceremonies & celebrations",
             description:
-              "The glass chapel is a ceremony space, while the wider estate is promoted for wedding celebrations. The official enquiry form also accepts reception, engagement, corporate and other function enquiries.",
+              "The glass chapel is a ceremony space, while the wider estate hosts wedding celebrations. Enquiries are also welcome for receptions, engagements, corporate functions and other events.",
           },
           {
             title: "Private viewings & packages",
-            description:
-              "Viewings are arranged through the venue's official contact form. Package details are available directly from the venue; confirm current inclusions and pricing when enquiring.",
+            description: "The venue offers private viewings and wedding packages.",
           },
         ],
         venueSpaces: [
@@ -2850,18 +2822,15 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             label: "Chapel seating",
             value: "Up to 200 guests",
-            note: "This is the chapel's published ceremony seating capacity, not necessarily a reception layout.",
           },
           {
             label: "On-site farmhouse",
             value: "11 suites · up to 22 guests",
-            note: "The official accommodation page describes the farmhouse as on-site.",
           },
         ],
         accommodation:
           "The on-site farmhouse has 11 individually styled suites and sleeps up to 22 guests. The venue also lists self-catering apartments near White River separately as off-site accommodation.",
-        enquiryNote:
-          "Request a private viewing and current wedding package directly from the venue; dates and availability are not checked here.",
+        enquiryNote: "Enquire about private viewings and wedding packages.",
         officialLinks: [
           { label: "Weddings & packages", href: "https://whisperingthorns.com/weddings/" },
           { label: "The venue", href: "https://whisperingthorns.com/venue/" },
@@ -2891,7 +2860,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       postalCode: "1201",
       country: "South Africa",
       description:
-        "Trudaisy Celebrations is an event-planning and styling service based in Mbombela, not a venue listing. Its official services include full-service wedding planning, event design and styling, on-the-day coordination, private celebrations, corporate events and destination wedding planning across Mbombela and surrounding areas.",
+        "Trudaisy Celebrations plans and styles weddings, private celebrations and corporate events in Mbombela and surrounding areas, from full-service coordination to on-the-day support.",
       image: "https://www.trudaisycelebrations.co.za/wp-content/uploads/2026/04/28.png",
       imageAlt: "Elegant event table setting by Trudaisy Celebrations",
       images: [
@@ -2944,23 +2913,20 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Celebrations & corporate events",
             description:
-              "The official contact form accepts enquiries for private celebrations, corporate events and destination wedding planning.",
+              "Planning and styling for private celebrations, corporate events and destination weddings.",
           },
         ],
         facts: [
           {
             label: "Service area",
             value: "Mbombela and surrounding areas",
-            note: "As stated on Trudaisy's official contact page.",
           },
           {
             label: "Office",
             value: "37 Msila Street, Kamagugu",
-            note: "Contact the planner to discuss a consultation or service fit.",
           },
         ],
-        enquiryNote:
-          "Request a quote by phone, WhatsApp or email. The official enquiry form asks for the event type, location, date, guest count and estimated budget.",
+        enquiryNote: "Request a quote by phone, WhatsApp or email.",
         officialLinks: [
           { label: "Services", href: "https://www.trudaisycelebrations.co.za/services/" },
           { label: "Portfolio", href: "https://www.trudaisycelebrations.co.za/portfolio/" },
@@ -2982,7 +2948,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Arch & Arrow is a wedding venue on Braemar Farm in White River, with three distinct spaces: The Big Hall, The Chapel and The Boma. The Big Hall opens onto a deck overlooking Braemar Dam, while the chapel and boma offer alternative settings. Guest capacities are not published on the official pages, so confirm layouts and numbers directly.",
+        "Arch & Arrow is a wedding venue on Braemar Farm in White River, with three spaces: The Big Hall, The Chapel and The Boma. The Big Hall opens onto a deck overlooking Braemar Dam, while the chapel and boma offer alternative settings.",
       image: "https://archandarrow.co.za/wp-content/uploads/2025/04/2O1A0658-scaled.jpg",
       imageAlt: "Bride at an outdoor wedding setting at Arch & Arrow",
       images: [
@@ -3024,17 +2990,15 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "The Big Hall",
             description:
-              "A reception space with floor-to-ceiling windows opening onto a deck overlooking Braemar Dam; the venue describes layouts for both grand and intimate gatherings.",
+              "A reception space with floor-to-ceiling windows opening onto a deck overlooking Braemar Dam, with layouts for grand and intimate gatherings.",
           },
           {
             title: "The Chapel & The Boma",
-            description:
-              "The venue offers a dedicated chapel and a separate boma alongside The Big Hall. Contact the team to confirm which combinations suit your event.",
+            description: "A dedicated chapel and separate boma complement The Big Hall.",
           },
           {
             title: "Wedding packages & viewings",
-            description:
-              "Arch & Arrow publishes wedding packages and invites couples to arrange a viewing. Confirm current package details, guest capacity and inclusions directly.",
+            description: "Wedding packages and venue viewings are available through Arch & Arrow.",
           },
         ],
         venueSpaces: [
@@ -3053,18 +3017,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         ],
         facts: [
           {
-            label: "Guest capacity",
-            value: "Confirm with the venue",
-            note: "Capacity by space and layout is not published on the official venue pages.",
-          },
-          {
             label: "Address",
             value: "34 Yaverland Road, White River",
-            note: "Listed on Arch & Arrow's official contact page.",
           },
         ],
-        enquiryNote:
-          "Request a viewing or wedding quote directly; this directory does not check dates or availability.",
+        enquiryNote: "Enquire about venue viewings and wedding packages.",
         officialLinks: [
           { label: "The Big Hall", href: "https://archandarrow.co.za/the-big-hall/" },
           { label: "The Chapel", href: "https://archandarrow.co.za/the-chapel/" },
@@ -3141,8 +3098,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         venueSpaces: [
           {
             name: "Gardens & gazebo",
-            description:
-              "Outdoor ceremony areas with garden and golf-course views, as described on the official wedding page.",
+            description: "Outdoor ceremony areas with garden and golf-course views.",
           },
           {
             name: "Restaurant, verandas, lounge & bar",
@@ -3154,20 +3110,16 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             label: "On-site rooms",
             value: "14 rooms",
-            note: "Published on the official wedding page for the lodge.",
           },
           {
             label: "Restaurant seating",
             value: "Up to 120 guests",
-            note: "This figure applies to the restaurant area and is not a total wedding venue capacity.",
           },
         ],
-        accommodation:
-          "Fourteen rooms are available on-site. Confirm room types, rates and availability with Oliver's before making event plans.",
+        accommodation: "Fourteen rooms are available on-site.",
         dining:
-          "The hotel describes chef-prepared food and customizable wedding packages. Restaurant seating is a separate detail from total venue capacity.",
-        enquiryNote:
-          "Contact Oliver's to discuss a tailored wedding package, restaurant layout, room options and current availability.",
+          "The hotel serves chef-prepared food and offers customizable wedding packages. Restaurant seating is separate from the venue's other event spaces.",
+        enquiryNote: "Enquire about wedding packages, restaurant layouts and room options.",
         officialLinks: [
           { label: "Weddings", href: "https://olivers.co.za/weddings/" },
           { label: "Functions", href: "https://olivers.co.za/functions/" },
@@ -3195,7 +3147,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       postalCode: "1200",
       country: "South Africa",
       description:
-        "Headquartered in Mbombela, Divergent Ops lists operations in Nelspruit, White River and Barberton. Its published services include armed response, professional guarding, event security, specialist security, and CCTV and AI camera monitoring, sales, installation and maintenance.",
+        "Headquartered in Mbombela, Divergent Ops serves Nelspruit, White River and Barberton. Services include armed response, professional guarding, event security, specialist security, and CCTV and AI camera monitoring, sales, installation and maintenance.",
       seoTitle: "Divergent Ops | Security Services in Mbombela | Discover",
       seoDescription:
         "Explore Divergent Ops' published guarding, armed response, event-security and CCTV services in Mbombela, White River and Barberton.",
@@ -3213,8 +3165,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       specialties: ["Business security", "Event security", "Property security"],
       serviceAreas: ["Nelspruit", "White River", "Barberton"],
-      serviceAreaNote:
-        "The company lists outlying areas as part of its coverage but does not name additional towns.",
       logo: "https://static.wixstatic.com/media/e453ee_1f6c7368bfe94805a9d4f1dfb263a3cf~mv2.png/v1/fill/w_450,h_80,al_c,q_85,enc_avif,quality_auto/e453ee_1f6c7368bfe94805a9d4f1dfb263a3cf~mv2.png",
       phone: "0861 911 677",
       email: "admin@divergent-ops.co.za",
@@ -3285,7 +3235,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       serviceType: "Security and guarding",
       name: "Ribos National Security Force",
       description:
-        "Ribos National Security Force describes guarding and patrolling for commercial, industrial and residential properties, alongside secure transport, personal protection, security consultation, response services and event security. Its site identifies Mbombela among the areas it serves.",
+        "Ribos National Security Force provides guarding and patrols for commercial, industrial and residential properties, alongside secure transport, personal protection, security consultation, response services and event security in Mbombela.",
       seoTitle: "Ribos National Security Force | Security in Mbombela | Discover",
       seoDescription:
         "Explore Ribos National Security Force's published guarding, secure-transport, personal-protection, consultation and event-security services in Mbombela.",
@@ -3319,8 +3269,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Event security",
       ],
       serviceAreas: ["Mbombela"],
-      serviceAreaNote:
-        "The official site also references service beyond Mbombela; other named towns were not confirmed for this listing.",
       logo: "https://static.zarlacdn.com/website/ctjqd84gjf4ftdtwrft3/image/6fcfcb871b96ceec62c43b4d2901e072c5385d6a7afc7d4f4adcc4ca50810d12/logo-132@2x",
       phone: "073 190 4000",
       website: "https://www.ribos.co.za/",
@@ -3372,8 +3320,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       specialties: ["Physical and guarding", "Off-site monitoring", "Integrated technology"],
       serviceAreas: ["Mpumalanga"],
-      serviceAreaNote:
-        "Thorburn's contact page assigns Mpumalanga to its Midrand regional office; it does not publish a separate Mpumalanga office address there.",
       logo: "https://www.thorburn.co.za/wp-content/uploads/Thorburn-logoAsset-1.svg",
       phone: "+27 12 803 5982",
       email: "info@thorburn.co.za",
@@ -3442,8 +3388,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Events",
       ],
       serviceAreas: ["Mbombela", "Middelburg", "eMalahleni"],
-      serviceAreaNote:
-        "These towns are listed by the company as Mpumalanga coverage; its published head-office address is in Rivonia, Johannesburg.",
       logo: "https://bolwasecurityservices.co.za/wp-content/uploads/2024/08/Bolwa-Security_High-Res-Logo-Landscape_Full-ColourNew.png",
       phone: "086 1112 231",
       email: "info@bolwasecurityservices.co.za",
@@ -3467,16 +3411,15 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       name: "University of Mpumalanga",
       seoTitle: "University of Mpumalanga | Discover by Lowveld Hub",
       seoDescription:
-        "Explore the University of Mpumalanga's official programme and 2027 application information.",
+        "Explore University of Mpumalanga programme options and 2027 application information.",
       location: "Mbombela",
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "The University of Mpumalanga is a public university focused on knowledge creation and dissemination in an African context. Prospective students should use the University's current programme catalogue to confirm qualifications, entry requirements and campus availability.",
+        "The University of Mpumalanga is a public university focused on knowledge creation and dissemination in an African context. Prospective students can explore its programme catalogue for qualification details, entry requirements and campus availability.",
       image:
         "https://www.sowetan.co.za/resizer/v2/47HTF3TX6BNBXJIKBXRBOJRROA.png?smart=true&auth=580cfa1b7b745ded0e1c646feb4f0dae18c8ef3fe57dffc0d0d2565c48a8a90d&width=1200&height=630",
-      imageAlt: "University of Mpumalanga image from its sponsored 10th-anniversary feature",
-      imageNote: "Feature image from Sowetan's 2024 sponsored UMP anniversary article.",
+      imageAlt: "University of Mpumalanga anniversary feature image",
       imageSourceUrls: [
         "https://www.sowetan.co.za/news/south-africa/2024-03-14-native-university-of-mpumalanga-celebrates-10-years-of-academic-achievements/",
       ],
@@ -3491,7 +3434,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Programme catalogue",
             description:
-              "Explore the current programme catalogue and confirm the qualification, entry requirements and teaching campus directly with UMP.",
+              "Browse undergraduate and postgraduate programmes, qualification requirements and campus information.",
             href: "https://www.ump.ac.za/Study-with-us/",
           },
         ],
@@ -3506,7 +3449,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           ],
           requirements: [
             "Certified identity and school-leaving documents, plus other programme-specific supporting documents.",
-            "Check the official application page for current document and fee requirements.",
+            "Review the application page for current document and fee requirements.",
           ],
         },
         officialLinks: [
@@ -3523,8 +3466,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
           { label: "Applications and application steps", href: "https://www.ump.ac.za/apply/" },
         ],
-        verificationNote:
-          "Confirm the current programme catalogue, entry criteria and campus-specific availability with UMP before applying.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -3543,12 +3484,12 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       name: "Tshwane University of Technology — Mbombela Campus",
       seoTitle: "TUT Mbombela Campus | Discover by Lowveld Hub",
       seoDescription:
-        "Explore Tshwane University of Technology's Mbombela Campus and verify current programme and admissions details.",
+        "Explore Tshwane University of Technology's Mbombela Campus, study options and admissions resources.",
       location: "Mbombela",
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Tshwane University of Technology is a university of technology with a campus in Mbombela. Programme choices and entry requirements vary, so prospective students should check the official catalogue for campus-specific availability before applying.",
+        "Tshwane University of Technology is a university of technology with a campus in Mbombela, offering undergraduate and postgraduate study.",
       logo: "https://veldfiremedia.com/wp-content/uploads/2022/12/TUT-logo-1200x620-1.png",
       logoAlt: "Tshwane University of Technology logo",
       imageSourceUrls: [
@@ -3565,13 +3506,13 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Study options",
             description:
-              "TUT publishes more than 300 programme options across seven faculties institution-wide. Use its programme information to verify which qualifications are available at Mbombela Campus.",
+              "TUT offers more than 300 programme options across seven faculties. Browse its study catalogue for programme and campus details.",
             href: "https://www.tut.ac.za/study-at-tut/",
           },
         ],
         admissions: {
           summary:
-            "TUT directs prospective students to its official application portal and publishes application steps and programme closing dates online. Check the selected programme's campus, requirements and current closing date before submitting.",
+            "TUT provides an online application portal, application guidance and programme closing dates.",
           applicationUrl: "https://applications-prod.tut.ac.za/",
         },
         officialLinks: [
@@ -3589,8 +3530,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
           { label: "TUT study options", href: "https://www.tut.ac.za/study-at-tut/" },
         ],
-        verificationNote:
-          "TUT's programme count and faculty information is institution-wide; confirm availability at Mbombela Campus and current dates on the official site.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -3614,10 +3553,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Ehlanzeni TVET College serves the Ehlanzeni District through a network of seven campuses. Its official site identifies Nelspruit Campus among the campuses in the Mbombela Local Municipality. Confirm course availability at this campus before applying.",
+        "Ehlanzeni TVET College serves the Ehlanzeni District through seven campuses, including Nelspruit Campus in the Mbombela Local Municipality.",
       image:
         "https://www.ehlanzenicollege.co.za/_next/image?url=https%3A%2F%2Fdecisive-serenity-7fc9a48de1.media.strapiapp.com%2Fwelcome_3ed2ac41c2.jpg&w=640&q=75",
-      imageAlt: "Ehlanzeni TVET College welcome image from its official website",
+      imageAlt: "Welcome image for Ehlanzeni TVET College",
       imageSourceUrls: [
         "https://www.ehlanzenicollege.co.za/_next/image?url=https%3A%2F%2Fdecisive-serenity-7fc9a48de1.media.strapiapp.com%2Fwelcome_3ed2ac41c2.jpg&w=640&q=75",
       ],
@@ -3630,7 +3569,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         educationLevels: ["Technical and vocational education"],
         admissions: {
           summary:
-            "The College operates multiple campuses, and course availability can vary by campus. Check the College's current notices and confirm that a programme is offered at Nelspruit Campus before applying.",
+            "The College provides technical and vocational education across its campus network.",
           applicationUrl: "https://www.ehlanzenicollege.co.za/",
         },
         officialLinks: [
@@ -3645,8 +3584,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
             href: "https://www.ehlanzenicollege.co.za/",
           },
         ],
-        verificationNote:
-          "The official site identifies Nelspruit Campus but the detailed programme and contact pages could not be confirmed during research. Verify current offerings and contact details on the College site.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -3671,7 +3608,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       description:
         "Penryn School describes an education journey spanning preschool, preparatory school and college. Its published approach highlights belonging, age-appropriate learning and preparing scholars to participate in a changing world.",
       image: "https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp",
-      imageAlt: "Penryn College image published on the official Penryn School website",
+      imageAlt: "Penryn College campus",
       logo: "https://www.penryn.co.za/wp-content/uploads/2025/01/Penryn-Emblem.svg",
       imageSourceUrls: ["https://www.penryn.co.za/wp-content/uploads/2024/11/collegebtm-1.webp"],
       website: "https://www.penryn.co.za/",
@@ -3684,8 +3621,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         programmeGroups: [
           {
             title: "School phases",
-            description:
-              "The official site presents preschool, preparatory and college sections. Families can explore each phase and confirm age or grade placement directly with the school.",
+            description: "Penryn School offers preschool, preparatory school and college phases.",
             programmes: ["Preschool", "Preparatory school", "College"],
             href: "https://www.penryn.co.za/",
           },
@@ -3706,8 +3642,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           { label: "Penryn College", href: "https://www.penryn.co.za/college/" },
           { label: "Penryn Preschool", href: "https://www.penryn.co.za/preschool/" },
         ],
-        verificationNote:
-          "The official site confirms the school phases and campus imagery. A current physical address and admissions dates should be confirmed directly with the school.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -3755,7 +3689,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         ],
         studentExperience: [
           "Curro states that class sizes are limited to no more than 25 learners.",
-          "School activities include sports and cultural programmes; the official page highlights soccer and cheerleading.",
+          "School activities include sports and cultural programmes such as soccer and cheerleading.",
           "Support programmes include a full-time school counsellor, subject-choice assessments and academic support.",
         ],
         officialLinks: [
@@ -3774,8 +3708,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
             href: "https://www.curro.co.za/schools/curro-nelspruit-high-school/",
           },
         ],
-        verificationNote:
-          "Confirm current admissions dates, fees, grade placement and subject availability with Curro before applying.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -3797,10 +3729,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Explore Unigrad College's career-focused learning, career guidance and official registration information.",
       country: "South Africa",
       description:
-        "Unigrad College describes its learning as career-focused and practical. Its official information discusses industry exposure, field trips, career guidance and an adviser interview as part of the application and registration process.",
+        "Unigrad College offers career-focused, practical learning with industry exposure, field trips and career guidance. An adviser interview forms part of the application and registration process.",
       image:
         "https://www.unigradcollege.co.za/wp-content/uploads/2026/01/about-image-copy-final.webp",
-      imageAlt: "Unigrad College image published on the official college website",
+      imageAlt: "Unigrad College",
       imageSourceUrls: [
         "https://www.unigradcollege.co.za/wp-content/uploads/2026/01/about-image-copy-final.webp",
       ],
@@ -3815,24 +3747,23 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Study formats",
             description:
-              "Unigrad describes full-time courses lasting one or two years, as well as part-time study and corporate training. Confirm the current course list and qualification details with the College.",
+              "Full-time courses run for one or two years, alongside part-time study and corporate training.",
             programmes: ["Full-time courses", "Part-time courses", "Corporate training"],
           },
           {
             title: "Marketing and sales management",
-            description:
-              "The College publishes a short-learning programme in marketing and sales management. Confirm the current intake and course information before enrolling.",
+            description: "A short-learning programme in marketing and sales management.",
             href: "https://www.unigradcollege.co.za/part-time-course/short-learning-in-marketing-and-sales-management-programmes/",
           },
         ],
         admissions: {
           summary:
-            "Unigrad says its application process includes an interview with a career and study adviser, who discusses course choice and assists with registration. The College asks prospective students to confirm current course and fee details directly.",
+            "Applicants can meet with a career and study adviser to discuss course choices and registration.",
           applicationUrl: "https://www.unigradcollege.co.za/registration/",
         },
         studentExperience: [
           "The College describes practicals, field trips and industry visits as part of some courses.",
-          "It offers career guidance, including a career profile assessment, according to its official information.",
+          "Career guidance includes a career profile assessment.",
         ],
         officialLinks: [
           { label: "Why Unigrad", href: "https://www.unigradcollege.co.za/why-unigrad/" },
@@ -3847,8 +3778,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           { label: "Registration", href: "https://www.unigradcollege.co.za/registration/" },
           { label: "Unigrad College", href: "https://www.unigradcollege.co.za/" },
         ],
-        verificationNote:
-          "A current campus location, physical address and direct contact details were not confirmed in the official pages accessed. Confirm location and course availability with Unigrad before visiting or applying.",
       },
       seeded: true,
       sourceType: "seeded_public_data",
@@ -5059,7 +4988,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Spa facilities",
             items: ["On-site sauna"],
-            note: "The official spa page says sauna access is exclusively for hotel guests and groups booking its Revive Package.",
+            note: "Sauna access is for hotel guests and groups booking the Revive Package.",
           },
         ],
         facilities: ["Garden spa", "On-site sauna"],
@@ -5493,7 +5422,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Wills & Estates",
       ],
       description:
-        "VZLR Attorneys describes its practice as serving clients and the wider community through a nationwide team. Its Nelspruit office is at The Pinnacle Building on Parkin Street, with published practice areas across commercial, property, family, labour and other legal matters. VZLR states that it has served clients for 80 years.",
+        "VZLR Attorneys serves clients and the wider community through a nationwide team. Its Nelspruit office is at The Pinnacle Building on Parkin Street, with practice areas across commercial, property, family, labour and other legal matters. The firm has served clients for 80 years.",
       source: "https://vzlr.co.za/",
       sourceUrl: "https://vzlr.co.za/legal-services/",
       seoTitle: "VZLR Attorneys | Law Firm in Mbombela | Discover",
@@ -5528,12 +5457,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Genuine BMW parts",
       ],
       description:
-        "BMW Mpumalanga lists a Mbombela/Nelspruit location and provides access to new BMW models, Approved Used vehicles, vehicle servicing and genuine parts. Contact the dealership to confirm current availability and service arrangements.",
+        "BMW Mbombela offers new and Approved Used BMW vehicles, vehicle servicing and genuine BMW parts.",
       image:
         "https://bmw.scene7.com/is/image/BMW/BEV_Range_mobile:3to1?fmt=webp-alpha&wid=1919&fit=constrain%2C1",
-      imageAlt: "BMW model range imagery, not a photograph of the Mbombela dealership",
+      imageAlt: "BMW electric vehicle model range",
       imageFit: "contain",
-      imageNote: "BMW range imagery; it does not depict the Mbombela dealership.",
       logo: "https://www.bmwmpumalanga.co.za/wp-content/uploads/2025/11/cropped-Site-Icon.png",
       logoAlt: "BMW logo",
       website: "https://www.bmwmpumalanga.co.za/",
@@ -5541,7 +5469,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       sourceUrl: "https://www.bmwmpumalanga.co.za/",
       seoTitle: "BMW Mbombela | BMW Dealership in Mpumalanga | Discover",
       seoDescription:
-        "Contact BMW Mbombela for new and Approved Used BMW vehicles, servicing and genuine parts. Confirm current details directly with BMW Mpumalanga.",
+        "Explore new and Approved Used BMW vehicles, servicing and genuine parts at BMW Mbombela.",
       seeded: true,
       sourceType: "seeded_public_data",
       claimed: false,
@@ -5564,11 +5492,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       serviceType: "Audi vehicle sales and test-drive enquiries",
       services: ["Audi vehicle sales", "Test-drive enquiries"],
       description:
-        "Audi Centre Mbombela is the Westvaal Audi branch serving Mbombela/Nelspruit. The official branch page publishes its location and contact number and accepts test-drive enquiries; confirm current models and appointment availability with the dealership.",
+        "Audi Centre Mbombela is the Westvaal Audi dealership serving Mbombela/Nelspruit, with vehicle sales and test-drive enquiries.",
       image: "https://image.blob.ix.co.za/modelInfo/657/1/657-1-file-1-1920x933.png",
-      imageAlt: "Audi model image, not a photograph of Audi Centre Mbombela",
+      imageAlt: "Audi vehicle model",
       imageFit: "contain",
-      imageNote: "Audi model imagery; it does not depict the Mbombela showroom.",
       logo: "https://d2638j3z8ek976.cloudfront.net/6162db9520beba39059972d5701f03b46326924c/1788255413/images/edition/audi/franchise-badge.png",
       logoAlt: "Audi logo",
       phone: "+27137548800",
@@ -5577,7 +5504,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       sourceUrl: "https://www.westvaal.co.za/audi/contact-us/audi-centre-mbombela/",
       seoTitle: "Audi Centre Mbombela | Audi Dealership | Discover",
       seoDescription:
-        "Find Audi Centre Mbombela at Government Boulevard and Madiba Drive in Mbombela/Nelspruit. Call the official branch for Audi sales and test-drive enquiries.",
+        "Find Audi Centre Mbombela at Government Boulevard and Madiba Drive in Mbombela/Nelspruit for Audi sales and test-drive enquiries.",
       seeded: true,
       sourceType: "seeded_public_data",
       claimed: false,
@@ -5602,12 +5529,10 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
         "Sell used cars, bakkies and motorcycles",
       ],
       description:
-        "WeBuyCars offers a route for customers to buy or sell used cars, bakkies and motorcycles. Its official Mbombela branch inventory page lists vehicles for this location; this is a used-vehicle marketplace, not a new-car franchise.",
+        "WeBuyCars buys and sells pre-owned cars, bakkies and motorcycles, with Mbombela vehicles shown in its local inventory.",
       image:
         "https://images.openai.com/static-rsc-4/fvpvifBs1A878ejsdzYCTFDixeVK_RseUTlv9Ugon1e2Bbqm9Kl83mTXQugUcdweYW1WTsX4O4IR26mZL6rXQUeWJ-h5MtFV_znXKcOQ-WBKNeUfHfxqJyfVuuRwnzMtepsoxxirWghcGHOCqV50WmoIUuDZ_6i4iO0zzlsBf1Y?purpose=inline",
-      imageAlt: "WeBuyCars-branded building; this image is not confirmed as the Mbombela branch",
-      imageNote:
-        "WeBuyCars brand imagery; the pictured building is not confirmed as the Mbombela branch.",
+      imageAlt: "WeBuyCars showroom building",
       phone: "+27870570000",
       website: "https://www.webuycars.co.za/cars-for-sale/b/Mbombela%20(MP)",
       source: "https://www.webuycars.co.za/",
@@ -5636,12 +5561,11 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       serviceType: "New, used and demo GWM vehicles",
       services: ["New GWM vehicles", "Used GWM vehicles", "Demo GWM vehicles"],
       description:
-        "Eastvaal Middelburg GWM is a confirmed Eastvaal Motors dealership in Middelburg. Its official branch page describes new, used and demo vehicles from GWM; this profile refers to that branch and does not imply a Mbombela location or other vehicle makes.",
+        "Eastvaal Middelburg GWM offers new, used and demo GWM vehicles from its dealership in Middelburg.",
       image:
         "https://www.eastvaal.co.za/wp-content/themes/generatepress_child_EastvaalGroup/assets/images/logos/Eastvaal-Motors-Logo.png",
       imageAlt: "Eastvaal Motors logo",
       imageFit: "contain",
-      imageNote: "Official Eastvaal Motors logo; a suitable branch photograph was not confirmed.",
       logo: "https://www.eastvaal.co.za/wp-content/themes/generatepress_child_EastvaalGroup/assets/images/logos/Eastvaal-Motors-Logo.png",
       logoAlt: "Eastvaal Motors logo",
       website: "https://www.eastvaal.co.za/dealership/eastvaal-middelburg-gwm/",
@@ -5989,14 +5913,14 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       restaurantProfile: {
         story: [
           "Tucked in a corner of Mbombela on top of a hill lies The Orange Restaurant, a hidden gem known for its contemporary, warm interior and welcoming Lowveld hospitality.",
-          "The official website describes the restaurant as a place for romantic evenings, family celebrations and memorable occasions, with lovingly prepared dishes served for lunch and dinner seven days a week.",
+          "The restaurant welcomes guests for romantic evenings, family celebrations and memorable occasions, serving lunch and dinner seven days a week.",
           "A built-in bar manned by a cocktail maker and a winter indoor fire help set the mood, while air-conditioning keeps the space comfortable in the Lowveld summer heat.",
         ],
         experienceHighlights: [
           {
             title: "Hilltop Lowveld setting",
             description:
-              "The restaurant is positioned on a hill above Mbombela, with the official website describing the views as breathtaking and the setting as a hidden gem of the area.",
+              "Set on a hill above Mbombela, the restaurant offers elevated views across the surrounding area.",
           },
           {
             title: "Seven days a week",
@@ -6011,7 +5935,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Occasion dining",
             description:
-              "The official site specifically highlights romantic evenings and celebrations with family, positioning the venue for memorable occasions.",
+              "A warm setting for romantic evenings, family celebrations and other memorable occasions.",
           },
         ],
         menuLinks: [
@@ -6063,7 +5987,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       province: "Mpumalanga",
       country: "South Africa",
       description:
-        "Salsa Mexican Grill brings vibrant Mexican dining to Mbombela with tacos, burritos, quesadillas, cocktails and a lively celebration atmosphere. The official site highlights festive dining, family-friendly gatherings and a warm fiesta spirit at Ilanga Mall.",
+        "Salsa Mexican Grill brings vibrant Mexican dining to Ilanga Mall in Mbombela, with tacos, burritos, quesadillas, cocktails and a lively, family-friendly atmosphere.",
       image: "https://salsamexicangrill.co.za/wp-content/uploads/2020/11/Salsa-Web-1.png",
       imageAlt: "Salsa Mexican Grill restaurant at Ilanga Mall",
       images: [
@@ -6097,14 +6021,14 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       restaurantProfile: {
         story: [
           "Salsa Mexican Grill brings a lively Mexican dining experience to Mbombela, with a focus on celebratory meals, fresh flavours and a vibrant social atmosphere.",
-          "The official website celebrates 10 years of Salsa, a fiesta-inspired brand built around tacos, burritos, cocktails and memorable gatherings with family and friends.",
+          "The fiesta-inspired menu features tacos, burritos and cocktails, with a lively setting for meals with family and friends.",
           "At Ilanga Mall, the restaurant positions itself as a place to celebrate, dine casually and enjoy a warm, energetic Mexican food experience in the Lowveld.",
         ],
         experienceHighlights: [
           {
             title: "Mexican favourites",
             description:
-              "The official menu highlights tacos, burritos, quesadillas, nachos and other signature Mexican dishes designed for sharing and celebration.",
+              "The menu features tacos, burritos, quesadillas, nachos and other signature Mexican dishes designed for sharing and celebration.",
           },
           {
             title: "Festive atmosphere",
@@ -6114,7 +6038,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           {
             title: "Reservations and celebrations",
             description:
-              "The site explicitly invites guests to book a table for date nights, group dining and special occasions, reinforcing its social and celebratory positioning.",
+              "Guests can book a table for date nights, group dining and special occasions.",
           },
         ],
         menuLinks: [

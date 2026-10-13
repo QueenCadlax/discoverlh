@@ -2169,11 +2169,6 @@ function PremiumListingCard({
           {location && (
             <p className="mt-1 line-clamp-1 text-xs leading-4 text-[#68767a]">{location}</p>
           )}
-          {listing.imageNote && (
-            <p className="mt-1 line-clamp-1 text-[10px] leading-4 text-[#788589]">
-              {listing.imageNote}
-            </p>
-          )}
           {description && (
             <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-[#536267]">
               {description}

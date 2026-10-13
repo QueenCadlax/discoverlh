@@ -32,8 +32,7 @@ export function SiteFooter() {
             Discover businesses, places, services and experiences across Mpumalanga.
           </p>
           <p className="mt-2 max-w-sm text-[10px] leading-relaxed text-[#9ba8aa]">
-            Listed businesses are independent. Details may change; confirm information directly with
-            the business.
+            Listed businesses operate independently.
           </p>
         </div>
         <nav

@@ -183,9 +183,11 @@ function PropertyListingDetails({ listing }: { listing: PropertyListing }) {
         </nav>
         <div className="grid gap-7 lg:grid-cols-[minmax(0,1.5fr)_minmax(270px,0.65fr)] lg:gap-10">
           <div>
-            <section aria-label="Property photos">
-              {images.length ? (
-                <div className="grid gap-2 sm:grid-cols-[1.4fr_0.6fr]">
+            {images.length > 0 && (
+              <section aria-label="Property photos">
+                <div
+                  className={`grid gap-2 ${images.length > 1 ? "sm:grid-cols-[1.4fr_0.6fr]" : ""}`}
+                >
                   <button
                     type="button"
                     onClick={() => setGalleryOpen(true)}
@@ -207,7 +209,7 @@ function PropertyListingDetails({ listing }: { listing: PropertyListing }) {
                       View photos
                     </span>
                   </button>
-                  {images.length > 1 ? (
+                  {images.length > 1 && (
                     <div className="hidden grid-rows-2 gap-2 sm:grid">
                       {images.slice(1, 3).map((image, index) => (
                         <button
@@ -230,57 +232,49 @@ function PropertyListingDetails({ listing }: { listing: PropertyListing }) {
                         </button>
                       ))}
                     </div>
-                  ) : (
-                    <div className="hidden items-center justify-center border border-[#e5ebeb] text-xs text-[#687378] sm:flex">
-                      {listing.propertyType ?? "Property"}
-                    </div>
                   )}
                 </div>
-              ) : (
-                <div className="grid aspect-[16/9] place-items-center bg-[#f1f3f1] text-sm text-[#687378]">
-                  Images are not available for this listing.
-                </div>
-              )}
-              <Dialog open={galleryOpen} onOpenChange={setGalleryOpen}>
-                <DialogContent className="max-w-[96vw] border-0 bg-transparent p-2 shadow-none sm:max-w-[96vw]">
-                  <DialogTitle className="sr-only">{listing.name} photo gallery</DialogTitle>
-                  <DialogDescription className="sr-only">
-                    Photo {activeImage + 1} of {images.length}
-                  </DialogDescription>
-                  {images.length > 0 && (
-                    <div className="relative">
-                      <img
-                        src={images[activeImage]}
-                        alt={listing.imageAlts?.[activeImage] ?? listing.imageAlt ?? listing.name}
-                        className="mx-auto max-h-[82vh] max-w-full object-contain"
-                      />
-                      {images.length > 1 && (
-                        <>
-                          <button
-                            type="button"
-                            aria-label="Previous property photo"
-                            onClick={() =>
-                              setActiveImage((activeImage - 1 + images.length) % images.length)
-                            }
-                            className="absolute left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white text-[#17242b]"
-                          >
-                            <ArrowLeft className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            aria-label="Next property photo"
-                            onClick={() => setActiveImage((activeImage + 1) % images.length)}
-                            className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white text-[#17242b]"
-                          >
-                            <ArrowRight className="h-4 w-4" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
-                </DialogContent>
-              </Dialog>
-            </section>
+                <Dialog open={galleryOpen} onOpenChange={setGalleryOpen}>
+                  <DialogContent className="max-w-[96vw] border-0 bg-transparent p-2 shadow-none sm:max-w-[96vw]">
+                    <DialogTitle className="sr-only">{listing.name} photo gallery</DialogTitle>
+                    <DialogDescription className="sr-only">
+                      Photo {activeImage + 1} of {images.length}
+                    </DialogDescription>
+                    {images.length > 0 && (
+                      <div className="relative">
+                        <img
+                          src={images[activeImage]}
+                          alt={listing.imageAlts?.[activeImage] ?? listing.imageAlt ?? listing.name}
+                          className="mx-auto max-h-[82vh] max-w-full object-contain"
+                        />
+                        {images.length > 1 && (
+                          <>
+                            <button
+                              type="button"
+                              aria-label="Previous property photo"
+                              onClick={() =>
+                                setActiveImage((activeImage - 1 + images.length) % images.length)
+                              }
+                              className="absolute left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white text-[#17242b]"
+                            >
+                              <ArrowLeft className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              aria-label="Next property photo"
+                              onClick={() => setActiveImage((activeImage + 1) % images.length)}
+                              className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center bg-white text-[#17242b]"
+                            >
+                              <ArrowRight className="h-4 w-4" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </section>
+            )}
 
             <section className="border-b border-[#e5ebeb] py-5">
               <div className="flex items-start justify-between gap-4">
@@ -451,11 +445,6 @@ function PropertyListingDetails({ listing }: { listing: PropertyListing }) {
                 >
                   Website
                 </a>
-              )}
-              {!phoneHref && !whatsappHref && !email && !website && (
-                <p className="text-sm leading-6 text-[#687378]">
-                  Contact details are not available for this listing.
-                </p>
               )}
             </div>
             {agency && agency.id !== contact?.id && (

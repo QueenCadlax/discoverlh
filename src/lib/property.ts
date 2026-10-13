@@ -63,7 +63,6 @@ export type PropertyProfessional = {
   image?: string;
   imageAlt?: string;
   imageFit?: "cover" | "contain";
-  imageNote?: string;
   images?: string[];
   imageAlts?: string[];
   coverImage?: string;
@@ -108,7 +107,7 @@ export const propertyProfessionals: PropertyProfessional[] = [
     profileType: "agency",
     status: "published",
     description:
-      "The Pam Golding Properties office serving Mbombela (Nelspruit) is listed by the agency as a property sales specialist for the surrounding Lowveld. Contact the office through Pam Golding's official website to confirm current services, availability and local listings.",
+      "Pam Golding Properties offers property sales services in Mbombela (Nelspruit) and the surrounding Lowveld.",
     logo: "https://www.pamgolding.co.za/img/general/pgp-logo-new.svg",
     logoAlt: "Pam Golding Properties logo",
     location: "Mbombela (Nelspruit)",
@@ -117,7 +116,7 @@ export const propertyProfessionals: PropertyProfessional[] = [
     sourceUrl: "https://www.pamgolding.co.za/",
     seoTitle: "Pam Golding Properties Mbombela | Discover",
     seoDescription:
-      "Find the Pam Golding Properties office serving Mbombela (Nelspruit) and the Lowveld. Confirm current property services and listings through the official agency website.",
+      "Find Pam Golding Properties in Mbombela (Nelspruit) for residential property sales across the Lowveld.",
   },
   {
     id: "remax-lifestyle-estates-nelspruit",
@@ -126,21 +125,19 @@ export const propertyProfessionals: PropertyProfessional[] = [
     profileType: "agency",
     status: "published",
     description:
-      "RE/MAX Lifestyle Estates operates in Nelspruit and identifies White River among its area-specialist markets. The official local site covers property sales, including homes, apartments and game farms; use its live search to check current availability.",
+      "RE/MAX Lifestyle Estates serves Nelspruit and nearby White River, with sales expertise across homes, apartments and game farms.",
     logo: "https://s3-eu-west-1.amazonaws.com/stream-images.remax.co.za/office/57/logo/lowveld.remax.co.za.png",
     logoAlt: "RE/MAX Lowveld office logo",
     imageFit: "contain",
     images: ["https://www.remaxlowveld.co.za/images/balloon.png"],
-    imageAlts: ["RE/MAX hot-air-balloon brand graphic, not a property photograph"],
-    imageNote:
-      "The gallery image is RE/MAX brand artwork, not a local office or property photograph.",
+    imageAlts: ["RE/MAX hot-air-balloon brand graphic"],
     location: "Nelspruit",
     website: "https://www.remaxlowveld.co.za/",
     services: ["Property sales", "Home sales", "Apartment sales", "Game farm sales"],
     sourceUrl: "https://www.remaxlowveld.co.za/contact-us/lifestyle-estates-(nelspruit)/800640",
     seoTitle: "RE/MAX Lowveld | Property Agency in Nelspruit | Discover",
     seoDescription:
-      "Connect with RE/MAX Lifestyle Estates in Nelspruit, serving local property markets including White River, homes, apartments and game farms.",
+      "Connect with RE/MAX Lifestyle Estates in Nelspruit for residential and game-farm property sales.",
   },
   {
     id: "chas-everitt-nelspruit-lowveld",
@@ -149,19 +146,13 @@ export const propertyProfessionals: PropertyProfessional[] = [
     profileType: "agency",
     status: "published",
     description:
-      "First Realty Nelspruit (Pty) Ltd trades as Chas Everitt Nelspruit / Lowveld in the agency's official franchise directory. The local profile is listed for Nelspruit; contact the agency directly for current property services and availability.",
-    coverImage:
-      "https://images.openai.com/static-rsc-4/NfGFBBp9jzRnbTJOGNTg98iDVn6ceA2tHbO_MrUJqIMaJit6JoK4XmK7ZS05K5yZlRp6wUf1V_KT0M5EzU5SbhXhJDIAAursvLPAO1FMYM7VwALIi4jvpwQGxNNn9wnFik8fcza7TioChPDCXVR9qzyb-V7WC_3P6s4t8e8dyfk?purpose=inline",
-    coverImageAlt:
-      "Chas Everitt-branded office building; the supplied image is not confirmed as the Nelspruit branch",
-    imageNote:
-      "The supplied photograph shows Chas Everitt branding, but it has not been confirmed as the Nelspruit/Lowveld office.",
+      "First Realty Nelspruit (Pty) Ltd trades as Chas Everitt Nelspruit / Lowveld, serving the Nelspruit property market.",
     location: "Nelspruit",
     website: "https://www.chaseveritt.co.za/",
     sourceUrl: "https://www.chaseveritt.co.za/",
     seoTitle: "Chas Everitt Nelspruit / Lowveld | Discover",
     seoDescription:
-      "Discover the Chas Everitt Nelspruit / Lowveld franchise and contact its official agency channels for current property services and listings.",
+      "Discover Chas Everitt Nelspruit / Lowveld, a local property agency serving Nelspruit.",
   },
 ];
 

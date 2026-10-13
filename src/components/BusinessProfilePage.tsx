@@ -32,6 +32,12 @@ import { getPublicUrl } from "@/lib/site-url";
 const whatsappMessage =
   "Hi, I found your business on Discover by Lowveld Hub and would like to enquire about your services.";
 
+function hasUsefulEventFactValue(value: string) {
+  return (
+    Boolean(value.trim()) && !/^(?:confirm\b|not\b|no information\b|n\/a\b)/i.test(value.trim())
+  );
+}
+
 export function BusinessProfilePage({
   listing,
   config,
@@ -75,7 +81,7 @@ export function BusinessProfilePage({
             : [listing.image, ...(listing.images ?? [])]
           ).filter(isString),
         ),
-      ]
+      ].slice(0, isSecurity ? 1 : undefined)
     : [];
   const services = toDisplayValues(listing.services ?? listing.serviceType);
   const profileUrl = getPublicUrl(getCategoryListingPath(config.slug, listing));
@@ -96,6 +102,15 @@ export function BusinessProfilePage({
         .filter((candidate) => candidate.id !== listing.id && candidate.eventProfile)
         .slice(0, 3)
     : [];
+  const eventFacts =
+    listing.eventProfile?.facts?.filter(
+      ({ label, value }) => Boolean(label.trim()) && hasUsefulEventFactValue(value),
+    ) ?? [];
+  const eventFactHeading = eventFacts.some(({ label }) => /capacity/i.test(label))
+    ? "Capacity & practical details"
+    : eventFacts.some(({ label }) => /service area/i.test(label))
+      ? "Service area & office"
+      : "Practical details";
   const openingHoursSpecification = getOpeningHoursSpecification(listing.openingHours);
   const structuredData = {
     "@context": "https://schema.org",
@@ -298,7 +313,7 @@ export function BusinessProfilePage({
                 imageAlts={wellnessProfile?.imageAlts}
               />
             ) : gallery.length > 0 ? (
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className={`grid gap-2 ${isSecurity ? "" : "sm:grid-cols-2"}`}>
                 {gallery.slice(0, 4).map((image, index) => (
                   <img
                     key={image}
@@ -422,11 +437,6 @@ export function BusinessProfilePage({
                 )}
               </div>
             </div>
-            {listing.imageNote && (
-              <p className="border-b border-[#e5ebeb] py-2 text-xs leading-5 text-[#68767a]">
-                {listing.imageNote}
-              </p>
-            )}
             {listing.description && (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-base font-semibold">About</h2>
@@ -449,9 +459,6 @@ export function BusinessProfilePage({
                     </li>
                   ))}
                 </ul>
-                {listing.serviceAreaNote && (
-                  <p className="mt-3 text-xs leading-5 text-[#68767a]">{listing.serviceAreaNote}</p>
-                )}
               </section>
             ) : null}
 
@@ -607,11 +614,11 @@ export function BusinessProfilePage({
                     </section>
                   )}
 
-                {listing.eventProfile.facts && listing.eventProfile.facts.length > 0 && (
+                {eventFacts.length > 0 && (
                   <section className="py-6">
-                    <h2 className="text-base font-semibold">Capacity & practical details</h2>
+                    <h2 className="text-base font-semibold">{eventFactHeading}</h2>
                     <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                      {listing.eventProfile.facts.map((fact) => (
+                      {eventFacts.map((fact) => (
                         <div key={fact.label} className="rounded-sm border border-[#e5ebeb] p-4">
                           <dt className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#788589]">
                             {fact.label}
@@ -619,9 +626,6 @@ export function BusinessProfilePage({
                           <dd className="mt-1 text-sm font-semibold text-[#34474d]">
                             {fact.value}
                           </dd>
-                          {fact.note && (
-                            <p className="mt-1.5 text-xs leading-5 text-[#68767a]">{fact.note}</p>
-                          )}
                         </div>
                       ))}
                     </dl>
@@ -660,7 +664,7 @@ export function BusinessProfilePage({
 
                 {listing.eventProfile.officialLinks.length > 0 && (
                   <section className="py-6">
-                    <h2 className="text-base font-semibold">Official information</h2>
+                    <h2 className="text-base font-semibold">More information</h2>
                     <ul className="mt-3 flex flex-wrap gap-2">
                       {listing.eventProfile.officialLinks.map((link) => (
                         <li key={link.href}>

@@ -243,11 +243,6 @@ function PropertyProfessionalPage() {
                 />
               ))}
             </div>
-            {professional.imageNote && (
-              <figcaption className="mt-2 text-xs leading-5 text-[#68767a]">
-                {professional.imageNote}
-              </figcaption>
-            )}
           </figure>
         )}
 
@@ -276,23 +271,21 @@ function PropertyProfessionalPage() {
           </section>
         ) : null}
 
-        <section id="listings" className="border-b border-[#e5ebeb] py-6">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7655]">
-                Property listings
-              </p>
-              <h2 className="mt-1 font-display text-2xl font-medium">
-                Properties by this professional
-              </h2>
-            </div>
-            {listings.length > 0 && (
+        {listings.length > 0 && (
+          <section id="listings" className="border-b border-[#e5ebeb] py-6">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a7655]">
+                  Property listings
+                </p>
+                <h2 className="mt-1 font-display text-2xl font-medium">
+                  Properties by this professional
+                </h2>
+              </div>
               <span className="text-xs text-[#687378]">
                 {listings.length} {listings.length === 1 ? "listing" : "listings"}
               </span>
-            )}
-          </div>
-          {listings.length ? (
+            </div>
             <div className="mt-5 grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
               {listings.map((listing) => (
                 <PropertyListingCard
@@ -303,12 +296,8 @@ function PropertyProfessionalPage() {
                 />
               ))}
             </div>
-          ) : (
-            <p className="mt-3 text-sm leading-6 text-[#687378]">
-              No property listings are currently published for this professional.
-            </p>
-          )}
-        </section>
+          </section>
+        )}
 
         {(professional.location || professional.address) && (
           <section id="location" className="border-b border-[#e5ebeb] py-6">
@@ -332,44 +321,43 @@ function PropertyProfessionalPage() {
           </section>
         )}
 
-        <section id="contact" className="py-6">
-          <h2 className="text-base font-semibold">Contact</h2>
-          <div className="mt-3 flex flex-wrap gap-4 text-sm">
-            {phoneHref && (
-              <a className="underline underline-offset-4" href={phoneHref}>
-                Call
-              </a>
-            )}
-            {whatsappHref && (
-              <a
-                className="underline underline-offset-4"
-                href={whatsappHref}
-                target="_blank"
-                rel="noreferrer"
-              >
-                WhatsApp
-              </a>
-            )}
-            {professional.email && (
-              <a className="underline underline-offset-4" href={`mailto:${professional.email}`}>
-                Email
-              </a>
-            )}
-            {professional.website && (
-              <a
-                className="underline underline-offset-4"
-                href={professional.website}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Website
-              </a>
-            )}
-            {!phoneHref && !whatsappHref && !professional.email && !professional.website && (
-              <p className="text-sm text-[#687378]">No contact details are currently published.</p>
-            )}
-          </div>
-        </section>
+        {(phoneHref || whatsappHref || professional.email || professional.website) && (
+          <section id="contact" className="py-6">
+            <h2 className="text-base font-semibold">Contact</h2>
+            <div className="mt-3 flex flex-wrap gap-4 text-sm">
+              {phoneHref && (
+                <a className="underline underline-offset-4" href={phoneHref}>
+                  Call
+                </a>
+              )}
+              {whatsappHref && (
+                <a
+                  className="underline underline-offset-4"
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  WhatsApp
+                </a>
+              )}
+              {professional.email && (
+                <a className="underline underline-offset-4" href={`mailto:${professional.email}`}>
+                  Email
+                </a>
+              )}
+              {professional.website && (
+                <a
+                  className="underline underline-offset-4"
+                  href={professional.website}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Website
+                </a>
+              )}
+            </div>
+          </section>
+        )}
       </main>
       <SiteFooter />
     </div>

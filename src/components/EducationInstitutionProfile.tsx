@@ -111,17 +111,12 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
   if (!profile) {
     return (
       <main className="container-x flex min-h-[55vh] flex-col items-start justify-center py-16">
-        <h1 className="font-display text-3xl font-medium text-[#172a31]">
-          Institution details are being confirmed
-        </h1>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-[#68767a]">
-          The official campus information for this institution is not confirmed yet.
-        </p>
+        <h1 className="font-display text-3xl font-medium text-[#172a31]">{listing.name}</h1>
         <a
           href={educationCategoryPath}
           className="mt-5 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-[#172a31] underline underline-offset-4"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to Education &amp; Training
+          <ArrowLeft className="h-4 w-4" /> Browse Education &amp; Training
         </a>
       </main>
     );
@@ -425,16 +420,9 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
               </section>
             )}
 
-            {profile.verificationNote && (
-              <aside className="mt-6 rounded-lg border border-[#e6e0d4] bg-[#fbfaf7] p-4">
-                <h2 className="text-sm font-semibold text-[#34474d]">Before you visit or apply</h2>
-                <p className="mt-2 text-sm leading-6 text-[#68767a]">{profile.verificationNote}</p>
-              </aside>
-            )}
-
             {profile.sourceNotes.length > 0 && (
               <section className="pt-7">
-                <h2 className="text-sm font-semibold">Official sources</h2>
+                <h2 className="text-sm font-semibold">Useful links</h2>
                 <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
                   {profile.sourceNotes.map((source) => (
                     <li key={`${source.label}:${source.href}`}>
@@ -449,10 +437,6 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-[11px] leading-5 text-[#899699]">
-                  Discover is an independent directory and is not an official representative of this
-                  institution. Confirm current details with the institution.
-                </p>
               </section>
             )}
           </div>
@@ -466,12 +450,7 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
               <p className="mt-3 flex items-start gap-2 text-sm leading-6 text-[#68767a]">
                 <MapPin className="mt-1 h-4 w-4 shrink-0" /> {listing.location}
               </p>
-            ) : (
-              <p className="mt-3 text-sm leading-6 text-[#68767a]">
-                Campus location details were not published in the sources reviewed. Confirm directly
-                before visiting.
-              </p>
-            )}
+            ) : null}
             {listing.website && (
               <a
                 href={listing.website}

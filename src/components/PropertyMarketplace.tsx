@@ -599,11 +599,6 @@ function PropertyProfessionalCard({ professional }: { professional: PropertyProf
               {professional.location}
             </p>
           )}
-          {professional.imageNote && (
-            <p className="mt-1 line-clamp-1 text-[10px] leading-4 text-[#788589]">
-              {professional.imageNote}
-            </p>
-          )}
           {professional.description && (
             <p className="mt-2 line-clamp-2 min-h-10 text-xs leading-5 text-[#536267]">
               {professional.description}
