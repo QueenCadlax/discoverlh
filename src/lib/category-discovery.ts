@@ -343,12 +343,6 @@ export type CategoryListing = {
       description: string;
       amenities: string[];
     }[];
-    experienceSections: {
-      title: string;
-      description: string;
-      image: string;
-      imageAlt: string;
-    }[];
     nearbyDescription: string;
   };
   amenities?: string[];
@@ -4384,32 +4378,6 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
               "Coffee and tea facilities",
               "Wi-Fi",
             ],
-          },
-        ],
-        experienceSections: [
-          {
-            title: "Outdoor spaces & valley views",
-            description:
-              "Spend time in the landscaped gardens and open-air seating areas, or unwind beside the infinity pool overlooking the valley.",
-            image:
-              "https://abangane.com/assets/components/phpthumbof/cache/view.606c4924825a0a8aa723f2cae32e0ccf.jpg",
-            imageAlt: "Outdoor terrace seating beneath trees overlooking green hills",
-          },
-          {
-            title: "Lounge & shared spaces",
-            description:
-              "The lodge's shared lounge and dining room provide welcoming indoor spaces, with a fireplace for cooler evenings.",
-            image:
-              "https://abangane.com/assets/components/phpthumbof/cache/lounge-2.606c4924825a0a8aa723f2cae32e0ccf.jpg",
-            imageAlt: "Lodge lounge with comfortable seating and a fireplace",
-          },
-          {
-            title: "Breakfast & lodge hospitality",
-            description:
-              "A continental or full English breakfast is served in the dining room. The lodge also has a licensed bar and fine wine cellar.",
-            image:
-              "https://abangane.com/assets/components/phpthumbof/cache/img-20250730-wa0026.8c0f014c10d0bf7059884ea939033bae.jpg",
-            imageAlt: "Breakfast bowls with fruit, yoghurt and cereal",
           },
         ],
         nearbyDescription:

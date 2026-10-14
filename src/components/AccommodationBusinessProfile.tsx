@@ -631,11 +631,11 @@ export function AccommodationBusinessProfile({
                 <h2 id="room-options" className="mt-1 text-lg font-semibold">
                   Rooms &amp; The Villa
                 </h2>
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid grid-flow-col auto-cols-[86%] gap-3 overflow-x-auto pb-2 sm:auto-cols-[calc(50%-0.375rem)] lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-3 lg:overflow-visible">
                   {accommodationProfile.rooms.map((room) => (
                     <article
                       key={room.name}
-                      className="overflow-hidden rounded-md border border-[#e5ebeb] bg-white"
+                      className="overflow-hidden rounded-sm border border-[#e5ebeb] bg-white"
                     >
                       <img
                         src={room.image}
@@ -644,25 +644,32 @@ export function AccommodationBusinessProfile({
                         decoding="async"
                         className="aspect-[16/10] w-full object-cover"
                       />
-                      <div className="p-4">
-                        <h3 className="font-display text-lg font-medium text-[#172a31]">
+                      <div className="p-3">
+                        <h3 className="font-display text-base font-medium text-[#172a31]">
                           {room.name}
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-[#5f6d72]">{room.description}</p>
-                        <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-xs leading-5 text-[#68767a]">
-                          {room.amenities.map((amenity) => (
-                            <li key={amenity} className="flex items-start gap-1.5">
-                              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#28718a]" />
-                              {amenity}
-                            </li>
-                          ))}
-                        </ul>
+                        <p className="mt-1.5 text-xs leading-5 text-[#5f6d72]">
+                          {room.description}
+                        </p>
+                        <details className="mt-2 text-xs text-[#68767a]">
+                          <summary className="w-fit cursor-pointer font-medium text-[#34474d] underline decoration-[#c7d0d2] underline-offset-4">
+                            Room amenities
+                          </summary>
+                          <ul className="mt-2 grid gap-1.5">
+                            {room.amenities.map((amenity) => (
+                              <li key={amenity} className="flex items-start gap-1.5">
+                                <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#28718a]" />
+                                {amenity}
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
                         {bookingUrl && (
                           <a
                             href={bookingUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="mt-5 inline-flex min-h-10 items-center gap-2 border-t border-[#e5ebeb] pt-3 text-xs font-semibold text-[#34474d] transition-colors hover:text-[#28718a]"
+                            className="mt-3 inline-flex min-h-9 items-center gap-2 border-t border-[#e5ebeb] pt-2 text-xs font-semibold text-[#34474d] transition-colors hover:text-[#28718a]"
                           >
                             View Rates &amp; Book <ArrowRight className="h-3.5 w-3.5" />
                           </a>
@@ -683,24 +690,6 @@ export function AccommodationBusinessProfile({
 
             {accommodationProfile && (
               <>
-                {accommodationProfile.experienceSections.map((section) => (
-                  <section
-                    key={section.title}
-                    className="grid gap-4 border-b border-[#e5ebeb] py-5 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] sm:items-center"
-                  >
-                    <img
-                      src={section.image}
-                      alt={section.imageAlt}
-                      loading="lazy"
-                      decoding="async"
-                      className="aspect-[16/10] w-full rounded-sm object-cover"
-                    />
-                    <div>
-                      <h2 className="text-lg font-semibold text-[#172a31]">{section.title}</h2>
-                      <p className="mt-2 text-sm leading-6 text-[#68767a]">{section.description}</p>
-                    </div>
-                  </section>
-                ))}
                 <section className="border-b border-[#e5ebeb] py-5">
                   <h2 className="text-lg font-semibold text-[#172a31]">Explore the Lowveld</h2>
                   <p className="mt-2 text-sm leading-6 text-[#68767a]">
