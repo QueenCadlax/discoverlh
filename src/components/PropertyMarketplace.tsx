@@ -140,7 +140,7 @@ export function PropertyMarketplace({
         <section
           id="property-search"
           aria-label="Search Mpumalanga property"
-          className="sticky top-[68px] z-30 border-b border-[#e5ebeb] bg-white shadow-[0_8px_18px_-20px_rgba(23,36,43,0.55)]"
+          className="border-b border-[#e5ebeb] bg-white shadow-[0_8px_18px_-20px_rgba(23,36,43,0.55)]"
         >
           <div className="container-x py-3 sm:py-4">
             <nav

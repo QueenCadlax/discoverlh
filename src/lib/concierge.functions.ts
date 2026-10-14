@@ -197,16 +197,15 @@ export const generateItinerary = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3.5-flash");
 
-    const system = `You are the Discover by Lowveld Hub concierge — a world-class South African travel planner.
-Generate a beautifully curated itinerary tailored to the traveller's request.
+    const system = `You are the Discover by Lowveld Hub concierge, creating a clear South African travel itinerary.
+Tailor the itinerary to the traveller's request and use natural, concise descriptions.
 Rules:
-- Use real, well-known South African places (lodges, restaurants, wineries, national parks, districts).
-- Always keep locations in South Africa unless the user specifies otherwise.
-- Prices are per person in South African Rand (ZAR). Use realistic luxury/premium market prices.
-- 3-6 items per day. Include stays, dining, and experiences.
-- Keep descriptions to 1-2 sentences, evocative and specific.
-- bookingHint should be a short action label like "Reserve table", "Book stay", "Reserve safari drive".
-- If a price cannot be estimated, use null.`;
+- Keep locations in South Africa unless the user specifies otherwise.
+- Only name places and businesses you can identify with high confidence; never invent a business, location, service or activity.
+- Do not guess prices, opening hours, schedules or availability. Set priceZAR to null unless the user supplies an exact price, and set totalEstimateZAR to null if any item price is unknown.
+- Include 3-6 items per day when supported by the request; do not pad the itinerary with generic or uncertain suggestions.
+- Keep descriptions to 1-2 sentences and avoid unsupported claims about facilities or services.
+- Use a short bookingHint such as "Contact the venue" without implying that a booking or service is available.`;
 
     try {
       const { output } = await generateText({

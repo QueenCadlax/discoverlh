@@ -335,11 +335,28 @@ export type CategoryListing = {
   accommodationType?: string;
   roomTypes?: string[];
   roomCount?: number;
+  accommodationProfile?: {
+    rooms: {
+      name: string;
+      image: string;
+      imageAlt: string;
+      description: string;
+      amenities: string[];
+    }[];
+    experienceSections: {
+      title: string;
+      description: string;
+      image: string;
+      imageAlt: string;
+    }[];
+    nearbyDescription: string;
+  };
   amenities?: string[];
   facilities?: string[];
   visitorInformation?: string[];
   features?: string[];
   bookingUrl?: string;
+  enquiryUrl?: string;
   orderingUrl?: string;
   seeded?: boolean;
   sourceType?: "seeded_public_data";
@@ -3894,8 +3911,9 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       country: "South Africa",
       description:
         "Ampath Laboratories Nelspruit provides diagnostic laboratory services and patient results support for healthcare providers and patients in the Lowveld.",
-      image: "https://www.ampath.co.za/img/logo.svg",
-      imageAlt: "Ampath Laboratories official company logo",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTIE5iYWcS05hnjqyNzarxFreBYgJAvc-E4na3DDV7K6OhqrxemJnXWbEJ&s=10",
+      imageAlt: "Ampath Laboratories",
       website: "https://www.ampath.co.za/",
       services: ["Laboratory testing", "Diagnostic pathology", "Patient results support"],
       source: "https://www.ampath.co.za/",
@@ -4185,6 +4203,281 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
   travel: [],
   services: [],
   accommodation: [
+    {
+      id: "leopard-hills-private-game-reserve",
+      slug: "leopard-hills-private-game-reserve",
+      listingKind: "accommodation",
+      name: "Leopard Hills Private Game Reserve",
+      type: "Private Game Lodge",
+      accommodationType: "Lodge",
+      location: "Sabi Sand",
+      area: "Sabi Sand Nature Reserve",
+      province: "Mpumalanga",
+      country: "South Africa",
+      addressLabel: "Sabi Sand Nature Reserve",
+      latitude: -24.983333,
+      longitude: 31.55,
+      description:
+        "Set on a hill overlooking the Sabi Sand, Leopard Hills brings together eight glass-fronted, air-conditioned suites, each with a private plunge pool and sundeck looking out over the African bushveld. Wildlife experiences in the reserve shape the days, while dinner can be enjoyed beneath the stars in the traditional boma, in the dining room or on the upper deck.",
+      roomCount: 8,
+      roomTypes: ["Glass-fronted luxury suites"],
+      amenities: [
+        "Eight glass-fronted suites",
+        "Air conditioning",
+        "Private plunge pool with each suite",
+        "Private sundeck",
+        "Views over the African bushveld",
+        "Spa treatment sala",
+        "Gym",
+      ],
+      facilities: [
+        "Glass-fronted spa treatment sala",
+        "Spa treatments",
+        "Gym",
+        "Traditional boma dining",
+        "Dining room",
+        "Upper deck",
+      ],
+      services: [
+        "Game viewing in the Sabi Sand Nature Reserve",
+        "Honeymoon safaris",
+        "Photographic safaris",
+        "Facial treatments",
+        "African Rungu massage",
+        "Hot stone therapy",
+        "Deep tissue massage",
+        "Manicure and pedicure",
+        "Indian head massage",
+        "Anti-stress back treatment",
+      ],
+      phone: "+27 13 735 5000",
+      email: "book@leopardhills.com",
+      website: "https://www.leopardhills.com/",
+      bookingUrl: "https://direct-book.com/properties/leopardhillsdirect",
+      enquiryUrl: "https://www.leopardhills.com/enquiry/",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Leopard+Hills+Private+Game+Reserve%2C+Sabi+Sand%2C+Mpumalanga",
+      socialLinks: [
+        { label: "Facebook", href: "https://www.facebook.com/LeopardHills/" },
+        { label: "Instagram", href: "https://www.instagram.com/leopardhills/" },
+      ],
+      logo: "https://www.leopardhills.com/wp-content/uploads/2024/10/LH-Logo-General-White.png",
+      logoAlt: "Leopard Hills logo",
+      image:
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-14-1350x900.jpg",
+      imageAlt: "Suite at Leopard Hills Private Game Reserve",
+      images: [
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-14-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/07/Cal-Butler-safari-leopard-01-800x800.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-02-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-07-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-09-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-23-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-24-1350x900.jpg",
+        "https://www.leopardhills.com/wp-content/uploads/2024/06/leopard-hills-mvr-2024-accommodation-suite-27-1350x900.jpg",
+      ],
+      imageAlts: [
+        "Suite at Leopard Hills Private Game Reserve",
+        "Leopard photographed on safari",
+        "Suite at Leopard Hills Private Game Reserve",
+        "Suite at Leopard Hills Private Game Reserve",
+        "Suite at Leopard Hills Private Game Reserve",
+        "Suite at Leopard Hills Private Game Reserve",
+        "Suite at Leopard Hills Private Game Reserve",
+        "Suite at Leopard Hills Private Game Reserve",
+      ],
+      seoTitle: "Leopard Hills Private Game Reserve | Sabi Sand | Discover",
+      seoDescription:
+        "Discover Leopard Hills in the Sabi Sand Nature Reserve. Explore eight glass-fronted suites, private plunge pools, safari experiences, spa treatments and direct booking options.",
+      source: "https://www.leopardhills.com/",
+      sourceUrl: "https://www.leopardhills.com/",
+      locationAccuracy: "approximate",
+      claimed: false,
+      verified: false,
+      seeded: true,
+      sourceType: "seeded_public_data",
+      status: "published",
+    },
+    {
+      id: "abangane-guest-lodge",
+      slug: "abangane-guest-lodge",
+      listingKind: "accommodation",
+      name: "Abangane Guest Lodge",
+      type: "Guest Lodge",
+      accommodationType: "Guest Lodge",
+      location: "Hazyview",
+      area: "Hazyview",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Set on a 22-hectare portion of the original Farm de Rust along Sabie Road in Hazyview, Abangane is a private guest lodge surrounded by bushveld and landscaped gardens. Its valley-facing infinity pool and relaxed outdoor spaces offer a peaceful base for a Lowveld stay.",
+      address: "Farm de Rust, Sabie Road",
+      accommodationProfile: {
+        rooms: [
+          {
+            name: "Luxury Room",
+            image: "https://abangane.com/assets/images/rooms/lux.jpg",
+            imageAlt: "Luxury guest room with a king bed, canopy net and sitting area",
+            description:
+              "An air-conditioned king room with an en-suite glass shower, a separate lounge corner and its own veranda.",
+            amenities: [
+              "King-size bed",
+              "Air conditioning",
+              "Block-out curtains",
+              "Mosquito net",
+              "En-suite glass shower",
+              "Coffee and tea facilities",
+              "Fridge",
+              "Separate lounge corner",
+              "Dressing table",
+              "Ceiling fan",
+              "Electronic safe",
+              "Flat-screen DStv",
+              "Veranda",
+            ],
+          },
+          {
+            name: "Honeymoon Room",
+            image: "https://abangane.com/assets/images/rooms/Honeymoon-1.jpg",
+            imageAlt: "Honeymoon room with a king bed and an adjoining seating area",
+            description:
+              "A spacious king room with an en-suite bathroom featuring a separate corner jet spa, two basins and a separate toilet.",
+            amenities: [
+              "King-size bed",
+              "Air conditioning",
+              "Block-out curtains",
+              "Mosquito net",
+              "En-suite glass shower",
+              "Separate corner jet spa",
+              "Two basins",
+              "Separate toilet",
+              "Flat-screen DStv",
+              "Coffee and tea facilities",
+              "Fridge",
+              "Lounge corner",
+              "Dressing table",
+              "Ceiling fan",
+              "Electronic safe",
+              "Veranda",
+            ],
+          },
+          {
+            name: "The Villa",
+            image: "https://abangane.com/assets/images/villa7.jpg",
+            imageAlt: "Canopy bed and sitting area in The Villa",
+            description:
+              "A private, self-contained section of the lodge for up to three guests, with separate sitting and dining spaces and garden views.",
+            amenities: [
+              "Accommodates up to three guests",
+              "Private, self-contained section",
+              "Sitting and dining spaces",
+              "Garden views",
+              "Outdoor hot tub",
+              "Air conditioning",
+              "Ceiling fan",
+              "Desk",
+              "Dining table",
+              "Fireplace",
+              "Seating area",
+              "Bath and shower combination",
+              "Hairdryer",
+              "Coffee and tea facilities",
+              "Wi-Fi",
+            ],
+          },
+        ],
+        experienceSections: [
+          {
+            title: "Outdoor spaces & valley views",
+            description:
+              "Spend time in the landscaped gardens and open-air seating areas, or unwind beside the infinity pool overlooking the valley.",
+            image:
+              "https://abangane.com/assets/components/phpthumbof/cache/view.606c4924825a0a8aa723f2cae32e0ccf.jpg",
+            imageAlt: "Outdoor terrace seating beneath trees overlooking green hills",
+          },
+          {
+            title: "Lounge & shared spaces",
+            description:
+              "The lodge's shared lounge and dining room provide welcoming indoor spaces, with a fireplace for cooler evenings.",
+            image:
+              "https://abangane.com/assets/components/phpthumbof/cache/lounge-2.606c4924825a0a8aa723f2cae32e0ccf.jpg",
+            imageAlt: "Lodge lounge with comfortable seating and a fireplace",
+          },
+          {
+            title: "Breakfast & lodge hospitality",
+            description:
+              "A continental or full English breakfast is served in the dining room. The lodge also has a licensed bar and fine wine cellar.",
+            image:
+              "https://abangane.com/assets/components/phpthumbof/cache/img-20250730-wa0026.8c0f014c10d0bf7059884ea939033bae.jpg",
+            imageAlt: "Breakfast bowls with fruit, yoghurt and cereal",
+          },
+        ],
+        nearbyDescription:
+          "Hazyview is a gateway to the Kruger National Park and the Panorama Route. These regional destinations and activities are outside the lodge; ask the property about planning your time in the area.",
+      },
+      amenities: [
+        "Infinity swimming pool with valley views",
+        "Landscaped gardens and outdoor relaxation spaces",
+        "Free Wi-Fi",
+      ],
+      facilities: [
+        "Lounge and breakfast room",
+        "Dining room and veranda",
+        "Continental and full English breakfast",
+        "Fireplace and licensed bar",
+        "Fine wine cellar",
+      ],
+      phone: "+27 64 530 2538",
+      email: "info@abangane.com",
+      website: "https://abangane.com/",
+      bookingUrl: "http://abangane.com/bookings/availability",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Abangane+Guest+Lodge+Hazyview+Mpumalanga",
+      socialLinks: [
+        {
+          label: "Facebook",
+          href: "https://www.facebook.com/pages/Abangane-Guest-Lodge/115960867354",
+        },
+      ],
+      logo: "http://abangane.com/assets/images/abangane-logo-transparent-horizontal.png",
+      image: "https://abangane.com/assets/images/rooms/lux.jpg",
+      imageAlt: "Luxury guest room with a king bed, canopy net and sitting area",
+      images: [
+        "https://abangane.com/assets/images/rooms/lux.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/patio1.caed0dac3e3ac0b2ce50a266e3300da8.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/view.606c4924825a0a8aa723f2cae32e0ccf.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/bathroom-r1.3b154ccff062ade606f31bbba9ce6d29.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/dsc5359-resize.3b154ccff062ade606f31bbba9ce6d29.jpg",
+        "https://abangane.com/assets/images/rooms/Honeymoon-1.jpg",
+        "https://abangane.com/assets/images/villa7.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/villa16.3b154ccff062ade606f31bbba9ce6d29.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/lounge-2.606c4924825a0a8aa723f2cae32e0ccf.jpg",
+        "https://abangane.com/assets/components/phpthumbof/cache/img-20250730-wa0026.8c0f014c10d0bf7059884ea939033bae.jpg",
+      ],
+      imageAlts: [
+        "Luxury guest room with a king bed, canopy net and sitting area",
+        "Shaded outdoor patio with wicker seating at the lodge",
+        "Outdoor terrace seating beneath trees overlooking green hills",
+        "En-suite bathroom with a double vanity",
+        "Dressing table and mirror in a guest room",
+        "Honeymoon room with a king bed and an adjoining seating area",
+        "Canopy bed and sitting area in The Villa",
+        "Outdoor wicker seating beside a guest room",
+        "Lodge lounge with comfortable seating and a fireplace",
+        "Breakfast bowls with fruit, yoghurt and cereal",
+      ],
+      seoTitle: "Abangane Guest Lodge | Accommodation in Hazyview | Discover",
+      seoDescription:
+        "Discover Abangane Guest Lodge in Hazyview, Mpumalanga. Explore luxury rooms, the private villa, valley views, garden setting, facilities and direct booking options on Discover by Lowveld Hub.",
+      source: "https://abangane.com/",
+      sourceUrl: "https://abangane.com/",
+      locationAccuracy: "approximate",
+      claimed: false,
+      verified: false,
+      seeded: true,
+      sourceType: "seeded_public_data",
+      status: "published",
+    },
     {
       id: "the-capital-mbombela",
       slug: "the-capital-mbombela",

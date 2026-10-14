@@ -73,15 +73,18 @@ export function BusinessProfilePage({
       : [listing.address, listing.location, listing.province, listing.postalCode, listing.country]
           .filter(Boolean)
           .join(", ");
+  const wellnessImages = [
+    ...(wellnessProfile?.image ? [wellnessProfile.image] : []),
+    ...(wellnessProfile?.images ?? []),
+  ].filter(isString);
   const gallery = canShowBusinessMedia
     ? [
         ...new Set(
-          (wellnessProfile
-            ? [wellnessProfile.image, ...(wellnessProfile.images ?? [])]
-            : [listing.image, ...(listing.images ?? [])]
-          ).filter(isString),
+          wellnessImages.length
+            ? wellnessImages
+            : [listing.image, ...(listing.images ?? [])].filter(isString),
         ),
-      ].slice(0, isSecurity ? 1 : undefined)
+      ]
     : [];
   const services = toDisplayValues(listing.services ?? listing.serviceType);
   const profileUrl = getPublicUrl(getCategoryListingPath(config.slug, listing));
@@ -313,7 +316,7 @@ export function BusinessProfilePage({
                 imageAlts={wellnessProfile?.imageAlts}
               />
             ) : gallery.length > 0 ? (
-              <div className={`grid gap-2 ${isSecurity ? "" : "sm:grid-cols-2"}`}>
+              <div className="grid gap-2 sm:grid-cols-2">
                 {gallery.slice(0, 4).map((image, index) => (
                   <img
                     key={image}

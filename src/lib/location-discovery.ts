@@ -89,6 +89,26 @@ export const locationDiscovery: readonly DiscoveryLocation[] = [
     indexability: "data-dependent",
   },
   {
+    name: "Sabi Sand",
+    slug: "sabi-sand",
+    province,
+    country,
+    alternateNames: ["Sabi Sand Nature Reserve", "Sabi Sand Game Reserve"],
+    seoTitle: "Accommodation in Sabi Sand, Mpumalanga | Discover",
+    seoDescription:
+      "Explore published accommodation in Sabi Sand, Mpumalanga, including lodges within the Sabi Sand Nature Reserve.",
+    introduction:
+      "Discover places to stay in Sabi Sand, including lodges set within the reserve’s African bushveld.",
+    relevantCategorySlugs: ["accommodation", "leisure-entertainment"],
+    latitude: -24.983333,
+    longitude: 31.55,
+    image:
+      "https://www.leopardhills.com/wp-content/uploads/2024/07/Cal-Butler-safari-leopard-01-800x800.jpg",
+    locationAccuracy: "approximate",
+    nearbyLocations: [],
+    indexability: "data-dependent",
+  },
+  {
     name: "Sabie",
     slug: "sabie",
     province,

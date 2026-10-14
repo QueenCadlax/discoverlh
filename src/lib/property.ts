@@ -147,6 +147,9 @@ export const propertyProfessionals: PropertyProfessional[] = [
     status: "published",
     description:
       "First Realty Nelspruit (Pty) Ltd trades as Chas Everitt Nelspruit / Lowveld, serving the Nelspruit property market.",
+    coverImage:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRhbDUSEy_UFz-TAGgXgM242nsU-QeFbJw57VMQOrgmpJmit39_dteCmoG&s=10",
+    coverImageAlt: "Chas Everitt Nelspruit / Lowveld",
     location: "Nelspruit",
     website: "https://www.chaseveritt.co.za/",
     sourceUrl: "https://www.chaseveritt.co.za/",

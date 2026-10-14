@@ -42,10 +42,18 @@ export function AccommodationBusinessProfile({
   const config = categoryConfigs.accommodation;
   const wellnessProfile = wellnessView ? listing.wellnessProfile : undefined;
   const categoryConfig = wellnessProfile ? categoryConfigs["beauty-wellness-fitness"] : config;
-  const gallery = wellnessProfile
-    ? [...new Set([wellnessProfile.image, ...(wellnessProfile.images ?? [])].filter(isString))]
-    : [...new Set([listing.image, ...(listing.images ?? [])].filter(isString))];
-  const galleryAlts = wellnessProfile?.imageAlts ?? listing.imageAlts;
+  const wellnessGallery = [
+    ...(wellnessProfile?.image ? [wellnessProfile.image] : []),
+    ...(wellnessProfile?.images ?? []),
+  ].filter(isString);
+  const gallery = [
+    ...new Set(
+      wellnessGallery.length
+        ? wellnessGallery
+        : [listing.image, ...(listing.images ?? [])].filter(isString),
+    ),
+  ];
+  const galleryAlts = wellnessGallery.length ? wellnessProfile?.imageAlts : listing.imageAlts;
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const visibleGallery = gallery.filter((image) => !failedImages.includes(image));
@@ -56,6 +64,7 @@ export function AccommodationBusinessProfile({
   const lightboxTouchStartX = useRef<number | null>(null);
   const website = getSafeExternalUrl(wellnessProfile?.website ?? listing.website);
   const bookingUrl = getSafeExternalUrl(wellnessProfile?.bookingUrl ?? listing.bookingUrl);
+  const enquiryUrl = getSafeExternalUrl(listing.enquiryUrl);
   const logoUrl = getSafeExternalUrl(wellnessProfile?.logo ?? listing.logo);
   const socialLinks = (listing.socialLinks ?? []).flatMap((link) => {
     const href = getSafeExternalUrl(link.href);
@@ -74,6 +83,7 @@ export function AccommodationBusinessProfile({
       : "Email resort"
     : "Email";
   const propertyType = wellnessProfile?.providerType ?? listing.accommodationType ?? listing.type;
+  const accommodationProfile = wellnessProfile ? undefined : listing.accommodationProfile;
   const propertyFeatures = [
     ...new Set([...(listing.amenities ?? []), ...(listing.facilities ?? [])].map(normalizeFeature)),
   ];
@@ -426,11 +436,15 @@ export function AccommodationBusinessProfile({
         <section className="mt-4 border-b border-[#e5ebeb] pb-4 sm:mt-5 sm:pb-5">
           <div className="flex items-center gap-3">
             {logoUrl && (
-              <img
-                src={logoUrl}
-                alt={wellnessProfile?.logoAlt ?? `${listing.name} logo`}
-                className="h-11 w-16 shrink-0 object-contain"
-              />
+              <span
+                className={`flex h-11 shrink-0 items-center justify-center ${logoUrl.includes("LH-Logo-General-White.png") ? "w-24 rounded-sm bg-[#172a31] px-2 py-1" : "w-16"}`}
+              >
+                <img
+                  src={logoUrl}
+                  alt={wellnessProfile?.logoAlt ?? listing.logoAlt ?? `${listing.name} logo`}
+                  className="max-h-full max-w-full object-contain"
+                />
+              </span>
             )}
             <h1 className="font-display text-2xl font-medium leading-tight text-[#172a31] sm:text-3xl">
               {wellnessProfile?.displayName ?? listing.name}
@@ -454,8 +468,51 @@ export function AccommodationBusinessProfile({
           ) : (
             <p className="mt-1.5 text-sm text-[#536267]">{propertyType}</p>
           )}
+          {accommodationProfile && (
+            <>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#5f6d72]">
+                {listing.description}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {bookingUrl && (
+                  <a
+                    href={bookingUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm bg-[#142b4a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#244568]"
+                  >
+                    Check Availability <ArrowRight className="h-4 w-4" />
+                  </a>
+                )}
+                {website ? (
+                  <a
+                    href={website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
+                  >
+                    Visit website <Globe className="h-4 w-4" />
+                  </a>
+                ) : phone ? (
+                  <a
+                    href={`tel:${phone}`}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
+                  >
+                    <Phone className="h-4 w-4" /> Call
+                  </a>
+                ) : email ? (
+                  <a
+                    href={`mailto:${email}`}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
+                  >
+                    <Mail className="h-4 w-4" /> Email
+                  </a>
+                ) : null}
+              </div>
+            </>
+          )}
           <p className="mt-3 text-xs text-[#68767a]">
-            {gallery.length} {wellnessProfile ? "spa photos" : "photos"}
+            {visibleGallery.length} {wellnessProfile ? "spa photos" : "photos"}
           </p>
         </section>
 
@@ -532,6 +589,16 @@ export function AccommodationBusinessProfile({
                   <Globe className="h-4 w-4" /> Visit website
                 </a>
               )}
+              {enquiryUrl && (
+                <a
+                  href={enquiryUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
+                >
+                  Enquire <ArrowRight className="h-4 w-4" />
+                </a>
+              )}
             </div>
             <div className="mt-4">
               <BusinessSocialLinks businessName={listing.name} links={socialLinks} />
@@ -547,7 +614,7 @@ export function AccommodationBusinessProfile({
           </aside>
 
           <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-            {!wellnessProfile && listing.description && (
+            {!wellnessProfile && !accommodationProfile && listing.description && (
               <section className="border-b border-[#e5ebeb] pb-5">
                 <h2 className="text-lg font-semibold">About {listing.name}</h2>
                 <p className="mt-2 text-sm leading-7 text-[#5f6d72]">{listing.description}</p>
@@ -556,7 +623,56 @@ export function AccommodationBusinessProfile({
 
             {wellnessProfile && <WellnessProfileDetails profile={wellnessProfile} />}
 
-            {!wellnessProfile && listing.roomTypes?.length ? (
+            {accommodationProfile ? (
+              <section className="border-b border-[#e5ebeb] py-5" aria-labelledby="room-options">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
+                  Stay your way
+                </p>
+                <h2 id="room-options" className="mt-1 text-lg font-semibold">
+                  Rooms &amp; The Villa
+                </h2>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                  {accommodationProfile.rooms.map((room) => (
+                    <article
+                      key={room.name}
+                      className="overflow-hidden rounded-md border border-[#e5ebeb] bg-white"
+                    >
+                      <img
+                        src={room.image}
+                        alt={room.imageAlt}
+                        loading="lazy"
+                        decoding="async"
+                        className="aspect-[16/10] w-full object-cover"
+                      />
+                      <div className="p-4">
+                        <h3 className="font-display text-lg font-medium text-[#172a31]">
+                          {room.name}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-[#5f6d72]">{room.description}</p>
+                        <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-2 text-xs leading-5 text-[#68767a]">
+                          {room.amenities.map((amenity) => (
+                            <li key={amenity} className="flex items-start gap-1.5">
+                              <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#28718a]" />
+                              {amenity}
+                            </li>
+                          ))}
+                        </ul>
+                        {bookingUrl && (
+                          <a
+                            href={bookingUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-5 inline-flex min-h-10 items-center gap-2 border-t border-[#e5ebeb] pt-3 text-xs font-semibold text-[#34474d] transition-colors hover:text-[#28718a]"
+                          >
+                            View Rates &amp; Book <ArrowRight className="h-3.5 w-3.5" />
+                          </a>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ) : !wellnessProfile && listing.roomTypes?.length ? (
               <section className="border-b border-[#e5ebeb] py-5">
                 <h2 className="text-lg font-semibold">The rooms</h2>
                 <p className="mt-2 text-sm leading-6 text-[#68767a]">
@@ -564,6 +680,35 @@ export function AccommodationBusinessProfile({
                 </p>
               </section>
             ) : null}
+
+            {accommodationProfile && (
+              <>
+                {accommodationProfile.experienceSections.map((section) => (
+                  <section
+                    key={section.title}
+                    className="grid gap-4 border-b border-[#e5ebeb] py-5 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] sm:items-center"
+                  >
+                    <img
+                      src={section.image}
+                      alt={section.imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      className="aspect-[16/10] w-full rounded-sm object-cover"
+                    />
+                    <div>
+                      <h2 className="text-lg font-semibold text-[#172a31]">{section.title}</h2>
+                      <p className="mt-2 text-sm leading-6 text-[#68767a]">{section.description}</p>
+                    </div>
+                  </section>
+                ))}
+                <section className="border-b border-[#e5ebeb] py-5">
+                  <h2 className="text-lg font-semibold text-[#172a31]">Explore the Lowveld</h2>
+                  <p className="mt-2 text-sm leading-6 text-[#68767a]">
+                    {accommodationProfile.nearbyDescription}
+                  </p>
+                </section>
+              </>
+            )}
 
             {!wellnessProfile && propertyFeatures.length > 0 && (
               <section className="border-b border-[#e5ebeb] py-5">
@@ -717,11 +862,11 @@ export function AccommodationBusinessProfile({
         />
       </main>
 
-      {(bookingUrl || website || directionsUrl) && (
+      {(bookingUrl || website || enquiryUrl || directionsUrl) && (
         <div
           className="fixed inset-x-0 bottom-0 z-40 grid gap-2 border-t border-[#dce4e5] bg-white/95 px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-8px_28px_-18px_rgba(23,36,43,.28)] backdrop-blur-md md:hidden"
           style={{
-            gridTemplateColumns: `repeat(${Number(Boolean(bookingUrl || website)) + Number(Boolean(directionsUrl))}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${Number(Boolean(bookingUrl || website)) + Number(Boolean(enquiryUrl)) + Number(Boolean(directionsUrl))}, minmax(0, 1fr))`,
           }}
           role="group"
           aria-label={wellnessProfile ? "Quick spa actions" : "Quick accommodation actions"}
@@ -736,6 +881,16 @@ export function AccommodationBusinessProfile({
               {bookingUrl
                 ? (wellnessProfile?.bookingLabel ?? "Check availability")
                 : "Visit website"}
+            </a>
+          )}
+          {enquiryUrl && (
+            <a
+              href={enquiryUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sm border border-[#dce4e5] px-2 text-xs font-semibold text-[#34474d]"
+            >
+              Enquire
             </a>
           )}
           {directionsUrl && (
