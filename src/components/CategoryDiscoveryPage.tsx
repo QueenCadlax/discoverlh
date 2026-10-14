@@ -563,7 +563,9 @@ export function CategoryDiscoveryPage({
       config.slug === "security" ||
       config.slug === "beauty-wellness-fitness"
       ? "featured"
-      : "name",
+      : config.slug === "stay"
+        ? "curated"
+        : "name",
   );
   const [nearbyCenter, setNearbyCenter] = useState<{ latitude: number; longitude: number } | null>(
     null,
@@ -2453,6 +2455,9 @@ function compareListings(
   const firstValue = readField(first, option.field);
   const secondValue = readField(second, option.field);
   const direction = option.direction === "desc" ? -1 : 1;
+  if (option.field === "directoryOrder") {
+    return ((first.directoryOrder ?? 100) - (second.directoryOrder ?? 100)) * direction;
+  }
   if (typeof firstValue === "number" && typeof secondValue === "number")
     return (firstValue - secondValue) * direction;
   return (

@@ -342,6 +342,7 @@ export type CategoryListing = {
       imageAlt: string;
       description: string;
       amenities: string[];
+      images?: { image: string; imageAlt: string }[];
     }[];
     nearbyDescription: string;
   };
@@ -365,6 +366,7 @@ export type CategoryListing = {
   eventProfile?: EventBusinessProfile;
   wellnessProfile?: WellnessBusinessProfile;
   featuredOrder?: number;
+  directoryOrder?: number;
   restaurantProfile?: {
     story: string[];
     experienceHighlights: { title: string; description: string }[];
@@ -546,6 +548,13 @@ const nameSort: CategorySortConfig = {
   field: "name",
   direction: "asc",
 };
+const directoryOrderSort: CategorySortConfig = {
+  id: "curated",
+  label: "Curated order",
+  field: "directoryOrder",
+  direction: "asc",
+  requiresData: true,
+};
 const relevanceSort: CategorySortConfig = { id: "relevance", label: "Most Relevant" };
 const newestSort: CategorySortConfig = {
   id: "newest",
@@ -682,7 +691,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
         optional: true,
       },
     ],
-    sortOptions: [nameSort],
+    sortOptions: [directoryOrderSort, nameSort],
     resultNoun: "accommodation",
     emptyTitle: "More to discover",
     emptyDescription: "We're adding more places to stay across Mpumalanga.",
@@ -4293,6 +4302,292 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       status: "published",
     },
     {
+      id: "singita-boulders-lodge",
+      slug: "singita-boulders-lodge",
+      listingKind: "accommodation",
+      directoryOrder: 1,
+      name: "Singita Boulders Lodge",
+      type: "Safari Lodge",
+      accommodationType: "Lodge",
+      location: "Sabi Sand",
+      area: "Sabi Sand",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Set along the boulder-strewn banks of the Sand River in Singita’s privately owned Sabi Sand reserve, Boulders Lodge draws on the textures and tones of its wilderness setting. Its glass-walled suites open onto private decks and plunge pools, while the lodge offers guided safari experiences, dining and wellness facilities.",
+      roomCount: 12,
+      roomTypes: ["River Suites", "Bush Suites", "Family Suites"],
+      accommodationProfile: {
+        rooms: [
+          {
+            name: "River Suite",
+            image:
+              "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2818%29-1024x678.jpg",
+            imageAlt: "Suite at Singita Boulders Lodge",
+            description:
+              "One of seven river-facing suites, with a private sitting room, game-viewing deck and plunge pool.",
+            amenities: [
+              "En-suite bedroom",
+              "Private sitting room",
+              "Private deck",
+              "Private plunge pool",
+            ],
+          },
+          {
+            name: "Bush Suite",
+            image:
+              "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2819%29-1024x678.jpg",
+            imageAlt: "Bush suite at Singita Boulders Lodge",
+            description:
+              "Three suites set in the lodge’s natural surroundings; two overlook a frequently visited watering hole.",
+            amenities: [
+              "En-suite bedroom",
+              "Private sitting room",
+              "Private deck",
+              "Private plunge pool",
+            ],
+          },
+          {
+            name: "Family Suite",
+            image:
+              "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2811%29-1024x678.jpg",
+            imageAlt: "Family suite at Singita Boulders Lodge",
+            description:
+              "Two-bedroom suites with an en-suite main bedroom and a separate en-suite twin bedroom.",
+            amenities: [
+              "En-suite main bedroom",
+              "En-suite twin bedroom",
+              "Private deck",
+              "Private plunge pool",
+            ],
+          },
+        ],
+        nearbyDescription:
+          "The lodge is set beside the Sand River in the Sabi Sand, a wildlife sanctuary known for its diverse wildlife and birdlife. Guided game drives and walks are offered in the surrounding reserve.",
+      },
+      amenities: [
+        "Private deck and plunge pool with each suite",
+        "Main lodge swimming pool",
+        "Wellness and fitness centre",
+        "Complimentary Wi-Fi",
+        "Singita Boutique & Gallery",
+        "Premier Wine Boutique",
+      ],
+      facilities: [
+        "Outdoor dining and lounge area",
+        "Stone fireplace",
+        "Main lodge swimming pool",
+        "Wellness and fitness centre",
+        "Singita Boutique & Gallery",
+        "Premier Wine Boutique",
+      ],
+      services: [
+        "Guided game drives",
+        "Guided safari walks",
+        "Wine experience",
+        "Bird watching",
+        "Wellness",
+        "Stargazing",
+      ],
+      phone: "+27 13 735 9800",
+      email: "enquiries@singita.com",
+      website: "https://singita.com/lodge/singita-boulders-lodge/",
+      enquiryUrl: "https://singita.com/contact/",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Singita+Boulders+Lodge%2C+Sabi+Sand%2C+Mpumalanga%2C+South+Africa",
+      socialLinks: [
+        { label: "Instagram", href: "https://www.instagram.com/singita_/?hl=en" },
+        { label: "Facebook", href: "https://www.facebook.com/singita.gamereserves/" },
+      ],
+      image:
+        "https://singitacdn.s3.eu-west-1.amazonaws.com/library/wp-content/uploads/SSS_LODGE_Boulders_Lodge_Main_Deck_Ross_Couper_A1_01649-1024x682.jpg",
+      imageAlt: "Main deck at Singita Boulders Lodge",
+      images: [
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2818%29-1024x678.jpg",
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2819%29-1024x678.jpg",
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%289%29-1024x678.jpg",
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2811%29-1024x678.jpg",
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/_DSC0409-1024x684.jpg",
+        "https://s3-eu-west-1.amazonaws.com/singitacdn/library/wp-content/uploads/Singita%20Boulders%20Lodge%20%2812%29-1024x678.jpg",
+        "https://singitacdn.s3.eu-west-1.amazonaws.com/library/wp-content/uploads/singita_0923_boulders_50_high-min-scaled-1024x683.jpg",
+        "https://singitacdn.s3.eu-west-1.amazonaws.com/library/wp-content/uploads/SSS_LODGE_Boulders_Lodge_Bar_Ross_Couper_AR51873.jpg",
+      ],
+      imageAlts: [
+        "Main deck at Singita Boulders Lodge",
+        "Lodge suite at Singita Boulders Lodge",
+        "Lodge suite at Singita Boulders Lodge",
+        "Lodge interior at Singita Boulders Lodge",
+        "Lodge suite at Singita Boulders Lodge",
+        "Singita Boulders Lodge and its surroundings",
+        "Lodge suite at Singita Boulders Lodge",
+        "Singita Boulders Lodge and its surroundings",
+        "Bar at Singita Boulders Lodge",
+      ],
+      seoTitle: "Singita Boulders Lodge | Sabi Sand Accommodation | Discover",
+      seoDescription:
+        "Explore Singita Boulders Lodge in the Sabi Sand, with river-facing and bush suites, private plunge pools, guided safari experiences and direct enquiry details.",
+      source: "https://singita.com/lodge/singita-boulders-lodge/",
+      sourceUrl:
+        "https://singita.com/lodge/singita-boulders-lodge/information/?section=57yCMzNdCIs3baT4tv6y67",
+      locationAccuracy: "approximate",
+      claimed: false,
+      verified: false,
+      featured: false,
+      seeded: true,
+      sourceType: "seeded_public_data",
+      status: "published",
+    },
+    {
+      id: "sabi-sabi-earth-lodge",
+      slug: "sabi-sabi-earth-lodge",
+      listingKind: "accommodation",
+      directoryOrder: 2,
+      name: "Sabi Sabi Earth Lodge",
+      type: "Safari Lodge",
+      accommodationType: "Lodge",
+      location: "Sabi Sabi Private Game Reserve",
+      area: "Sabi Sabi Private Game Reserve",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Earth Lodge is a one-of-a-kind safari lodge in the Sabi Sabi Private Game Reserve, shaped by organic design and dramatic minimalism. Its suites are set into the landscape, with indoor-outdoor living spaces and private pools; the lodge pairs this secluded setting with dining and safari experiences.",
+      roomTypes: ["Luxury Suites", "Amber Villa"],
+      accommodationProfile: {
+        rooms: [
+          {
+            name: "Luxury Suite",
+            image:
+              "https://www.sabisabi.com/application/files/thumbnails/image_768x653/1516/5777/4503/earth-lodge-luxury-suite-bedroom.jpg?fID=2378&ftid=18&d=0",
+            imageAlt: "Bedroom in a Sabi Sabi Earth Lodge Luxury Suite",
+            description:
+              "A private suite with bespoke furnishings, an indoor-outdoor lounge, a private pool and a marble en-suite bathroom.",
+            amenities: [
+              "King-size bed or twin beds",
+              "Private deck with bushveld views",
+              "Private plunge pool",
+              "Bath and rain shower",
+              "Outdoor shower",
+              "Minibar and tea and coffee station",
+              "Air conditioning",
+              "Electronic safe",
+            ],
+          },
+          {
+            name: "Amber Villa",
+            image:
+              "https://www.sabisabi.com/application/files/thumbnails/image_1910x600/1616/8597/1908/Amber_Villa_Exterior_3.jpg?fID=32160&ftid=17&d=0",
+            imageAlt: "Exterior of Amber Villa at Sabi Sabi Earth Lodge",
+            description:
+              "A private two-bedroom villa for up to four guests, with a personal game vehicle and guide, a spacious living area, terrace lounge and private plunge pool.",
+            amenities: [
+              "Two bedrooms for up to four guests",
+              "Personal game vehicle and guide",
+              "Private fitness area",
+              "Terrace lounge and private deck",
+              "Private plunge pool",
+              "En-suite bathrooms",
+              "Minibar and tea and coffee station",
+              "Air conditioning",
+            ],
+            images: [
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_460x306/4416/8597/2067/Amber_Villa_Main_Bedroom_View.jpg?fID=32162&ftid=19&d=0",
+                imageAlt: "Main bedroom view in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_768x653/5116/8597/2145/Amber_Villa_Main_Bathroom_5.jpg?fID=32164&ftid=18&d=0",
+                imageAlt: "Main bathroom in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/6616/8597/2646/Amber_Villa_Main_Bathroom_2.jpg?fID=32170&ftid=4&d=0",
+                imageAlt: "Bathroom in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/8116/8796/1153/Amber_Villa_Main_Bedroom_3.jpg?fID=32387&ftid=4&d=0",
+                imageAlt: "Main bedroom in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_923x508/6516/8597/3352/Amber_Villa_Second_Bedroom_2.jpg?fID=32186&ftid=130&d=0",
+                imageAlt: "Second bedroom in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_923x508/2816/8597/3403/Amber_Villa_Lounge_Area_4.jpg?fID=32188&ftid=130&d=0",
+                imageAlt: "Lounge area in the Amber Villa",
+              },
+              {
+                image:
+                  "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/7517/3452/3766/Amber_Villa_Main_Bedroom_2.jpg?fID=36278&ftid=4&d=0",
+                imageAlt: "Main bedroom in the Amber Villa",
+              },
+            ],
+          },
+        ],
+        nearbyDescription:
+          "Earth Lodge is located in the Sabi Sabi Private Game Reserve. Safari activities are offered within the reserve; the lodge is part of the wider Sabi Sabi experience.",
+      },
+      amenities: [
+        "Luxury suites with private plunge pools",
+        "Indoor-outdoor lounge areas",
+        "Earth Lodge dining experience",
+        "Game drives and walking safaris",
+      ],
+      facilities: ["Dining experience", "Relaxation and wellness", "Luxury suites", "Amber Villa"],
+      services: [
+        "Game drives",
+        "Walking safaris",
+        "Tracker and ranger experiences",
+        "Dining inspired by nature",
+      ],
+      phone: "+27 11 447 7172",
+      email: "reservations@sabisabi.com",
+      website: "https://www.sabisabi.com/lodges/earth-lodge",
+      enquiryUrl: "https://www.sabisabi.com/rates/bookings",
+      directionsUrl:
+        "https://www.google.com/maps/search/?api=1&query=Sabi+Sabi+Earth+Lodge%2C+Sabi+Sabi+Private+Game+Reserve%2C+Mpumalanga",
+      image:
+        "https://www.sabisabi.com/application/files/thumbnails/image_1910x600/6117/3452/3774/sabi-sabi-earth-lodge-entrance-view.jpg?fID=36284&ftid=17&d=0",
+      imageAlt: "Entrance view of Sabi Sabi Earth Lodge",
+      images: [
+        "https://www.sabisabi.com/application/files/thumbnails/image_768x653/1516/5777/4503/earth-lodge-luxury-suite-bedroom.jpg?fID=2378&ftid=18&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_768x653/1116/6849/6093/earth-lodge-luxury-suite-exterior.jpg?fID=29912&ftid=18&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/4516/5685/7076/oganic-design-earth-lodge.jpg?fID=1571&ftid=4&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_1910x600/9517/3856/7509/earth-lodge-indoor-lounge.jpg?fID=36643&ftid=17&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_768x653/2216/5685/6961/earth-lodge-luxury-suite-shower-bathroom.jpg?fID=1532&ftid=18&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_460x306/5316/5685/6949/earth-lodge-luxury-suite-study.jpg?fID=1530&ftid=19&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/5216/5685/6977/privacy-luxury-bathroom-earth-lodge.jpg?fID=1537&ftid=4&d=0",
+        "https://www.sabisabi.com/application/files/thumbnails/image_1074x806/1516/6851/0562/earth-lodge-luxury-suite-terrace-lounge.jpg?fID=29936&ftid=4&d=0",
+      ],
+      imageAlts: [
+        "Entrance view of Sabi Sabi Earth Lodge",
+        "Bedroom in a Sabi Sabi Earth Lodge Luxury Suite",
+        "Exterior of a Sabi Sabi Earth Lodge Luxury Suite",
+        "Organic design at Sabi Sabi Earth Lodge",
+        "Indoor lounge at Sabi Sabi Earth Lodge",
+        "Bathroom in a Sabi Sabi Earth Lodge Luxury Suite",
+        "Study in a Sabi Sabi Earth Lodge Luxury Suite",
+        "Luxury bathroom at Sabi Sabi Earth Lodge",
+        "Terrace lounge at Sabi Sabi Earth Lodge",
+      ],
+      seoTitle: "Sabi Sabi Earth Lodge | Sabi Sabi Reserve | Discover",
+      seoDescription:
+        "Discover Sabi Sabi Earth Lodge in Mpumalanga, with organic architecture, private-pool suites, the Amber Villa, dining and safari experiences.",
+      source: "https://www.sabisabi.com/lodges/earth-lodge",
+      sourceUrl: "https://www.sabisabi.com/lodges/earth-lodge/luxury-suite",
+      locationAccuracy: "approximate",
+      claimed: false,
+      verified: false,
+      featured: false,
+      seeded: true,
+      sourceType: "seeded_public_data",
+      status: "published",
+    },
+    {
       id: "abangane-guest-lodge",
       slug: "abangane-guest-lodge",
       listingKind: "accommodation",
@@ -5238,6 +5533,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       id: "a-pilgrims-rest-guesthouse",
       slug: "a-pilgrims-rest-guesthouse",
       listingKind: "accommodation",
+      directoryOrder: 999,
       name: "A Pilgrim's Rest Guesthouse",
       type: "Guesthouse",
       accommodationType: "Guesthouse",

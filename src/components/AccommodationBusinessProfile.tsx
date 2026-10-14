@@ -46,14 +46,26 @@ export function AccommodationBusinessProfile({
     ...(wellnessProfile?.image ? [wellnessProfile.image] : []),
     ...(wellnessProfile?.images ?? []),
   ].filter(isString);
+  const propertyGallery = wellnessGallery.length
+    ? wellnessGallery
+    : [listing.image, ...(listing.images ?? [])].filter(isString);
+  const propertyGalleryAlts = wellnessGallery.length
+    ? wellnessProfile?.imageAlts
+    : listing.imageAlts;
+  const roomGallery = wellnessProfile
+    ? []
+    : (listing.accommodationProfile?.rooms.flatMap((room) => [
+        { image: room.image, imageAlt: room.imageAlt },
+        ...(room.images ?? []),
+      ]) ?? []);
   const gallery = [
-    ...new Set(
-      wellnessGallery.length
-        ? wellnessGallery
-        : [listing.image, ...(listing.images ?? [])].filter(isString),
-    ),
+    ...new Set([...propertyGallery, ...roomGallery.map(({ image }) => image)].filter(isString)),
   ];
-  const galleryAlts = wellnessGallery.length ? wellnessProfile?.imageAlts : listing.imageAlts;
+  const galleryAltByImage = new Map<string, string>();
+  propertyGallery.forEach((image, index) => {
+    galleryAltByImage.set(image, propertyGalleryAlts?.[index] ?? `${listing.name} property photo`);
+  });
+  roomGallery.forEach(({ image, imageAlt }) => galleryAltByImage.set(image, imageAlt));
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const visibleGallery = gallery.filter((image) => !failedImages.includes(image));
@@ -320,7 +332,7 @@ export function AccommodationBusinessProfile({
                   <img
                     src={image}
                     alt={
-                      galleryAlts?.[gallery.indexOf(image)] ??
+                      galleryAltByImage.get(image) ??
                       `${listing.name}${index ? `, photo ${index + 1}` : ""}`
                     }
                     fetchPriority={index === 0 ? "high" : undefined}
@@ -406,7 +418,7 @@ export function AccommodationBusinessProfile({
             <img
               src={visibleGallery[lightboxIndex]}
               alt={
-                galleryAlts?.[gallery.indexOf(visibleGallery[lightboxIndex])] ??
+                galleryAltByImage.get(visibleGallery[lightboxIndex]) ??
                 `${listing.name} photo ${lightboxIndex + 1}`
               }
               onError={() => {
@@ -664,14 +676,54 @@ export function AccommodationBusinessProfile({
                             ))}
                           </ul>
                         </details>
-                        {bookingUrl && (
+                        {room.images?.length ? (
+                          <div className="mt-3 border-t border-[#e5ebeb] pt-2">
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a7655]">
+                              {room.name} gallery
+                            </p>
+                            <div className="grid grid-cols-3 gap-1.5">
+                              {room.images.map((image) => (
+                                <button
+                                  key={image.image}
+                                  type="button"
+                                  aria-label={`Enlarge ${image.imageAlt}`}
+                                  onClick={(event) => {
+                                    const index = visibleGallery.indexOf(image.image);
+                                    if (index >= 0) {
+                                      galleryTriggerRef.current = event.currentTarget;
+                                      setLightboxIndex(index);
+                                    }
+                                  }}
+                                  className="overflow-hidden rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a]"
+                                >
+                                  <img
+                                    src={image.image}
+                                    alt={image.imageAlt}
+                                    loading="lazy"
+                                    decoding="async"
+                                    onError={() =>
+                                      setFailedImages((current) =>
+                                        current.includes(image.image)
+                                          ? current
+                                          : [...current, image.image],
+                                      )
+                                    }
+                                    className="aspect-[4/3] w-full object-cover"
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ) : null}
+                        {(bookingUrl || enquiryUrl) && (
                           <a
-                            href={bookingUrl}
+                            href={bookingUrl ?? enquiryUrl}
                             target="_blank"
                             rel="noreferrer"
                             className="mt-3 inline-flex min-h-9 items-center gap-2 border-t border-[#e5ebeb] pt-2 text-xs font-semibold text-[#34474d] transition-colors hover:text-[#28718a]"
                           >
-                            View Rates &amp; Book <ArrowRight className="h-3.5 w-3.5" />
+                            {bookingUrl ? "View Rates & Book" : "Enquire about this stay"}{" "}
+                            <ArrowRight className="h-3.5 w-3.5" />
                           </a>
                         )}
                       </div>
