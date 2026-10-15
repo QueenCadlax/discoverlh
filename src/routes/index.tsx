@@ -1025,6 +1025,7 @@ function FeaturedPartnerImage({
 }
 
 const featuredSelections = [
+  { category: "accommodation", id: "abangane-guest-lodge", label: "Accommodation" },
   { category: "food-dining", id: "mixolog-mbombela", label: "Restaurants" },
   { category: "food-dining", id: "turn-n-tender-mbombela", label: "Restaurants" },
   { category: "accommodation", id: "the-capital-mbombela", label: "Accommodation" },
