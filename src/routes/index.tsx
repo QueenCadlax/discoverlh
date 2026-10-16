@@ -976,6 +976,37 @@ function CategoryShortcuts() {
   );
 }
 
+const featuredImagePreloads = new Map<string, Promise<boolean>>();
+
+function preloadFeaturedImage(source: string, priority: "high" | "low" = "low") {
+  const existing = featuredImagePreloads.get(source);
+  if (existing) return existing;
+
+  const image = new window.Image();
+  image.decoding = "async";
+  image.fetchPriority = priority;
+  const preload = new Promise<boolean>((resolve) => {
+    let settled = false;
+    const finish = async (loaded: boolean) => {
+      if (settled) return;
+      settled = true;
+      if (!loaded || image.naturalWidth === 0) {
+        resolve(false);
+        return;
+      }
+      await image.decode().catch(() => undefined);
+      resolve(true);
+    };
+
+    image.onload = () => void finish(true);
+    image.onerror = () => void finish(false);
+    image.src = source;
+    if (image.complete) void finish(image.naturalWidth > 0);
+  });
+  featuredImagePreloads.set(source, preload);
+  return preload;
+}
+
 function FeaturedPartnerImage({
   name,
   image,
@@ -997,8 +1028,16 @@ function FeaturedPartnerImage({
     .toUpperCase();
 
   return (
-    <div className="relative aspect-[16/10] overflow-hidden bg-[#edf3f4]">
-      {image && !imageFailed ? (
+    <div className="relative aspect-[16/10] overflow-hidden bg-white">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,#f7f8f7,#edf2f0)]"
+      >
+        <span className="font-display text-4xl font-medium tracking-wide text-[#8a7655]">
+          {initials || "LH"}
+        </span>
+      </div>
+      {image && !imageFailed && (
         <img
           src={image}
           alt={imageAlt || name}
@@ -1010,15 +1049,6 @@ function FeaturedPartnerImage({
             fit === "contain" ? "object-contain p-8" : "object-cover"
           }`}
         />
-      ) : (
-        <div
-          aria-hidden="true"
-          className="grid h-full place-items-center bg-[linear-gradient(135deg,#eef2f1,#e4eceb)]"
-        >
-          <span className="font-display text-4xl font-medium tracking-wide text-[#8a7655]">
-            {initials || "LH"}
-          </span>
-        </div>
       )}
     </div>
   );
@@ -1072,25 +1102,46 @@ function FeaturedPartnersSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const pendingIndexRef = useRef<number | null>(null);
+  const slideRequestRef = useRef(0);
+
+  const requestFeaturedIndex = useCallback(
+    (index: number) => {
+      if (index === activeIndex) {
+        slideRequestRef.current += 1;
+        pendingIndexRef.current = null;
+        return;
+      }
+      if (pendingIndexRef.current === index) return;
+
+      const requestId = ++slideRequestRef.current;
+      pendingIndexRef.current = index;
+      const image = featuredItems[index]?.image;
+      const ready = image ? preloadFeaturedImage(image, "high") : Promise.resolve(true);
+      void ready.then(() => {
+        if (slideRequestRef.current !== requestId) return;
+        pendingIndexRef.current = null;
+        setActiveIndex(index);
+      });
+    },
+    [activeIndex, featuredItems],
+  );
 
   useEffect(() => {
     if (featuredItems.length < 2) return;
     const intervalId = window.setInterval(() => {
       if (!isPaused) {
-        setActiveIndex((current) => (current + 1) % featuredItems.length);
+        requestFeaturedIndex((activeIndex + 1) % featuredItems.length);
       }
     }, 6000);
     return () => window.clearInterval(intervalId);
-  }, [featuredItems.length, isPaused]);
+  }, [activeIndex, featuredItems.length, isPaused, requestFeaturedIndex]);
 
   useEffect(() => {
     if (featuredItems.length < 2) return;
     const nextItem = featuredItems[(activeIndex + 1) % featuredItems.length];
     if (!nextItem?.image) return;
-    const image = new window.Image();
-    image.decoding = "async";
-    image.fetchPriority = "low";
-    image.src = nextItem.image;
+    void preloadFeaturedImage(nextItem.image);
   }, [activeIndex, featuredItems]);
 
   if (featuredItems.length !== featuredSelections.length) {
@@ -1126,9 +1177,8 @@ function FeaturedPartnersSection() {
             setTouchStartX(null);
             if (Math.abs(delta) < 40) return;
             setIsPaused(true);
-            setActiveIndex(
-              (current) =>
-                (current + (delta < 0 ? 1 : -1) + featuredItems.length) % featuredItems.length,
+            requestFeaturedIndex(
+              (activeIndex + (delta < 0 ? 1 : -1) + featuredItems.length) % featuredItems.length,
             );
             window.setTimeout(() => setIsPaused(false), 1800);
           }}
@@ -1186,8 +1236,8 @@ function FeaturedPartnersSection() {
                   type="button"
                   aria-label="Previous featured partner"
                   onClick={() =>
-                    setActiveIndex(
-                      (current) => (current - 1 + featuredItems.length) % featuredItems.length,
+                    requestFeaturedIndex(
+                      (activeIndex - 1 + featuredItems.length) % featuredItems.length,
                     )
                   }
                   className="grid h-9 w-9 place-items-center rounded-sm border border-[#dce4e5] text-lg leading-none text-[#17242b] transition-colors hover:bg-[#f4f7f7]"
@@ -1197,7 +1247,7 @@ function FeaturedPartnersSection() {
                 <button
                   type="button"
                   aria-label="Next featured partner"
-                  onClick={() => setActiveIndex((current) => (current + 1) % featuredItems.length)}
+                  onClick={() => requestFeaturedIndex((activeIndex + 1) % featuredItems.length)}
                   className="grid h-9 w-9 place-items-center rounded-sm border border-[#dce4e5] text-lg leading-none text-[#17242b] transition-colors hover:bg-[#f4f7f7]"
                 >
                   ›
@@ -1211,7 +1261,7 @@ function FeaturedPartnersSection() {
                     type="button"
                     aria-label={`Show slide ${index + 1} for ${item.name}`}
                     aria-current={index === activeIndex ? "true" : undefined}
-                    onClick={() => setActiveIndex(index)}
+                    onClick={() => requestFeaturedIndex(index)}
                     className={`h-2.5 rounded-full transition-all ${
                       index === activeIndex ? "w-7 bg-[#17242b]" : "w-2.5 bg-[#c7d1d4]"
                     }`}
