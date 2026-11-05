@@ -17,7 +17,7 @@ export const Route = createFileRoute("/business/$slug")({
     if (!profile) {
       return {
         meta: [
-          { title: "Business not found | Discover by Lowveld Hub" },
+          { title: "Business not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/business/$slug")({
     const categoryLabel = profile.listing.subcategory || config.label;
     const defaultTitle =
       profile.category === "accommodation"
-        ? `${profile.listing.name} | Discover by Lowveld Hub`
+        ? `${profile.listing.name} | Discover Lowveld Hub`
         : profile.category === "food-dining"
           ? `${profile.listing.name} | Food & Dining in ${location || "Mpumalanga"} | Discover`
           : `${profile.listing.name} | ${categoryLabel}${location ? ` in ${location}` : ""} | Discover`;
@@ -79,7 +79,7 @@ function BusinessBySlug() {
     return (
       <main className="container-x flex min-h-[60vh] flex-col items-start justify-center py-16">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7655]">
-          Discover by Lowveld Hub
+          Discover Lowveld Hub
         </p>
         <h1 className="mt-3 font-display text-3xl font-medium text-[#172a31]">
           Business not found

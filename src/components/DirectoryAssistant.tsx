@@ -59,7 +59,7 @@ export function DirectoryAssistant() {
         className={`fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] right-3 z-40 flex items-center gap-2 transition-opacity sm:bottom-4 sm:right-4 ${formControlFocused ? "pointer-events-none invisible opacity-0" : "opacity-100"}`}
       >
         <a
-          href="https://wa.me/27673749762"
+          href="https://wa.me/27758650477"
           target="_blank"
           rel="noreferrer"
           aria-label="Chat with Lowveld Hub on WhatsApp"

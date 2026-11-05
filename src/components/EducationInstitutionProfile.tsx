@@ -159,13 +159,13 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
           <a
             href="/"
             className="flex shrink-0 items-center gap-2"
-            aria-label="Discover by Lowveld Hub home"
+            aria-label="Discover Lowveld Hub home"
           >
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -178,9 +178,6 @@ export function EducationInstitutionProfile({ listing }: { listing: CategoryList
             </a>
             <a href="/#categories" className="hover:text-[#172a31]">
               Categories
-            </a>
-            <a href="/business-network" className="hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <a

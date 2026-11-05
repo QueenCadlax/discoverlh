@@ -5,16 +5,16 @@ import { getPublicUrl } from "@/lib/site-url";
 
 const title = "Privacy Policy";
 const description =
-  "How Discover by Lowveld Hub handles information submitted through the site and data used by its discovery features.";
+  "How Discover Lowveld Hub handles information submitted through the site and data used by its discovery features.";
 
 export const Route = createFileRoute("/privacy-policy")({
   head: () => {
     const canonical = getPublicUrl("/privacy-policy");
     return {
       meta: [
-        { title: "Privacy Policy | Discover by Lowveld Hub" },
+        { title: "Privacy Policy | Discover Lowveld Hub" },
         { name: "description", content: description },
-        { property: "og:title", content: `${title} | Discover by Lowveld Hub` },
+        { property: "og:title", content: `${title} | Discover Lowveld Hub` },
         { property: "og:description", content: description },
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
       ],
@@ -34,7 +34,7 @@ function PrivacyPolicyPage() {
           heading: "Information you submit",
           paragraphs: [
             "The List Your Business form collects the business and contact details you provide so the Lowveld Hub team can review the request and contact you. Optional fields include addresses, services, opening hours, website and social links, and image URLs. Requests are sent to the team by email using the server-side email delivery service; they are not published automatically.",
-            "Do not submit sensitive personal information that is not needed to review a business listing. Contact info@lowveldhub.co.za to ask about a submission or request a correction.",
+            "Do not submit sensitive personal information that is not needed to review a business listing. Contact discover@lowveldhub.co.za to ask about a submission or request a correction.",
           ],
         },
         {
@@ -59,7 +59,7 @@ function PrivacyPolicyPage() {
         },
         {
           heading: "Contact",
-          paragraphs: ["For privacy questions, email info@lowveldhub.co.za."],
+          paragraphs: ["For privacy questions, email discover@lowveldhub.co.za."],
         },
       ]}
     />

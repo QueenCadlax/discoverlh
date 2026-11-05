@@ -14,10 +14,10 @@ import {
 import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
-const propertyListingsTitle = "Property in Mpumalanga | Discover by Lowveld Hub";
+const propertyListingsTitle = "Property in Mpumalanga | Discover Lowveld Hub";
 const propertyListingsDescription =
   "Discover homes, apartments, land, commercial spaces and holiday properties across Mpumalanga.";
-const professionalsTitle = "Property Businesses in Mpumalanga | Discover by Lowveld Hub";
+const professionalsTitle = "Property Businesses in Mpumalanga | Discover Lowveld Hub";
 const professionalsDescription =
   "Find estate agencies and property professionals serving Mbombela and Mpumalanga.";
 
@@ -157,7 +157,7 @@ function PropertyPage() {
     url: getPublicUrl(canonicalPath),
     isPartOf: {
       "@type": "WebSite",
-      name: "Discover by Lowveld Hub",
+      name: "Discover Lowveld Hub",
       url: getPublicUrl("/"),
     },
     ...(publishedCount > 0

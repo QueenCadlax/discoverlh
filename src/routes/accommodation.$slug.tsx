@@ -13,7 +13,7 @@ export const Route = createFileRoute("/accommodation/$slug")({
     if (!profile || profile.category !== "accommodation") {
       return {
         meta: [
-          { title: "Accommodation not found | Discover by Lowveld Hub" },
+          { title: "Accommodation not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/accommodation/$slug")({
       ? (wellnessView.seoTitle ??
         `${wellnessView.displayName} | ${profile.listing.location ?? "Mpumalanga"} Spa | Discover`)
       : (profile.listing.seoTitle ??
-        `${profile.listing.name} | Accommodation in Mbombela | Discover by Lowveld Hub`);
+        `${profile.listing.name} | Accommodation in Mbombela | Discover Lowveld Hub`);
     const description = wellnessView
       ? (wellnessView.seoDescription ?? wellnessView.description ?? wellnessView.summary)
       : (profile.listing.seoDescription ??

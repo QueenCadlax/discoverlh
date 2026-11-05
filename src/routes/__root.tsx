@@ -16,7 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { getPublicUrl } from "../lib/site-url";
 
 const siteDescription =
-  "Discover by Lowveld Hub helps people find local businesses, services and places across Mpumalanga.";
+  "Discover Lowveld Hub is expanding local discovery across Mpumalanga and Limpopo, with current listings concentrated in Mpumalanga.";
 const siteLogo = getPublicUrl("/logo%202.jpg");
 
 function NotFoundComponent() {
@@ -80,19 +80,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Discover by Lowveld Hub | Mpumalanga" },
-      { name: "application-name", content: "Discover by Lowveld Hub" },
+      { title: "Discover Lowveld Hub | Mpumalanga & Limpopo" },
+      { name: "application-name", content: "Discover Lowveld Hub" },
       {
         name: "description",
         content: siteDescription,
       },
-      { name: "author", content: "Discover by Lowveld Hub" },
+      { name: "author", content: "Discover Lowveld Hub" },
       { name: "robots", content: "index,follow" },
       {
         property: "og:title",
-        content: "Discover by Lowveld Hub | Mpumalanga",
+        content: "Discover Lowveld Hub | Mpumalanga & Limpopo",
       },
-      { property: "og:site_name", content: "Discover by Lowveld Hub" },
+      { property: "og:site_name", content: "Discover Lowveld Hub" },
       {
         property: "og:description",
         content: siteDescription,
@@ -101,7 +101,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       {
         name: "twitter:title",
-        content: "Discover by Lowveld Hub | Mpumalanga",
+        content: "Discover Lowveld Hub | Mpumalanga & Limpopo",
       },
       {
         name: "twitter:description",

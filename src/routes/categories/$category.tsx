@@ -19,14 +19,20 @@ import { getPublicUrl } from "@/lib/site-url";
 
 const accommodationTypes = new Set([
   ...discoverySubcategories.stay,
-  ...categoryListings.accommodation
-    .map((listing) => listing.type)
-    .filter((type): type is string => Boolean(type)),
+  ...categoryListings.accommodation.flatMap((listing) =>
+    [listing.type, listing.accommodationType].filter((type): type is string => Boolean(type)),
+  ),
 ]);
 const discoveryTypes = new Set(Object.values(discoverySubcategories).flat());
 const accommodationAmenities = new Set(
   categoryListings.accommodation.flatMap((listing) => listing.amenities ?? []),
 );
+const accommodationLocations = new Set([
+  ...mpumalangaLocations,
+  ...categoryListings.accommodation.flatMap((listing) =>
+    typeof listing.location === "string" ? [listing.location] : [],
+  ),
+]);
 const foodCuisines = new Set(
   categoryListings["food-dining"].flatMap((listing) => listing.cuisineTypes ?? []),
 );
@@ -109,7 +115,7 @@ export const Route = createFileRoute("/categories/$category")({
     if (!config) {
       return {
         meta: [
-          { title: "Category not found | Discover by Lowveld Hub" },
+          { title: "Category not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };
@@ -125,16 +131,16 @@ export const Route = createFileRoute("/categories/$category")({
     const title = isFoodDining
       ? "Restaurants in Mpumalanga | Discover"
       : isAccommodation
-        ? "Accommodation in Mpumalanga | Discover by Lowveld Hub"
+        ? "Accommodation in Mpumalanga | Discover Lowveld Hub"
         : isProperty
           ? propertyMode === "businesses"
-            ? "Property Businesses in Mpumalanga | Discover by Lowveld Hub"
-            : "Property for Sale or Rent in Mpumalanga | Discover by Lowveld Hub"
+            ? "Property Businesses in Mpumalanga | Discover Lowveld Hub"
+            : "Property for Sale or Rent in Mpumalanga | Discover Lowveld Hub"
           : isAutomotive
             ? automotiveMode === "vehicles"
-              ? "Vehicles for Sale in Mpumalanga | Discover by Lowveld Hub"
-              : "Automotive Services in Mpumalanga | Discover by Lowveld Hub"
-            : (config.seoTitle ?? `${config.label} in Mpumalanga | Discover by Lowveld Hub`);
+              ? "Vehicles for Sale in Mpumalanga | Discover Lowveld Hub"
+              : "Automotive Services in Mpumalanga | Discover Lowveld Hub"
+            : (config.seoTitle ?? `${config.label} in Mpumalanga | Discover Lowveld Hub`);
     const description = isFoodDining
       ? "Discover places to eat, drink and enjoy across Mpumalanga."
       : isAccommodation
@@ -230,7 +236,7 @@ export const Route = createFileRoute("/categories/$category")({
         : undefined,
     location:
       typeof search.location === "string" &&
-      (mpumalangaLocations as readonly string[]).includes(search.location)
+      accommodationLocations.has(search.location)
         ? search.location
         : undefined,
     cuisine: validateFoodFilters(search.cuisine, foodCuisines),

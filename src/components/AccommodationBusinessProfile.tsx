@@ -288,7 +288,7 @@ export function AccommodationBusinessProfile({
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -298,9 +298,6 @@ export function AccommodationBusinessProfile({
             </a>
             <a href="/#categories" className="site-nav-link hover:text-[#172a31]">
               Categories
-            </a>
-            <a href="/business-network" className="site-nav-link hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <div className="flex items-center gap-2">
@@ -600,7 +597,7 @@ export function AccommodationBusinessProfile({
               )}
               {listing.whatsapp && (
                 <a
-                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${wellnessProfile?.displayName ?? listing.name} on Discover by Lowveld Hub and would like to enquire about ${wellnessProfile ? "a spa treatment" : "a stay"}.`)}`}
+                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${wellnessProfile?.displayName ?? listing.name} on Discover Lowveld Hub and would like to enquire about ${wellnessProfile ? "a spa treatment" : "a stay"}.`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"

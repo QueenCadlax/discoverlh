@@ -18,12 +18,12 @@ export function LegalPage({
     <div className="min-h-screen bg-white text-[#17242b]">
       <header className="border-b border-[#e5ebeb] bg-white">
         <div className="container-x flex min-h-[68px] flex-wrap items-center justify-between gap-3 py-3">
-          <a href="/" className="flex items-center gap-2" aria-label="Discover by Lowveld Hub home">
+          <a href="/" className="flex items-center gap-2" aria-label="Discover Lowveld Hub home">
             <img src="/logo%202.jpg" alt="" className="h-8 w-8 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -37,9 +37,6 @@ export function LegalPage({
             <a href="/#categories" className="hover:text-[#17242b]">
               Categories
             </a>
-            <a href="/business-network" className="hover:text-[#17242b]">
-              Business Network
-            </a>
             <a href="/list-your-business" className="hover:text-[#17242b]">
               List Your Business
             </a>
@@ -49,7 +46,7 @@ export function LegalPage({
 
       <main className="container-x max-w-4xl py-8 md:py-12">
         <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
-          Discover by Lowveld Hub
+          Discover Lowveld Hub
         </p>
         <h1 className="mt-2 font-display text-3xl font-medium leading-tight text-[#17242b] sm:text-4xl">
           {title}

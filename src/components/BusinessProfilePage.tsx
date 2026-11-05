@@ -30,7 +30,7 @@ import { serializeJsonLd } from "@/lib/seo";
 import { getPublicUrl } from "@/lib/site-url";
 
 const whatsappMessage =
-  "Hi, I found your business on Discover by Lowveld Hub and would like to enquire about your services.";
+  "Hi, I found your business on Discover Lowveld Hub and would like to enquire about your services.";
 
 function hasUsefulEventFactValue(value: string) {
   return (
@@ -221,7 +221,7 @@ export function BusinessProfilePage({
   }
 
   function shareOnWhatsApp() {
-    const message = `${listing.name} on Discover by Lowveld Hub: ${window.location.href}`;
+    const message = `${listing.name} on Discover Lowveld Hub: ${window.location.href}`;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(message)}`,
       "_blank",
@@ -236,13 +236,13 @@ export function BusinessProfilePage({
           <a
             href="/"
             className="flex shrink-0 items-center gap-2"
-            aria-label="Discover by Lowveld Hub home"
+            aria-label="Discover Lowveld Hub home"
           >
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -252,9 +252,6 @@ export function BusinessProfilePage({
             </a>
             <a href="/#categories" className="site-nav-link hover:text-[#172a31]">
               Categories
-            </a>
-            <a href="/business-network" className="site-nav-link hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <div className="flex items-center gap-2">

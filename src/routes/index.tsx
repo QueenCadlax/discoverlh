@@ -13,18 +13,14 @@ import {
 } from "react";
 import {
   ArrowRight,
-  BriefcaseBusiness,
-  Boxes,
   ChevronDown,
   Cloud,
   CloudRain,
   CloudSun,
-  Handshake,
   LoaderCircle,
   LocateFixed,
   MapPin,
   Search,
-  Store,
   SunMedium,
   type LucideIcon,
 } from "lucide-react";
@@ -33,7 +29,6 @@ import { CategoryCard } from "@/components/DiscoverCategory";
 import { MobileSiteMenu } from "@/components/MobileSiteMenu";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CategoryListingCard, DiscoveryCardImage } from "@/components/CategoryDiscoveryPage";
-import { MpumalangaMap } from "@/components/MpumalangaMap";
 import {
   categoryConfigs,
   getCategoryListings,
@@ -53,9 +48,9 @@ import {
   type WeatherSnapshot,
 } from "@/lib/weather";
 
-const homepageTitle = "Discover by Lowveld Hub | Mpumalanga Directory";
+const homepageTitle = "Discover Lowveld Hub | Mpumalanga & Limpopo";
 const homepageDescription =
-  "Discover by Lowveld Hub is a local directory for finding businesses, services and places across Mpumalanga, published by Lowveld Hub.";
+  "Discover Lowveld Hub is expanding local discovery across Mpumalanga and Limpopo, with current listings concentrated in Mpumalanga.";
 const homepageUrl = getPublicUrl("/");
 const lowveldHubOrganizationId = "https://lowveldhub.co.za/#organization";
 const homepageStructuredData = {
@@ -71,7 +66,7 @@ const homepageStructuredData = {
     {
       "@type": "WebSite",
       "@id": `${homepageUrl}#website`,
-      name: "Discover by Lowveld Hub",
+      name: "Discover Lowveld Hub",
       url: homepageUrl,
       description: homepageDescription,
       publisher: { "@id": lowveldHubOrganizationId },
@@ -135,7 +130,7 @@ export const Route = createFileRoute("/")({
         { title: homepageTitle },
         { name: "description", content: homepageDescription },
         { name: "robots", content: "index,follow" },
-        { property: "og:site_name", content: "Discover by Lowveld Hub" },
+        { property: "og:site_name", content: "Discover Lowveld Hub" },
         { property: "og:title", content: homepageTitle },
         { property: "og:description", content: homepageDescription },
         { property: "og:type", content: "website" },
@@ -236,7 +231,6 @@ const shortcutOrder = [
   "beauty-wellness-fitness",
   "shop",
   "education-training",
-  "agriculture",
   "security",
 ] as const satisfies readonly CategorySlug[];
 const shortcuts = shortcutOrder.map(categoryShortcut);
@@ -274,7 +268,9 @@ const searchSuggestions = [
   },
 ] as const;
 
-const discoveryCategorySlugs = new Set<CategorySlug>(primaryDiscoveryCategorySlugs);
+const discoveryCategorySlugs = new Set<CategorySlug>(
+  primaryDiscoveryCategorySlugs.filter((slug) => slug !== "agriculture"),
+);
 
 const configuredSearchSuggestions = Object.values(categoryConfigs)
   .filter((config) => discoveryCategorySlugs.has(config.slug))
@@ -476,18 +472,6 @@ function Home() {
       />
       <CategoryShortcuts />
       <FeaturedPartnersSection />
-      <MpumalangaMap
-        showZoomControls={false}
-        showTownArrows={false}
-        onSelectTown={(townName) => {
-          void navigate({
-            to: "/locations/$location",
-            params: { location: locationSlug(townName) },
-            search: { category: undefined },
-          });
-        }}
-      />
-      <BusinessNetworkSection />
       {submittedSearch && (
         <ScrollReveal>
           <SearchResults
@@ -514,13 +498,13 @@ function Nav() {
         <a
           href="#top"
           className="flex shrink-0 items-center gap-2.5"
-          aria-label="Discover by Lowveld Hub home"
+          aria-label="Discover Lowveld Hub home"
         >
           <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
           <span className="flex flex-col text-left leading-tight">
             <span className="text-sm font-semibold text-[#17242b]">Discover</span>
             <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-              by Lowveld Hub
+              Lowveld Hub
             </span>
           </span>
         </a>
@@ -533,9 +517,6 @@ function Nav() {
           </a>
           <a href="#categories" className="site-nav-link hover:text-[#17242b]">
             Categories
-          </a>
-          <a href="/business-network" className="site-nav-link hover:text-[#17242b]">
-            Business Network
           </a>
           <a href="/business-packages" className="site-nav-link hover:text-[#17242b]">
             Business Packages
@@ -605,29 +586,25 @@ function Hero({
         <div className="w-full max-w-[800px]">
           <div className="max-w-[590px] text-white md:text-[#17242b]">
             <p className="homepage-hero-enter flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#e2c99a] md:text-[#8a7655]">
-              <span className="h-px w-7 bg-current" /> Local discovery · Mpumalanga
+              <span className="h-px w-7 bg-current" /> EXPLORE THE LOWVELD
             </p>
             <h1
               className="homepage-hero-enter mt-3 font-display text-[2rem] font-medium leading-[1] sm:text-[2.5rem] lg:text-[2.75rem]"
               style={{ animationDelay: "70ms" }}
             >
-              Discover Mpumalanga
+              There's more to discover.
             </h1>
+            <h2
+              className="homepage-hero-enter mt-2 text-lg font-semibold leading-tight sm:text-xl"
+              style={{ animationDelay: "105ms" }}
+            >
+              Mpumalanga &amp; Limpopo await.
+            </h2>
             <p
               className="homepage-hero-enter mt-3 max-w-md text-sm leading-6 text-white/80 sm:text-base sm:leading-7 md:text-[#58646a]"
               style={{ animationDelay: "140ms" }}
             >
-              Find places, businesses, services and experiences worth discovering.
-            </p>
-            <p className="mt-2 text-xs leading-5 text-white/75 md:text-[#687378]">
-              Discover is a local directory from{" "}
-              <a
-                href="https://lowveldhub.co.za/"
-                className="underline underline-offset-2 hover:text-white md:hover:text-[#17242b]"
-              >
-                Lowveld Hub
-              </a>
-              .
+              Explore local businesses, places and memorable experiences.
             </p>
           </div>
           <form
@@ -644,7 +621,7 @@ function Hero({
                 <Search className="h-[17px] w-[17px] shrink-0 text-[#17242b]" />
                 <span className="min-w-0 flex-1">
                   <span className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.12em] text-[#687378]">
-                    What are you looking for?
+                    What would you like to discover?
                   </span>
                   <input
                     id={inputId}
@@ -665,7 +642,7 @@ function Hero({
                       suggestions[activeSuggestion] ? `${listId}-${activeSuggestion}` : undefined
                     }
                     autoComplete="off"
-                    placeholder="Search businesses, services or categories"
+                    placeholder="Search destinations, places, experiences and businesses..."
                     className="w-full bg-transparent text-sm text-[#17242b] outline-none placeholder:text-[#858d90]"
                   />
                 </span>
@@ -734,6 +711,9 @@ function Hero({
               <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
             </button>
           </form>
+          <p className="mt-2 text-xs leading-5 text-white/75 md:text-[#687378]">
+            Current listings are concentrated in Mpumalanga as we expand into Limpopo.
+          </p>
         </div>
       </div>
     </section>
@@ -930,10 +910,10 @@ function CategoryShortcuts() {
       <div className="container-x py-5 md:py-6">
         <ScrollReveal className="mb-3 md:mb-4">
           <h2 className="font-display text-2xl font-medium text-[#17242b] md:text-3xl">
-            Explore by category
+            Explore the Lowveld
           </h2>
           <p className="mt-1 text-sm text-[#687378]">
-            Find the right business, service or place for what you need.
+            Find places to visit, experiences to enjoy and businesses to discover.
           </p>
         </ScrollReveal>
         <div className="grid auto-rows-fr grid-cols-2 gap-2 sm:hidden">
@@ -1160,7 +1140,8 @@ function FeaturedPartnersSection() {
               Featured Partners
             </h2>
             <p className="mt-2 max-w-[640px] text-sm leading-6 text-[#687378]">
-              Discover places, businesses and destinations we’re proud to feature.
+              Discover remarkable places, destinations and businesses worth exploring across the
+              Lowveld.
             </p>
           </div>
         </ScrollReveal>
@@ -1271,85 +1252,6 @@ function FeaturedPartnersSection() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
-
-function BusinessNetworkSection() {
-  const cards = [
-    {
-      title: "Find Suppliers",
-      description:
-        "Discover suppliers, products and businesses that provide the goods your company needs.",
-      href: "/business-network?type=supplier",
-      icon: Boxes,
-    },
-    {
-      title: "Business Services",
-      description:
-        "Find companies offering accounting, marketing, web development, logistics and other professional services.",
-      href: "/business-network?type=business-services",
-      icon: BriefcaseBusiness,
-    },
-    {
-      title: "Find Business Partners",
-      description: "Discover businesses you can collaborate with, work alongside or partner with.",
-      href: "/business-network?type=partnerships",
-      icon: Handshake,
-    },
-    {
-      title: "Showcase Your Business",
-      description: "Help other businesses discover your products, services and capabilities.",
-      href: "/list-your-business",
-      icon: Store,
-    },
-  ];
-
-  return (
-    <section id="business-network" className="border-y border-[#dce9ed] bg-[#f5f9fa]">
-      <div className="container-x py-7 md:py-8">
-        <ScrollReveal>
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
-              Business Network
-            </p>
-            <h2 className="mt-1 font-display text-2xl font-medium text-[#17242b] md:text-3xl">
-              Businesses need connections too.
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#687378]">
-              A place for suppliers, service providers, partnerships, referrals and
-              business-to-business connections across Mpumalanga.
-            </p>
-          </div>
-        </ScrollReveal>
-        <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map(({ title, description, href, icon: Icon }, index) => (
-            <ScrollReveal key={title} className="min-w-0" delay={Math.min(index * 60, 180)}>
-              <a
-                href={href}
-                className="group flex min-h-[92px] items-start gap-3 border border-[#dce9ed] bg-white p-3 transition-[transform,border-color,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:border-[#8fb9c6] hover:shadow-[0_12px_24px_-20px_rgba(36,110,133,.34)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#28718a]"
-              >
-                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-sm bg-[#142b4a] text-white transition-transform duration-200 group-hover:-translate-y-0.5">
-                  <Icon className="h-4 w-4" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-sm font-semibold text-[#17242b]">{title}</span>
-                  <span className="mt-1 block text-xs leading-4 text-[#687378]">{description}</span>
-                </span>
-              </a>
-            </ScrollReveal>
-          ))}
-        </div>
-        <ScrollReveal className="mt-4 flex justify-start sm:justify-end" delay={200}>
-          <a
-            href="/business-network"
-            className="group inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-[#246e85] transition-colors duration-200 hover:text-[#17242b]"
-          >
-            Explore Business Network{" "}
-            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-          </a>
-        </ScrollReveal>
       </div>
     </section>
   );
@@ -1477,7 +1379,7 @@ function ForBusiness() {
             Own a business? Get discovered.
           </h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-white/75">
-            Create a professional presence on Discover and connect with customers across Mpumalanga.
+            Put your business on the map. Get discovered by people exploring Mpumalanga and Limpopo.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

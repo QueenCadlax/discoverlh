@@ -523,6 +523,7 @@ const locationFilter: CategoryFilterConfig = {
 };
 const accommodationLocationFilter: CategoryFilterConfig = {
   ...locationFilter,
+  options: [...mpumalangaLocations, "Dullstroom", "Graskop"],
 };
 const discoveryLocationFilter: CategoryFilterConfig = {
   ...locationFilter,
@@ -908,7 +909,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     headline: "Find something worth experiencing.",
     description: "Discover places to relax, play, explore and enjoy across the Lowveld.",
     shortDescription: "Attractions, recreation and experiences across Mpumalanga.",
-    seoTitle: "Leisure & Entertainment in Mpumalanga | Discover by Lowveld Hub",
+    seoTitle: "Leisure & Entertainment in Mpumalanga | Discover Lowveld Hub",
     seoDescription:
       "Find things to do in Mpumalanga, from entertainment in Mbombela to water parks and attractions across the Lowveld.",
     searchPlaceholder: "Search casinos, attractions or experiences...",
@@ -1066,9 +1067,17 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       {
         id: "type",
         label: "Accommodation Type",
-        field: "type",
+        field: "accommodationType",
         kind: "multi",
-        options: [...discoverySubcategories.stay],
+        options: [
+          "Hotel",
+          "Lodge",
+          "Guest Lodge",
+          "Guesthouse",
+          "Boutique Hotel",
+          "Retreat",
+          "Country Estate",
+        ],
       },
       accommodationLocationFilter,
       {
@@ -1789,7 +1798,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     description:
       "Compare universities, colleges and schools across Mpumalanga, with links to programme and admissions information.",
     shortDescription: "Schools, tutors and skills training.",
-    seoTitle: "Education & Training in Mpumalanga | Discover by Lowveld Hub",
+    seoTitle: "Education & Training in Mpumalanga | Discover Lowveld Hub",
     seoDescription:
       "Explore universities, TVET colleges, private schools and colleges across Mpumalanga, with programme and admissions links.",
     searchPlaceholder: "Search institutions, programmes or locations...",
@@ -2001,7 +2010,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       "description",
     ],
     resultNoun: "agricultural providers",
-    indexability: "always",
+    indexability: "data-dependent",
     emptyTitle: "Agriculture listings are being added.",
     emptyDescription:
       "Agricultural suppliers, equipment providers and farming support services will appear as genuine listings are added.",
@@ -2106,7 +2115,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
     directionsUrl:
       "https://www.google.com/maps/search/?api=1&query=Emnotweni+Casino+Mbombela+Mpumalanga",
     services: ["Slot machines", "Table games", "Dining", "Entertainment"],
-    seoTitle: "Emnotweni Casino | Discover by Lowveld Hub",
+    seoTitle: "Emnotweni Casino | Discover Lowveld Hub",
     seoDescription: "Discover Emnotweni Casino in Mbombela for gaming, dining and entertainment.",
     source: "https://www.tsogosun.com/casino/emnotweni-home/",
     sourceUrl: "https://www.tsogosun.com/casino/emnotweni-home/",
@@ -2177,7 +2186,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
       Sunday: "09:30–17:00",
       "Public and school holidays": "09:30–17:00",
     },
-    seoTitle: "Mafunyane Water Park | Discover by Lowveld Hub",
+    seoTitle: "Mafunyane Water Park | Discover Lowveld Hub",
     seoDescription:
       "Plan a day at Mafunyane Water Park in Mbombela, with water rides, a recreational pool and an adventure river. Check seasonal hours before visiting.",
     source: "https://www.mafunyane.co.za/",
@@ -3360,7 +3369,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "University",
       educationLevels: ["Undergraduate", "Postgraduate"],
       name: "University of Mpumalanga",
-      seoTitle: "University of Mpumalanga | Discover by Lowveld Hub",
+      seoTitle: "University of Mpumalanga | Discover Lowveld Hub",
       seoDescription:
         "Explore University of Mpumalanga programme options and 2027 application information.",
       location: "Mbombela",
@@ -3433,7 +3442,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "University",
       educationLevels: ["Undergraduate", "Postgraduate"],
       name: "Tshwane University of Technology — Mbombela Campus",
-      seoTitle: "TUT Mbombela Campus | Discover by Lowveld Hub",
+      seoTitle: "TUT Mbombela Campus | Discover Lowveld Hub",
       seoDescription:
         "Explore Tshwane University of Technology's Mbombela Campus, study options and admissions resources.",
       location: "Mbombela",
@@ -3609,7 +3618,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationLevels: ["Grades 8–12"],
       subjects: ["Robotics", "Siswati", "Business and entrepreneurship"],
       name: "Curro Nelspruit High School",
-      seoTitle: "Curro Nelspruit High School | Discover by Lowveld Hub",
+      seoTitle: "Curro Nelspruit High School | Discover Lowveld Hub",
       seoDescription:
         "Explore Curro Nelspruit High School's Grades 8–12 and IEB pathway in Sonheuwel.",
       location: "Mbombela",
@@ -3674,7 +3683,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "Private College",
       educationLevels: ["Full-time study", "Part-time study", "Corporate training"],
       name: "Unigrad College",
-      seoTitle: "Unigrad College | Discover by Lowveld Hub",
+      seoTitle: "Unigrad College | Discover Lowveld Hub",
       seoDescription:
         "Explore Unigrad College's career-focused learning, career guidance and official registration information.",
       country: "South Africa",
@@ -4876,7 +4885,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       seoTitle: "Abangane Guest Lodge | Accommodation in Hazyview | Discover",
       seoDescription:
-        "Discover Abangane Guest Lodge in Hazyview, Mpumalanga. Explore luxury rooms, the private villa, valley views, garden setting, facilities and direct booking options on Discover by Lowveld Hub.",
+        "Discover Abangane Guest Lodge in Hazyview, Mpumalanga. Explore luxury rooms, the private villa, valley views, garden setting, facilities and direct booking options on Discover Lowveld Hub.",
       source: "https://abangane.com/",
       sourceUrl: "https://abangane.com/",
       locationAccuracy: "approximate",
@@ -5008,7 +5017,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       seoTitle: "Matumi Golf Lodge | Accommodation in Mbombela | Discover",
       seoDescription:
-        "Discover Matumi Golf Lodge in Mbombela. Explore the golf estate accommodation, rooms, amenities, booking and stay experience on Discover by Lowveld Hub.",
+        "Discover Matumi Golf Lodge in Mbombela. Explore the golf estate accommodation, rooms, amenities, booking and stay experience on Discover Lowveld Hub.",
       status: "published",
     },
     {
@@ -5151,7 +5160,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: true,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
+      additionalCategorySlugs: ["beauty-wellness-fitness"],
       source: "https://summerfields.co.za/",
       sourceUrl: "https://summerfields.co.za/retreat",
       wellnessProfile: {
@@ -5199,7 +5208,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "Summerfields Rose Retreat & Spa | Hazyview Accommodation | Discover",
       seoDescription:
-        "Discover Summerfields Rose Retreat & Spa in Hazyview. Explore luxury tented accommodation, spa experiences, dining and riverfront stays on Discover by Lowveld Hub.",
+        "Discover Summerfields Rose Retreat & Spa in Hazyview. Explore luxury tented accommodation, spa experiences, dining and riverfront stays on Discover Lowveld Hub.",
       status: "published",
     },
     {
@@ -5671,7 +5680,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: false,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
+      additionalCategorySlugs: ["beauty-wellness-fitness"],
       status: "published",
     },
     {
@@ -6583,7 +6592,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "The Orange Restaurant | Discover Mbombela",
       seoDescription:
-        "Discover The Orange Restaurant in Mbombela. Explore the dining experience, menu, booking, location and opening hours on Discover by Lowveld Hub.",
+        "Discover The Orange Restaurant in Mbombela. Explore the dining experience, menu, booking, location and opening hours on Discover Lowveld Hub.",
       source: "https://www.eatatorange.co.za/",
       sourceUrl: "https://www.eatatorange.co.za/",
       locationAccuracy: "approximate",
@@ -6686,7 +6695,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "Salsa Mexican Grill | Discover Mbombela",
       seoDescription:
-        "Discover Salsa Mexican Grill in Mbombela. Explore the Mexican cuisine, menu, reservations, location and celebratory dining experience on Discover by Lowveld Hub.",
+        "Discover Salsa Mexican Grill in Mbombela. Explore the Mexican cuisine, menu, reservations, location and celebratory dining experience on Discover Lowveld Hub.",
       source: "https://salsamexicangrill.co.za/",
       sourceUrl: "https://salsamexicangrill.co.za/",
       locationAccuracy: "approximate",

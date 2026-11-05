@@ -26,7 +26,7 @@ export const Route = createFileRoute("/property/$slug")({
     if (!listing) {
       return {
         meta: [
-          { title: "Property listing not found | Discover by Lowveld Hub" },
+          { title: "Property listing not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };
