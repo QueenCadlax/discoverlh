@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Discover by Lowveld Hub — Design System
+ * Discover Lowveld Hub — Design System
  * Apple-inspired luxury travel platform.
  * All colors in oklch. Tokens map to Tailwind utilities via @theme inline.
  */
@@ -296,9 +296,9 @@
 .hero-image-overlay {
   background: linear-gradient(
     180deg,
-    rgb(12 24 30 / 0.08) 0%,
-    rgb(12 24 30 / 0.3) 34%,
-    rgb(12 24 30 / 0.84) 100%
+    rgb(7 28 49 / 0.32) 0%,
+    rgb(7 28 49 / 0.24) 52%,
+    rgb(7 28 49 / 0.38) 100%
   );
 }
 
@@ -337,12 +337,10 @@
   .hero-image-overlay {
     background: linear-gradient(
       90deg,
-      #f8f7f3 0%,
-      #f8f7f3 27%,
-      rgb(248 247 243 / 0.94) 39%,
-      rgb(248 247 243 / 0.62) 54%,
-      rgb(248 247 243 / 0.08) 77%,
-      rgb(12 24 30 / 0.08) 100%
+      rgb(7 28 49 / 0.58) 0%,
+      rgb(7 28 49 / 0.44) 38%,
+      rgb(7 28 49 / 0.16) 72%,
+      rgb(7 28 49 / 0.04) 100%
     );
   }
 }

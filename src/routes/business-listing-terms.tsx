@@ -5,16 +5,16 @@ import { getPublicUrl } from "@/lib/site-url";
 
 const title = "Business Listing Terms";
 const description =
-  "Terms for submitting business information for review on Discover by Lowveld Hub.";
+  "Terms for submitting business information for review on Discover Lowveld Hub.";
 
 export const Route = createFileRoute("/business-listing-terms")({
   head: () => {
     const canonical = getPublicUrl("/business-listing-terms");
     return {
       meta: [
-        { title: "Business Listing Terms | Discover by Lowveld Hub" },
+        { title: "Business Listing Terms | Discover Lowveld Hub" },
         { name: "description", content: description },
-        { property: "og:title", content: `${title} | Discover by Lowveld Hub` },
+        { property: "og:title", content: `${title} | Discover Lowveld Hub` },
         { property: "og:description", content: description },
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
       ],

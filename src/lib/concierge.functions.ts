@@ -197,7 +197,7 @@ export const generateItinerary = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3.5-flash");
 
-    const system = `You are the Discover by Lowveld Hub concierge, creating a clear South African travel itinerary.
+    const system = `You are the Discover Lowveld Hub concierge, creating a clear South African travel itinerary.
 Tailor the itinerary to the traveller's request and use natural, concise descriptions.
 Rules:
 - Keep locations in South Africa unless the user specifies otherwise.

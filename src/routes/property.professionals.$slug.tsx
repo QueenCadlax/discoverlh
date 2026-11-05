@@ -23,7 +23,7 @@ export const Route = createFileRoute("/property/professionals/$slug")({
     if (!professional) {
       return {
         meta: [
-          { title: "Property professional not found | Discover by Lowveld Hub" },
+          { title: "Property professional not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };

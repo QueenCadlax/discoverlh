@@ -197,7 +197,7 @@ export function RestaurantBusinessProfile({
   }
 
   function shareOnWhatsApp() {
-    const message = `${listing.name} on Discover by Lowveld Hub: ${window.location.href}`;
+    const message = `${listing.name} on Discover Lowveld Hub: ${window.location.href}`;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(message)}`,
       "_blank",
@@ -262,13 +262,13 @@ export function RestaurantBusinessProfile({
           <a
             href="/"
             className="flex shrink-0 items-center gap-2"
-            aria-label="Discover by Lowveld Hub home"
+            aria-label="Discover Lowveld Hub home"
           >
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -281,9 +281,6 @@ export function RestaurantBusinessProfile({
             </a>
             <a href="/#categories" className="site-nav-link hover:text-[#172a31]">
               Categories
-            </a>
-            <a href="/business-network" className="site-nav-link hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <div className="flex items-center gap-2">
@@ -1070,7 +1067,7 @@ export function RestaurantBusinessProfile({
           <div className="container-x flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#28718a]">
-                Discover by Lowveld Hub
+                Discover Lowveld Hub
               </p>
               <h2 className="mt-1 font-display text-2xl font-medium text-[#17242b] sm:text-3xl">
                 Discover more in Mpumalanga

@@ -6,6 +6,7 @@ import {
   discoverySubcategories,
   primaryDiscoveryCategorySlugs,
 } from "./category-discovery";
+import { businessPackageValues } from "./business-packages";
 
 const optionalText = (max: number) => z.string().trim().max(max).optional().default("");
 const optionalUrl = z
@@ -23,7 +24,7 @@ const requiredSingleLineText = (max: number) =>
 const SubmissionSchema = z
   .object({
     requestType: z.enum(["New listing", "Update an existing listing", "Claim an existing listing"]),
-    package: z.enum(["Discover Plus", "Discover Premium", "Not sure yet"]).default("Not sure yet"),
+    package: z.enum(businessPackageValues).default("Not sure yet"),
     businessName: requiredSingleLineText(120),
     category: requiredSingleLineText(100).refine(
       (value) =>
@@ -75,7 +76,7 @@ const networkTypeLabels: Record<string, string> = {
 
 function formatSubmissionEmail(data: z.infer<typeof SubmissionSchema>) {
   const lines = [
-    "New Discover by Lowveld Hub business listing submission",
+    "New Discover Lowveld Hub business listing submission",
     "",
     `Request type: ${data.requestType}`,
     `Preferred package: ${data.package}`,

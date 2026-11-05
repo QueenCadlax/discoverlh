@@ -15,7 +15,7 @@ export const Route = createFileRoute("/events/$slug")({
     const canonical = getPublicUrl(`/events/${params.slug}`);
     const title = event
       ? `${event.name} | Events in Mpumalanga | Discover`
-      : "Event not found | Discover by Lowveld Hub";
+      : "Event not found | Discover Lowveld Hub";
     const description = event?.description;
     const socialImage = event?.image
       ? event.image.startsWith("http")
@@ -51,7 +51,7 @@ function EventBySlug() {
     return (
       <main className="container-x flex min-h-[60vh] flex-col items-start justify-center py-16">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[#8a7655]">
-          Discover by Lowveld Hub
+          Discover Lowveld Hub
         </p>
         <h1 className="mt-3 font-display text-3xl font-medium text-[#172a31]">Event not found</h1>
         <p className="mt-2 max-w-lg text-sm leading-6 text-[#68767a]">
@@ -103,12 +103,12 @@ function EventBySlug() {
     <div className="min-h-screen bg-white text-[#172a31]">
       <header className="border-b border-[#e5ebeb]">
         <div className="container-x flex min-h-[68px] items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2" aria-label="Discover by Lowveld Hub home">
+          <a href="/" className="flex items-center gap-2" aria-label="Discover Lowveld Hub home">
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>

@@ -27,13 +27,13 @@ export function PropertyNavigation() {
         <a
           href="/"
           className="flex shrink-0 items-center gap-2"
-          aria-label="Discover by Lowveld Hub home"
+          aria-label="Discover Lowveld Hub home"
         >
           <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
           <span className="flex flex-col leading-tight">
             <span className="text-sm font-semibold text-[#17242b]">Discover</span>
             <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-              by Lowveld Hub
+              Lowveld Hub
             </span>
           </span>
         </a>
@@ -455,7 +455,7 @@ export function PropertyMarketplace({
               </p>
             </div>
             <a
-              href="mailto:info@lowveldhub.co.za?subject=Discover%20Property%20listing%20enquiry"
+              href="mailto:discover@lowveldhub.co.za?subject=Discover%20Property%20listing%20enquiry"
               className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#17242b] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#30474f]"
             >
               Make an enquiry

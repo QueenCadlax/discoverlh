@@ -69,7 +69,7 @@ export const Route = createFileRoute("/locations/$location")({
     if (!location) {
       return {
         meta: [
-          { title: "Location not found | Discover by Lowveld Hub" },
+          { title: "Location not found | Discover Lowveld Hub" },
           { name: "robots", content: "noindex,follow" },
         ],
       };
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/locations/$location")({
     const category = match.search.category;
     const listings = getCategoryListings(location.name, category);
     const seo = getLocationPageSeo(location, category);
-    const title = category ? `${seo.title} | Discover by Lowveld Hub` : location.seoTitle;
+    const title = category ? `${seo.title} | Discover Lowveld Hub` : location.seoTitle;
     const canonical = getPublicUrl(seo.canonicalPath);
     const socialImage = location.image;
     const isIndexable =
@@ -189,8 +189,8 @@ function LocationBySlug() {
     <div className="min-h-screen bg-white text-[#172a31]">
       <header className="border-b border-[#e5ebeb]">
         <div className="container-x flex h-[68px] items-center justify-between">
-          <a href="/" className="text-sm font-semibold" aria-label="Discover by Lowveld Hub home">
-            Discover <span className="font-normal text-[#68767a]">by Lowveld Hub</span>
+          <a href="/" className="text-sm font-semibold" aria-label="Discover Lowveld Hub home">
+            Discover <span className="font-normal text-[#68767a]">Lowveld Hub</span>
           </a>
           <nav
             aria-label="Main navigation"
@@ -198,9 +198,6 @@ function LocationBySlug() {
           >
             <a href="/#categories" className="hover:text-[#172a31]">
               Browse categories
-            </a>
-            <a href="/business-network" className="hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
         </div>

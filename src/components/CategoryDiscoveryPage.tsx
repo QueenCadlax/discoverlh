@@ -316,6 +316,21 @@ const serviceFilterIds = new Set([
   "mobile-service",
 ]);
 
+const accommodationTownNames = [
+  "Mbombela",
+  "White River",
+  "Hazyview",
+  "Sabi Sand",
+  "Sabie",
+  "Lydenburg",
+  "Dullstroom",
+  "Graskop",
+  "Barberton",
+  "Malelane",
+  "Komatipoort",
+  "Marloth Park",
+];
+
 function getCategoryViewConfig(
   config: CategoryConfig,
   automotiveMode: AutomotiveMode,
@@ -645,15 +660,39 @@ export function CategoryDiscoveryPage({
   const activeLocationName = typeof activeLocation === "string" ? activeLocation : undefined;
   const locationCategorySlug =
     config.slug === "stay" ? "accommodation" : config.slug === "eat" ? "food-dining" : config.slug;
-  const locationsWithListings = locationDiscovery
-    .filter((location) =>
-      listings.some((listing) =>
-        [listing.location, listing.area]
-          .filter((value): value is string => typeof value === "string")
-          .some((value) => findDiscoveryLocation(value)?.slug === location.slug),
-      ),
-    )
-    .slice(0, 6);
+  const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
+  const locationsWithListings = isAccommodation
+    ? accommodationTownNames.flatMap((name) => {
+        const destination = findDiscoveryLocation(name);
+        const hasListings = listings.some((listing) => {
+          const listingLocation = listing.location?.trim();
+          if (!listingLocation) return false;
+          const discoveredLocation = findDiscoveryLocation(listingLocation);
+          return destination && discoveredLocation
+            ? discoveredLocation.slug === destination.slug
+            : listingLocation.toLocaleLowerCase() === name.toLocaleLowerCase();
+        });
+        return hasListings
+          ? [{
+              name: destination?.name ?? name,
+              slug:
+                destination?.slug ??
+                name
+                  .toLocaleLowerCase()
+                  .replace(/[^a-z0-9]+/g, "-")
+                  .replace(/(^-|-$)/g, ""),
+            }]
+          : [];
+      })
+    : locationDiscovery
+        .filter((location) =>
+          listings.some((listing) =>
+            [listing.location, listing.area]
+              .filter((value): value is string => typeof value === "string")
+              .some((value) => findDiscoveryLocation(value)?.slug === location.slug),
+          ),
+        )
+        .slice(0, 6);
 
   const matchingListings = listings.filter((listing) => {
     const searchable = config.searchFields
@@ -678,7 +717,6 @@ export function CategoryDiscoveryPage({
     !nearbyCenter && (config.slug === "eat" || config.slug === "food-dining")
       ? balanceOceanBasketListings(orderedListings)
       : orderedListings;
-  const isAccommodation = config.slug === "accommodation" || config.slug === "stay";
   const hasDesktopFilterSidebar =
     primaryDiscoveryCategorySlugs.includes(
       config.slug as (typeof primaryDiscoveryCategorySlugs)[number],
@@ -1080,13 +1118,13 @@ export function CategoryDiscoveryPage({
           <a
             href="/"
             className="flex shrink-0 items-center gap-2"
-            aria-label="Discover by Lowveld Hub home"
+            aria-label="Discover Lowveld Hub home"
           >
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col text-left leading-tight">
               <span className="text-sm font-semibold text-[#17242b]">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -1103,9 +1141,6 @@ export function CategoryDiscoveryPage({
               className="site-nav-link font-semibold text-[#172a31] after:scale-x-100"
             >
               Categories
-            </a>
-            <a href="/business-network" className="site-nav-link hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <div className="flex items-center gap-2">
@@ -1135,7 +1170,6 @@ export function CategoryDiscoveryPage({
               {[
                 ["Home", "/"],
                 ["Categories", "/#categories"],
-                ["Business Network", "/business-network"],
                 ["List Your Business", listingContactHref],
               ].map(([label, href]) => (
                 <a
@@ -1547,19 +1581,15 @@ export function CategoryDiscoveryPage({
                           ? "Restaurants in Mpumalanga"
                           : `Explore ${config.label}`}
                   </h2>
-                  <p className="mt-1.5 text-sm text-[#68767a]">
-                    {isAccommodation
-                      ? sortedListings.length === 0
-                        ? "Discover stays across Mpumalanga and find your next memorable base."
-                        : sortedListings.length === 1
-                          ? `1 stay in ${activeLocationName ?? "Mpumalanga"}`
-                          : `${sortedListings.length} stays ${activeLocationName ? `in ${activeLocationName}` : "across Mpumalanga"}`
-                      : config.slug === "home-construction"
+                  {!isAccommodation && (
+                    <p className="mt-1.5 text-sm text-[#68767a]">
+                      {config.slug === "home-construction"
                         ? "Find the right professionals for your project."
                         : config.slug === "food-dining" || config.slug === "eat"
                           ? "Discover restaurants by cuisine, dining style and location."
                           : "Find listings by category, details and location."}
-                  </p>
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {hasMappedListings && (
@@ -1635,7 +1665,11 @@ export function CategoryDiscoveryPage({
                   {locationsWithListings.map((location) => (
                     <a
                       key={location.slug}
-                      href={`/locations/${location.slug}?category=${locationCategorySlug}`}
+                      href={
+                        isAccommodation
+                          ? `/categories/${locationCategorySlug}?location=${encodeURIComponent(location.name)}`
+                          : `/locations/${location.slug}?category=${locationCategorySlug}`
+                      }
                       className="font-medium text-[#34474d] underline underline-offset-4 hover:text-[#28718a]"
                     >
                       {location.name}
@@ -2097,7 +2131,8 @@ function PremiumListingCard({
 }) {
   const isDining = config.slug === "food-dining" || config.slug === "eat";
   const cuisine = listing.cuisineTypes?.[0] ?? listing.cuisine;
-  const wellnessProfile = listing.wellnessProfile;
+  const wellnessProfile =
+    config.slug === "beauty-wellness-fitness" ? listing.wellnessProfile : undefined;
   const extraDescriptor = isDining
     ? cuisine
     : listing.listingKind === "property"
@@ -2120,8 +2155,12 @@ function PremiumListingCard({
     .filter((value, index, values) => Boolean(value) && values.indexOf(value) === index)
     .slice(0, 2)
     .join(" · ");
-  const location =
+  const rawLocation =
     listing.location ?? (typeof listing.area === "string" ? listing.area : undefined);
+  const location =
+    rawLocation && (config.slug === "accommodation" || config.slug === "stay")
+      ? (findDiscoveryLocation(rawLocation)?.name ?? rawLocation)
+      : rawLocation;
   const displayName = wellnessProfile?.displayName ?? listing.name;
   const description = wellnessProfile?.summary ?? listing.description;
   const highlights = [

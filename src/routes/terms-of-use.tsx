@@ -5,16 +5,16 @@ import { getPublicUrl } from "@/lib/site-url";
 
 const title = "Terms of Use";
 const description =
-  "Terms for using Discover by Lowveld Hub to find places, businesses, events and services in Mpumalanga.";
+  "Terms for using Discover Lowveld Hub to find places, businesses, events and services in Mpumalanga.";
 
 export const Route = createFileRoute("/terms-of-use")({
   head: () => {
     const canonical = getPublicUrl("/terms-of-use");
     return {
       meta: [
-        { title: "Terms of Use | Discover by Lowveld Hub" },
+        { title: "Terms of Use | Discover Lowveld Hub" },
         { name: "description", content: description },
-        { property: "og:title", content: `${title} | Discover by Lowveld Hub` },
+        { property: "og:title", content: `${title} | Discover Lowveld Hub` },
         { property: "og:description", content: description },
         ...(canonical ? [{ property: "og:url", content: canonical }] : []),
       ],
@@ -47,7 +47,7 @@ function TermsOfUsePage() {
         {
           heading: "Availability and contact",
           paragraphs: [
-            "The site is provided as an information service and may occasionally be unavailable or contain outdated information. Contact info@lowveldhub.co.za to report an issue or ask a question.",
+            "The site is provided as an information service and may occasionally be unavailable or contain outdated information. Contact discover@lowveldhub.co.za to report an issue or ask a question.",
           ],
         },
       ]}

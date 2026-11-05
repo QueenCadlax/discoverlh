@@ -11,7 +11,14 @@ import {
   primaryDiscoveryCategorySlugs,
 } from "@/lib/category-discovery";
 import { submitBusinessListingRequest } from "@/lib/business-submissions.functions";
+import { businessPackageOptions, businessPackageValues } from "@/lib/business-packages";
 import { mpumalangaLocations } from "@/lib/location-discovery";
+
+function getPackageFromSearch(value: unknown) {
+  if (value === "Discover Plus") return "6-Month Listing";
+  if (value === "Discover Premium") return "12-Month Listing";
+  return businessPackageValues.find((option) => option === value);
+}
 
 export const Route = createFileRoute("/list-your-business")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -19,15 +26,11 @@ export const Route = createFileRoute("/list-your-business")({
     business: typeof search.business === "string" ? search.business : undefined,
     category: typeof search.category === "string" ? search.category : undefined,
     location: typeof search.location === "string" ? search.location : undefined,
-    package: 
-      typeof search.package === "string" &&
-      ["Discover Plus", "Discover Premium", "Not sure yet"].includes(search.package)
-        ? search.package
-        : undefined,
+    package: getPackageFromSearch(search.package),
   }),
   head: () => ({
     meta: [
-      { title: "List Your Business | Discover by Lowveld Hub" },
+      { title: "List Your Business | Discover Lowveld Hub" },
       {
         name: "description",
         content: "Submit or update a local business listing for review by Lowveld Hub.",
@@ -71,9 +74,7 @@ function ListingRequestPage() {
   const [requestType, setRequestType] = useState(
     search.request === "claim" ? "Claim an existing listing" : "New listing",
   );
-  const [selectedPackage, setSelectedPackage] = useState(
-    search.package ?? "Not sure yet",
-  );
+  const [selectedPackage, setSelectedPackage] = useState(search.package ?? "Not sure yet");
   const [submissionStatus, setSubmissionStatus] = useState<
     { kind: "success" | "error"; message: string } | undefined
   >();
@@ -144,12 +145,12 @@ function ListingRequestPage() {
     <div className="min-h-screen bg-white text-[#172a31]">
       <header className="border-b border-[#e5ebeb]">
         <div className="container-x flex min-h-[68px] items-center justify-between gap-4">
-          <a href="/" className="flex items-center gap-2" aria-label="Discover by Lowveld Hub home">
+          <a href="/" className="flex items-center gap-2" aria-label="Discover Lowveld Hub home">
             <img src="/logo%202.jpg" alt="" className="h-9 w-9 rounded-sm object-contain" />
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -212,17 +213,25 @@ function ListingRequestPage() {
           <fieldset>
             <legend className="text-sm font-semibold text-[#172a31]">Preferred package</legend>
             <div className="mt-2 flex flex-wrap gap-2">
-              {["Discover Plus", "Discover Premium", "Not sure yet"].map((option) => (
+              {businessPackageOptions.map(({ value, price }) => (
                 <button
-                  key={option}
+                  key={value}
                   type="button"
-                  aria-pressed={selectedPackage === option}
-                  onClick={() => setSelectedPackage(option)}
-                  className={`min-h-10 rounded-sm border px-3 text-sm font-medium ${selectedPackage === option ? "border-[#173b32] bg-[#eef2ef] text-[#172a31]" : "border-[#dce4e5] text-[#536267] hover:bg-[#f7f9f9]"}`}
+                  aria-pressed={selectedPackage === value}
+                  onClick={() => setSelectedPackage(value)}
+                  className={`min-h-10 rounded-sm border px-3 text-sm font-medium ${selectedPackage === value ? "border-[#173b32] bg-[#eef2ef] text-[#172a31]" : "border-[#dce4e5] text-[#536267] hover:bg-[#f7f9f9]"}`}
                 >
-                  {option}
+                  {value} · {price}
                 </button>
               ))}
+              <button
+                type="button"
+                aria-pressed={selectedPackage === "Not sure yet"}
+                onClick={() => setSelectedPackage("Not sure yet")}
+                className={`min-h-10 rounded-sm border px-3 text-sm font-medium ${selectedPackage === "Not sure yet" ? "border-[#173b32] bg-[#eef2ef] text-[#172a31]" : "border-[#dce4e5] text-[#536267] hover:bg-[#f7f9f9]"}`}
+              >
+                Not sure yet
+              </button>
             </div>
           </fieldset>
 
@@ -348,35 +357,6 @@ function ListingRequestPage() {
                 className="min-h-11 rounded-sm border border-[#dce4e5] px-3 font-normal outline-none focus:border-[#39703b]"
               />
             </label>
-            <fieldset className="grid gap-2 sm:col-span-2">
-              <legend className="text-sm font-medium">
-                Business Network <span className="font-normal text-[#788589]">Optional</span>
-              </legend>
-              <p className="text-xs text-[#788589]">
-                Select only the connections your business genuinely offers. The team will review
-                them before publication.
-              </p>
-              <div className="flex flex-wrap gap-x-5 gap-y-2">
-                {[
-                  ["supplier", "Supplies products or goods"],
-                  ["business-services", "Provides services to businesses"],
-                  ["partnerships", "Open to partnerships"],
-                ].map(([value, label]) => (
-                  <label
-                    key={value}
-                    className="inline-flex min-h-9 items-center gap-2 text-sm text-[#34474d]"
-                  >
-                    <input
-                      type="checkbox"
-                      name="businessNetworkTypes"
-                      value={value}
-                      className="h-4 w-4 accent-[#28718a]"
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </fieldset>
             <label className="grid gap-1.5 text-sm font-medium sm:col-span-2">
               Opening hours <span className="font-normal text-[#788589]">Optional</span>
               <textarea

@@ -84,6 +84,11 @@ export function AccommodationBusinessProfile({
   });
   const phone = listing.phone?.replace(/[^\d+]/g, "");
   const email = (wellnessProfile?.email ?? listing.email)?.trim();
+  const experienceEnquiryUrl =
+    enquiryUrl ??
+    (email
+      ? `mailto:${email}?subject=${encodeURIComponent("Enquiry about experiences at Abangane")}&body=${encodeURIComponent("Hello Abangane Guest Lodge,\n\nI would like to ask about the experiences available during a stay.\n\nThank you.")}`
+      : bookingUrl ?? website);
   const phoneLabel = wellnessProfile
     ? listing.phone && !wellnessProfile.email
       ? "Call resort"
@@ -129,6 +134,44 @@ export function AccommodationBusinessProfile({
         .filter(({ listing: nearby }) => nearby.id !== listing.id)
         .slice(0, 4)
     : [];
+  const isAbanganeGuestLodge = listing.id === "abangane-guest-lodge";
+  const abanganeExperiences = [
+    {
+      title: "Kruger National Park Game Drives",
+      description:
+        "Explore the renowned Kruger National Park on full-day or half-day game drives and experience the extraordinary wildlife of the African bush.",
+      highlights: ["Full-day game drives", "Half-day game drives"],
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcQ63DI43QwUSmfWT01rqu8qqvw9rdblUM9oVRf8k_Sw5-Tgg2vSm7uHfH&s=10",
+      imageAlt: "Safari game drive in African bushland",
+    },
+    {
+      title: "Panorama Route Tours",
+      description:
+        "Discover the spectacular scenery of Mpumalanga on full-day or half-day Panorama Route tours, with Abangane providing its own vehicles for these excursions.",
+      highlights: ["Full-day tours", "Half-day tours", "Lodge-operated vehicles"],
+      image: "https://dynamic-media.tacdn.com/media/photo-o/2f/24/6a/68/caption.jpg?w=700&h=500&s=1",
+      imageAlt: "Scenic mountain landscape",
+    },
+    {
+      title: "Spa Treatments",
+      description:
+        "Enhance your stay with a relaxing spa treatment, offering an opportunity to unwind and enjoy a slower pace during your Lowveld getaway.",
+      highlights: [],
+      image:
+        "https://polokwanespa.co.za/wp-content/uploads/2020/03/March_amazing-Autumn-spa-treatments_resized-v2.jpg",
+      imageAlt: "Relaxing spa treatment",
+    },
+    {
+      title: "Forest Hiking Trail",
+      description:
+        "Reconnect with nature along a 3.6 km hiking trail winding through the natural forest on the lodge's property.",
+      highlights: ["3.6 km trail", "Located on the property", "Natural forest surroundings"],
+      image:
+        "https://www.greenway.co.za/wp-content/uploads/2020/08/Trails_0004_belvedere-day-walk-9625179-600x450.jpg",
+      imageAlt: "Walking trail through a forest",
+    },
+  ];
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null);
     galleryTriggerRef.current?.focus();
@@ -245,7 +288,7 @@ export function AccommodationBusinessProfile({
             <span className="flex flex-col leading-tight">
               <span className="text-sm font-semibold">Discover</span>
               <span className="mt-0.5 text-[8px] font-medium uppercase tracking-[0.16em] text-[#687378]">
-                by Lowveld Hub
+                Lowveld Hub
               </span>
             </span>
           </a>
@@ -255,9 +298,6 @@ export function AccommodationBusinessProfile({
             </a>
             <a href="/#categories" className="site-nav-link hover:text-[#172a31]">
               Categories
-            </a>
-            <a href="/business-network" className="site-nav-link hover:text-[#172a31]">
-              Business Network
             </a>
           </nav>
           <div className="flex items-center gap-2">
@@ -557,7 +597,7 @@ export function AccommodationBusinessProfile({
               )}
               {listing.whatsapp && (
                 <a
-                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${wellnessProfile?.displayName ?? listing.name} on Discover by Lowveld Hub and would like to enquire about ${wellnessProfile ? "a spa treatment" : "a stay"}.`)}`}
+                  href={`https://wa.me/${listing.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Hi, I found ${wellnessProfile?.displayName ?? listing.name} on Discover Lowveld Hub and would like to enquire about ${wellnessProfile ? "a spa treatment" : "a stay"}.`)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sm border border-[#dce4e5] px-4 text-sm font-semibold text-[#34474d] hover:bg-[#f7f9f9]"
@@ -741,14 +781,92 @@ export function AccommodationBusinessProfile({
             ) : null}
 
             {accommodationProfile && (
-              <>
-                <section className="border-b border-[#e5ebeb] py-5">
-                  <h2 className="text-lg font-semibold text-[#172a31]">Explore the Lowveld</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#68767a]">
-                    {accommodationProfile.nearbyDescription}
-                  </p>
-                </section>
-              </>
+              <section className="border-b border-[#e5ebeb] py-5">
+                {isAbanganeGuestLodge ? (
+                  <>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a7655]">
+                      Experiences at Abangane
+                    </p>
+                    <h2 className="mt-1 text-lg font-semibold text-[#172a31]">
+                      Experiences to Make Your Stay Special
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#68767a]">
+                      From unforgettable wildlife encounters and scenic Panorama Route tours to
+                      restorative spa treatments and peaceful forest walks, enjoy more of the
+                      Lowveld during your stay at Abangane Guest Lodge.
+                    </p>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                      {abanganeExperiences.map(
+                        ({ title, description, highlights, image, imageAlt }) => (
+                        <article
+                          key={title}
+                          className="overflow-hidden rounded-sm border border-[#e5ebeb] bg-white transition-colors hover:border-[#c7d0d2]"
+                        >
+                          <div className="relative">
+                            <img
+                              src={image}
+                              alt={imageAlt}
+                              loading="lazy"
+                              decoding="async"
+                              className="aspect-[3/2] w-full object-cover"
+                            />
+                          </div>
+                          <div className="p-3">
+                            <h3 className="font-display text-sm font-medium leading-5 text-[#172a31]">
+                              {title}
+                            </h3>
+                            <p className="mt-1.5 text-xs leading-5 text-[#68767a]">{description}</p>
+                            {highlights.length > 0 && (
+                              <ul className="mt-2.5 space-y-1.5 text-[11px] text-[#5f6d72]">
+                                {highlights.map((highlight) => (
+                                  <li key={highlight} className="flex items-start gap-2">
+                                    <Check className="mt-0.5 h-3 w-3 shrink-0 text-[#28718a]" />
+                                    <span>{highlight}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        </article>
+                        ),
+                      )}
+                    </div>
+                    <div className="mt-4 flex flex-col gap-3 rounded-sm border border-[#e5ebeb] bg-[#f7f8f6] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-[#172a31]">Planning your stay?</h3>
+                        <p className="mt-1 text-xs leading-5 text-[#68767a]">
+                          Contact Abangane directly to ask about these experiences.
+                        </p>
+                      </div>
+                      {experienceEnquiryUrl && (
+                        <a
+                          href={experienceEnquiryUrl}
+                          {...(!experienceEnquiryUrl.startsWith("mailto:")
+                            ? { target: "_blank", rel: "noreferrer" }
+                            : {})}
+                          className="inline-flex min-h-9 shrink-0 items-center justify-center gap-2 border border-[#d6dfdf] bg-white px-3 text-xs font-semibold text-[#34474d] transition-colors hover:border-[#28718a] hover:text-[#28718a]"
+                        >
+                          {experienceEnquiryUrl.startsWith("mailto:")
+                            ? "Email the lodge"
+                            : enquiryUrl
+                              ? "Enquire with the lodge"
+                              : bookingUrl
+                                ? "Check availability"
+                                : "Visit website"}
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </a>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-lg font-semibold text-[#172a31]">Explore the Lowveld</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#68767a]">
+                      {accommodationProfile.nearbyDescription}
+                    </p>
+                  </>
+                )}
+              </section>
             )}
 
             {!wellnessProfile && propertyFeatures.length > 0 && (

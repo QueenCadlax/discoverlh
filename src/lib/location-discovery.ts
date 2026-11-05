@@ -51,6 +51,25 @@ export const locationDiscovery: readonly DiscoveryLocation[] = [
     indexability: "data-dependent",
   },
   {
+    name: "Delmas",
+    slug: "delmas",
+    province,
+    country,
+    alternateNames: ["Delmas, Mpumalanga"],
+    seoTitle: "Businesses in Delmas, Mpumalanga | Discover",
+    seoDescription: "Browse published local businesses and services in Delmas, Mpumalanga.",
+    introduction:
+      "Explore currently published local businesses and services in Delmas, Mpumalanga.",
+    relevantCategorySlugs: ["home-property"],
+    latitude: -26.146111,
+    longitude: 28.683611,
+    image:
+      "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=85",
+    locationAccuracy: "approximate",
+    nearbyLocations: [],
+    indexability: "data-dependent",
+  },
+  {
     name: "White River",
     slug: "white-river",
     province,

@@ -523,6 +523,7 @@ const locationFilter: CategoryFilterConfig = {
 };
 const accommodationLocationFilter: CategoryFilterConfig = {
   ...locationFilter,
+  options: [...mpumalangaLocations, "Dullstroom", "Graskop"],
 };
 const discoveryLocationFilter: CategoryFilterConfig = {
   ...locationFilter,
@@ -908,7 +909,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     headline: "Find something worth experiencing.",
     description: "Discover places to relax, play, explore and enjoy across the Lowveld.",
     shortDescription: "Attractions, recreation and experiences across Mpumalanga.",
-    seoTitle: "Leisure & Entertainment in Mpumalanga | Discover by Lowveld Hub",
+    seoTitle: "Leisure & Entertainment in Mpumalanga | Discover Lowveld Hub",
     seoDescription:
       "Find things to do in Mpumalanga, from entertainment in Mbombela to water parks and attractions across the Lowveld.",
     searchPlaceholder: "Search casinos, attractions or experiences...",
@@ -1066,9 +1067,17 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       {
         id: "type",
         label: "Accommodation Type",
-        field: "type",
+        field: "accommodationType",
         kind: "multi",
-        options: [...discoverySubcategories.stay],
+        options: [
+          "Hotel",
+          "Lodge",
+          "Guest Lodge",
+          "Guesthouse",
+          "Boutique Hotel",
+          "Retreat",
+          "Country Estate",
+        ],
       },
       accommodationLocationFilter,
       {
@@ -1789,7 +1798,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
     description:
       "Compare universities, colleges and schools across Mpumalanga, with links to programme and admissions information.",
     shortDescription: "Schools, tutors and skills training.",
-    seoTitle: "Education & Training in Mpumalanga | Discover by Lowveld Hub",
+    seoTitle: "Education & Training in Mpumalanga | Discover Lowveld Hub",
     seoDescription:
       "Explore universities, TVET colleges, private schools and colleges across Mpumalanga, with programme and admissions links.",
     searchPlaceholder: "Search institutions, programmes or locations...",
@@ -2001,7 +2010,7 @@ export const categoryConfigs: Record<CategorySlug, CategoryConfig> = {
       "description",
     ],
     resultNoun: "agricultural providers",
-    indexability: "always",
+    indexability: "data-dependent",
     emptyTitle: "Agriculture listings are being added.",
     emptyDescription:
       "Agricultural suppliers, equipment providers and farming support services will appear as genuine listings are added.",
@@ -2106,7 +2115,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
     directionsUrl:
       "https://www.google.com/maps/search/?api=1&query=Emnotweni+Casino+Mbombela+Mpumalanga",
     services: ["Slot machines", "Table games", "Dining", "Entertainment"],
-    seoTitle: "Emnotweni Casino | Discover by Lowveld Hub",
+    seoTitle: "Emnotweni Casino | Discover Lowveld Hub",
     seoDescription: "Discover Emnotweni Casino in Mbombela for gaming, dining and entertainment.",
     source: "https://www.tsogosun.com/casino/emnotweni-home/",
     sourceUrl: "https://www.tsogosun.com/casino/emnotweni-home/",
@@ -2177,7 +2186,7 @@ const leisureEntertainmentListings: CategoryListing[] = [
       Sunday: "09:30–17:00",
       "Public and school holidays": "09:30–17:00",
     },
-    seoTitle: "Mafunyane Water Park | Discover by Lowveld Hub",
+    seoTitle: "Mafunyane Water Park | Discover Lowveld Hub",
     seoDescription:
       "Plan a day at Mafunyane Water Park in Mbombela, with water rides, a recreational pool and an adventure river. Check seasonal hours before visiting.",
     source: "https://www.mafunyane.co.za/",
@@ -3360,7 +3369,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "University",
       educationLevels: ["Undergraduate", "Postgraduate"],
       name: "University of Mpumalanga",
-      seoTitle: "University of Mpumalanga | Discover by Lowveld Hub",
+      seoTitle: "University of Mpumalanga | Discover Lowveld Hub",
       seoDescription:
         "Explore University of Mpumalanga programme options and 2027 application information.",
       location: "Mbombela",
@@ -3433,7 +3442,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "University",
       educationLevels: ["Undergraduate", "Postgraduate"],
       name: "Tshwane University of Technology — Mbombela Campus",
-      seoTitle: "TUT Mbombela Campus | Discover by Lowveld Hub",
+      seoTitle: "TUT Mbombela Campus | Discover Lowveld Hub",
       seoDescription:
         "Explore Tshwane University of Technology's Mbombela Campus, study options and admissions resources.",
       location: "Mbombela",
@@ -3609,7 +3618,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationLevels: ["Grades 8–12"],
       subjects: ["Robotics", "Siswati", "Business and entrepreneurship"],
       name: "Curro Nelspruit High School",
-      seoTitle: "Curro Nelspruit High School | Discover by Lowveld Hub",
+      seoTitle: "Curro Nelspruit High School | Discover Lowveld Hub",
       seoDescription:
         "Explore Curro Nelspruit High School's Grades 8–12 and IEB pathway in Sonheuwel.",
       location: "Mbombela",
@@ -3674,7 +3683,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       educationType: "Private College",
       educationLevels: ["Full-time study", "Part-time study", "Corporate training"],
       name: "Unigrad College",
-      seoTitle: "Unigrad College | Discover by Lowveld Hub",
+      seoTitle: "Unigrad College | Discover Lowveld Hub",
       seoDescription:
         "Explore Unigrad College's career-focused learning, career guidance and official registration information.",
       country: "South Africa",
@@ -3751,8 +3760,8 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       description:
         "Mediclinic Nelspruit is a private hospital in Sonheuwel providing emergency care, specialist services, diagnostics and inpatient support to the broader Lowveld community.",
       image:
-        "https://mediclinic.scene7.com/is/image/mediclinic/Mediclinic%20Nelspruit?_ck=1616192312977",
-      imageAlt: "Mediclinic Nelspruit hospital building and main facility",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRutFoMYzYQPwJqEBbQXWDLmdMR1N7ibtWwK1bXgGuLZg&s=10",
+      imageAlt: "Mediclinic Nelspruit",
       website: "https://www.mediclinic.co.za/en/nelspruit/home.html",
       phone: "086 117 4448",
       emergencyPhone: "013 759 0645",
@@ -3983,7 +3992,152 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
     },
   ],
   "professional-services": [],
-  "home-property": [],
+  "home-property": [
+    {
+      id: "cleaning-hygiene-specialists-nelspruit",
+      slug: "cleaning-hygiene-specialists-nelspruit",
+      listingKind: "business",
+      type: "Cleaning",
+      subcategory: "Cleaning",
+      name: "Cleaning & Hygiene Specialists Nelspruit",
+      location: "Mbombela",
+      town: "Mbombela",
+      address: "54 Bester St, Sonheuwel Central",
+      province: "Mpumalanga",
+      postalCode: "1200",
+      country: "South Africa",
+      description:
+        "The Cleaning Specialists provides commercial and domestic cleaning and washroom hygiene services from its Nelspruit branch, serving Mbombela and surrounding Lowveld communities.",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROsXC2lGlQJu7fQrzJBQNijuh-96QW_gdgo2g8t4OBNPE2km4kXsy1xC0&s=10",
+      imageAlt: "Cleaning and hygiene services",
+      services: [
+        "Commercial cleaning",
+        "Domestic cleaning",
+        "Deep and specialised cleaning",
+        "Carpet, upholstery and fabric cleaning",
+        "Window and solar cleaning",
+        "Washroom hygiene",
+      ],
+      phone: "013 753 3502",
+      email: "nelspruit@thecs.co.za",
+      website: "https://www.cleaningspecialist.co.za/",
+      source: "https://www.cleaningspecialist.co.za/",
+      sourceUrl: "https://www.cleaningspecialist.co.za/contact/",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "sp-mahamba-trading",
+      slug: "sp-mahamba-trading",
+      listingKind: "business",
+      type: "Cleaning",
+      subcategory: "Cleaning",
+      name: "SP Mahamba Trading",
+      location: "Delmas",
+      town: "Delmas",
+      address: "10659/8 Botleng Ext 7",
+      province: "Mpumalanga",
+      postalCode: "2210",
+      country: "South Africa",
+      description:
+        "SP Mahamba Trading provides environmental and cleaning services to households, businesses, municipalities, mines and institutions across Mpumalanga.",
+      image:
+        "https://spmahambatrading.co.za/uploads/1767154939_file_00000000462071f5a3397962f7c5d5f0.png",
+      imageAlt: "SP Mahamba Trading",
+      services: [
+        "Pest control services",
+        "Alien and invasive plant control",
+        "Deep cleaning services",
+        "Laundry services",
+        "Mobile car washing",
+        "House cleaning",
+      ],
+      phone: "060 650 2413",
+      whatsapp: "+27 64 612 5353",
+      email: "info@spmahambatrading.co.za",
+      website: "https://spmahambatrading.co.za/",
+      source: "https://spmahambatrading.co.za/",
+      sourceUrl: "https://spmahambatrading.co.za/services",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "stream-line-plumbing",
+      slug: "stream-line-plumbing",
+      listingKind: "business",
+      type: "Plumbers",
+      subcategory: "Plumbers",
+      name: "Stream Line Plumbing",
+      location: "Mbombela",
+      town: "Mbombela",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Stream Line Plumbing (Pty) Ltd is based in Nelspruit and provides plumbing installations, repairs, maintenance and emergency services for homes, businesses and estates in the Lowveld.",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVWEaj9ZOP7vN2Bv34x_vq-xbO661D37PJSSy3knXALQ&s=10",
+      imageAlt: "Stream Line Plumbing",
+      services: [
+        "Plumbing installations",
+        "Plumbing repairs",
+        "Plumbing maintenance",
+        "Emergency plumbing",
+        "Drainage services",
+        "Geyser, tap, pipe and sink installations",
+      ],
+      phone: "082 900 3389",
+      email: "info@streamlineplumbing.co.za",
+      website: "https://www.streamlineplumbing.co.za/",
+      source: "https://www.streamlineplumbing.co.za/",
+      sourceUrl: "https://www.streamlineplumbing.co.za/about-us/",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+    {
+      id: "wolf-plumbing-and-maintenance",
+      slug: "wolf-plumbing-and-maintenance",
+      listingKind: "business",
+      type: "Plumbers",
+      subcategory: "Plumbers",
+      name: "Wolf Plumbing and Maintenance",
+      location: "Mbombela",
+      town: "Mbombela",
+      address: "10 Old Pretoria Road",
+      province: "Mpumalanga",
+      country: "South Africa",
+      description:
+        "Wolf Plumbing & Maintenance provides plumbing, electrical and maintenance services in Nelspruit and surrounding areas, with emergency and after-hours assistance.",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfsenFGx1ExfEDAYbDC7_a34BMOC-_NanQs6xLEmWYL1CDiV2n4WNj3I_8&s=10",
+      imageAlt: "Wolf Plumbing and Maintenance",
+      services: ["Plumbing", "Electrical services", "Maintenance", "Emergency assistance"],
+      phone: "013 110 3765",
+      whatsapp: "083 798 1278",
+      email: "admin@wolfplum.co.za",
+      website: "https://wolfplum.co.za/",
+      source: "https://wolfplum.co.za/",
+      sourceUrl: "https://wolfplum.co.za/contact/",
+      seeded: true,
+      sourceType: "seeded_public_data",
+      claimed: false,
+      verified: false,
+      featured: false,
+      status: "published",
+    },
+  ],
   "travel-transport": [
     {
       id: "citybug-durban",
@@ -4676,7 +4830,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
           },
         ],
         nearbyDescription:
-          "Hazyview is a gateway to the Kruger National Park and the Panorama Route. These regional destinations and activities are outside the lodge; ask the property about planning your time in the area.",
+          "From unforgettable wildlife encounters and scenic Panorama Route tours to restorative spa treatments and peaceful forest walks, enjoy more of the Lowveld during your stay at Abangane Guest Lodge.",
       },
       amenities: [
         "Infinity swimming pool with valley views",
@@ -4731,7 +4885,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       seoTitle: "Abangane Guest Lodge | Accommodation in Hazyview | Discover",
       seoDescription:
-        "Discover Abangane Guest Lodge in Hazyview, Mpumalanga. Explore luxury rooms, the private villa, valley views, garden setting, facilities and direct booking options on Discover by Lowveld Hub.",
+        "Discover Abangane Guest Lodge in Hazyview, Mpumalanga. Explore luxury rooms, the private villa, valley views, garden setting, facilities and direct booking options on Discover Lowveld Hub.",
       source: "https://abangane.com/",
       sourceUrl: "https://abangane.com/",
       locationAccuracy: "approximate",
@@ -4863,7 +5017,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       ],
       seoTitle: "Matumi Golf Lodge | Accommodation in Mbombela | Discover",
       seoDescription:
-        "Discover Matumi Golf Lodge in Mbombela. Explore the golf estate accommodation, rooms, amenities, booking and stay experience on Discover by Lowveld Hub.",
+        "Discover Matumi Golf Lodge in Mbombela. Explore the golf estate accommodation, rooms, amenities, booking and stay experience on Discover Lowveld Hub.",
       status: "published",
     },
     {
@@ -5006,7 +5160,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: true,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
+      additionalCategorySlugs: ["beauty-wellness-fitness"],
       source: "https://summerfields.co.za/",
       sourceUrl: "https://summerfields.co.za/retreat",
       wellnessProfile: {
@@ -5054,7 +5208,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "Summerfields Rose Retreat & Spa | Hazyview Accommodation | Discover",
       seoDescription:
-        "Discover Summerfields Rose Retreat & Spa in Hazyview. Explore luxury tented accommodation, spa experiences, dining and riverfront stays on Discover by Lowveld Hub.",
+        "Discover Summerfields Rose Retreat & Spa in Hazyview. Explore luxury tented accommodation, spa experiences, dining and riverfront stays on Discover Lowveld Hub.",
       status: "published",
     },
     {
@@ -5526,7 +5680,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       featured: false,
       seeded: true,
       sourceType: "seeded_public_data",
-      additionalCategorySlugs: ["stay", "beauty-wellness-fitness"],
+      additionalCategorySlugs: ["beauty-wellness-fitness"],
       status: "published",
     },
     {
@@ -6438,7 +6592,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "The Orange Restaurant | Discover Mbombela",
       seoDescription:
-        "Discover The Orange Restaurant in Mbombela. Explore the dining experience, menu, booking, location and opening hours on Discover by Lowveld Hub.",
+        "Discover The Orange Restaurant in Mbombela. Explore the dining experience, menu, booking, location and opening hours on Discover Lowveld Hub.",
       source: "https://www.eatatorange.co.za/",
       sourceUrl: "https://www.eatatorange.co.za/",
       locationAccuracy: "approximate",
@@ -6541,7 +6695,7 @@ export const categoryListings: Record<CategorySlug, CategoryListing[]> = {
       },
       seoTitle: "Salsa Mexican Grill | Discover Mbombela",
       seoDescription:
-        "Discover Salsa Mexican Grill in Mbombela. Explore the Mexican cuisine, menu, reservations, location and celebratory dining experience on Discover by Lowveld Hub.",
+        "Discover Salsa Mexican Grill in Mbombela. Explore the Mexican cuisine, menu, reservations, location and celebratory dining experience on Discover Lowveld Hub.",
       source: "https://salsamexicangrill.co.za/",
       sourceUrl: "https://salsamexicangrill.co.za/",
       locationAccuracy: "approximate",
